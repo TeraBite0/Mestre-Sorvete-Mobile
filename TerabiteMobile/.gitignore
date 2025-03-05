@@ -1,0 +1,36 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Cache de dependências do Gradle
+/.gradle/
+/build/
+/.gradle/*
+
+# Arquivos de compilação Kotlin
+/.kotlin/
+
+# Arquivos de log
+*.log
+
+# Arquivos específicos do sistema operacional
+Thumbs.db
+
+# Arquivos temporários do Android Studio
+.idea/.name
+.idea/modules
+.idea/gradle.xml
+.idea/vcs.xml
+
