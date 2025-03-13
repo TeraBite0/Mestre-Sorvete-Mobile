@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+// import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+// import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,8 +157,14 @@ fun TelaLogin() {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-
         }
+//        AsyncImage(
+//            model = "file:///android_res/drawable/wave_login_branca.svg",
+//            contentDescription = "Onda decorativa",
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                //.height(80.dp)
+//        )
     }
 
     Column(
@@ -181,32 +190,6 @@ fun TelaLogin() {
         )
     }
 }
-
-//class EsqueceuSenhaActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//                EsqueceuSenhaTela()
-//        }
-//    }
-//}
-//@Composable
-//fun EsqueceuSenhaTela() {
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color(0xFF8C3829)),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        Text(
-//            text = "Tela de recuperação de senha",
-//            color = Color.White,
-//            fontSize = 20.sp,
-//            fontWeight = FontWeight.Bold
-//        )
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
