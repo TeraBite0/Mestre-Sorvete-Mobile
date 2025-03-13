@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Tela Login Terabite"
+rootProject.name = "Terabite Mobile"
 include(":app")
  

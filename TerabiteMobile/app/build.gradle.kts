@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.telaloginterabite"
+    namespace = "com.example.terabitemobile"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.telaloginterabite"
+        applicationId = "com.example.terabitemobile"
         minSdk = 31
         targetSdk = 35
         versionCode = 1

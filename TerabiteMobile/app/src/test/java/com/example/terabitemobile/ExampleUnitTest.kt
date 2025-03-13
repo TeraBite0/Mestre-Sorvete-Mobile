@@ -1,4 +1,4 @@
-package com.example.telaloginterabite
+package com.example.terabitemobile
 
 import org.junit.Test
 

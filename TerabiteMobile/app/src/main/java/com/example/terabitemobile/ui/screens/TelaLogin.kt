@@ -1,4 +1,4 @@
-package com.example.telaloginterabite.ui.screens
+package com.example.terabitemobile.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -84,13 +84,17 @@ fun TelaLogin() {
                     value = usuario,
                     onValueChange = { usuario = it },
                     placeholder = {
-                        Text("exemplo@email.com", color = Color(0xFF000000).copy(alpha = 0.6f), fontFamily = poppins)
+                        Text(
+                            "exemplo@email.com",
+                            color = Color(0xFF000000).copy(alpha = 0.6f),
+                            fontFamily = poppins,
+                        )
                     },
                     colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFD9D9D9)
+                        containerColor = Color(0xFFD9D9D9),
                     ),
                     shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -150,7 +154,7 @@ fun TelaLogin() {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            
+
         }
     }
 
@@ -207,5 +211,5 @@ fun TelaLogin() {
 @Preview(showBackground = true)
 @Composable
 fun TelaLoginPreview() {
-        TelaLogin()
+    TelaLogin()
 }

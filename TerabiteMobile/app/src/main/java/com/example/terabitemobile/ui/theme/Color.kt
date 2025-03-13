@@ -1,4 +1,4 @@
-package com.example.telaloginterabite.ui.theme
+package com.example.terabitemobile.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
