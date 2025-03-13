@@ -149,7 +149,7 @@ fun ListaProdutos(tomBege: Color, tomVinho: Color) {
                                 modifier = Modifier.padding(8.dp).align(Alignment.CenterHorizontally)
                             )
                         }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(6.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(containerColor = tomVinho),
@@ -164,7 +164,7 @@ fun ListaProdutos(tomBege: Color, tomVinho: Color) {
                                     Text("-5", color = Color.White, fontWeight = FontWeight.Bold)
                                 }
                             }
-                            Spacer(modifier = Modifier.height(12.dp))
+                            Spacer(modifier = Modifier.height(10.dp))
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 colors = CardDefaults.cardColors(containerColor = tomVinho),

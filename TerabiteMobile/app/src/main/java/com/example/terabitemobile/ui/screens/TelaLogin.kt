@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 // import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,13 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
+import com.example.terabitemobile.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +87,7 @@ fun TelaLogin() {
                     fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 TextField(
                     value = usuario,
                     onValueChange = { usuario = it },
@@ -112,6 +117,7 @@ fun TelaLogin() {
                     fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 TextField(
                     value = senha,
                     onValueChange = { senha = it },
@@ -158,13 +164,13 @@ fun TelaLogin() {
             Spacer(modifier = Modifier.height(40.dp))
 
         }
-//        AsyncImage(
-//            model = "file:///android_res/drawable/wave_login_branca.svg",
-//            contentDescription = "Onda decorativa",
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                //.height(80.dp)
-//        )
+        Image(
+            painter = painterResource(id = R.drawable.wave_login_cinza),
+            contentDescription = "Onda decorativa",
+            modifier = Modifier
+                .fillMaxWidth()
+                .zIndex(1f)
+        )
     }
 
     Column(
