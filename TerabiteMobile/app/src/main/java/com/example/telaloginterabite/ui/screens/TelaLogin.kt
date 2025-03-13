@@ -1,4 +1,4 @@
-package com.example.telaloginterabite
+package com.example.telaloginterabite.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
