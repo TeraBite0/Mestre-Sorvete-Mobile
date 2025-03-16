@@ -58,5 +58,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     //implementation("io.coil-kt:coil-compose:2.2.2")
     implementation(libs.coil.compose)
+    implementation("androidx.compose.material3:material3:1.2.0")
     implementation(libs.coil.svg)
 }
