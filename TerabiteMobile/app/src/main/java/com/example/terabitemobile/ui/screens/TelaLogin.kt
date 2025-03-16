@@ -4,23 +4,30 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
+// import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+// import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import coil.compose.AsyncImage
+import com.example.terabitemobile.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +87,7 @@ fun TelaLogin() {
                     fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 TextField(
                     value = usuario,
                     onValueChange = { usuario = it },
@@ -109,6 +117,7 @@ fun TelaLogin() {
                     fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 TextField(
                     value = senha,
                     onValueChange = { senha = it },
@@ -154,8 +163,14 @@ fun TelaLogin() {
 
             Spacer(modifier = Modifier.height(40.dp))
 
-
         }
+        Image(
+            painter = painterResource(id = R.drawable.wave_login_cinza),
+            contentDescription = "Onda decorativa",
+            modifier = Modifier
+                .fillMaxWidth()
+                .zIndex(1f)
+        )
     }
 
     Column(
@@ -181,32 +196,6 @@ fun TelaLogin() {
         )
     }
 }
-
-//class EsqueceuSenhaActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//                EsqueceuSenhaTela()
-//        }
-//    }
-//}
-//@Composable
-//fun EsqueceuSenhaTela() {
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .background(Color(0xFF8C3829)),
-//        contentAlignment = Alignment.Center
-//    ) {
-//        Text(
-//            text = "Tela de recuperação de senha",
-//            color = Color.White,
-//            fontSize = 20.sp,
-//            fontWeight = FontWeight.Bold
-//        )
-//    }
-//}
 
 @Preview(showBackground = true)
 @Composable
