@@ -54,7 +54,7 @@ import com.example.terabitemobile.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaInicio() {
-    val fundoCinza = Color(0xFFD1D1D1)
+    val fundoCinza = Color(0xFFF9FBFF)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
     var searchText by remember { mutableStateOf("") }
