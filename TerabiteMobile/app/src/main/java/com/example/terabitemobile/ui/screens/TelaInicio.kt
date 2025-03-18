@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -29,6 +30,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
@@ -49,11 +52,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaInicio() {
+fun TelaInicio(navController: NavHostController) {
     val fundoCinza = Color(0xFFF9FBFF)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
@@ -65,7 +70,6 @@ fun TelaInicio() {
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
-
                 Image(
                     painter = painterResource(id = R.drawable.onda_imagem),
                     contentDescription = null,
@@ -74,7 +78,6 @@ fun TelaInicio() {
                         .height(220.dp),
                     contentScale = ContentScale.FillBounds
                 )
-
 
                 // Barra de navegação
                 NavigationBar(
@@ -85,25 +88,45 @@ fun TelaInicio() {
                         selected = true,
                         onClick = { },
                         icon = { Icon(Icons.Default.Home, contentDescription = "Início") },
-                        label = { Text("Início") }
+                        label = {
+                            Text(
+                                "Início",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
                     )
                     NavigationBarItem(
                         selected = false,
                         onClick = { },
                         icon = { Icon(Icons.Default.Menu, contentDescription = "Cardápio") },
-                        label = { Text("Cardápio") }
+                        label = {
+                            Text(
+                                "Cardápio",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
                     )
                     NavigationBarItem(
                         selected = false,
                         onClick = { },
                         icon = { Icon(Icons.Default.Search, contentDescription = "Estoque") },
-                        label = { Text("Estoque") }
+                        label = {
+                            Text(
+                                "Estoque",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
                     )
                     NavigationBarItem(
                         selected = false,
                         onClick = { },
                         icon = { Icon(Icons.Default.Person, contentDescription = "Conta") },
-                        label = { Text("Conta") }
+                        label = {
+                            Text(
+                                "Conta",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
                     )
                 }
             }
@@ -124,13 +147,19 @@ fun TelaInicio() {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
-                placeholder = { Text("Buscar...") },
+                placeholder = {
+                    Text(
+                        "Buscar...",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White, RoundedCornerShape(8.dp)),
                 shape = RoundedCornerShape(8.dp),
-                singleLine = true
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -146,12 +175,12 @@ fun TelaInicio() {
                 ) {
                     Text(
                         text = "Gerenciar",
-                        fontSize = 14.sp,
-                        color = Color.DarkGray
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.DarkGray,
                     )
                     Text(
                         text = "Estoque",
-                        fontSize = 24.sp,
+                        style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
@@ -162,7 +191,10 @@ fun TelaInicio() {
                         shape = RoundedCornerShape(8.dp),
                         modifier = Modifier.width(120.dp)
                     ) {
-                        Text("Acessar")
+                        Text(
+                            "Acessar",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     }
                 }
             }
@@ -172,7 +204,7 @@ fun TelaInicio() {
             // Seção Ferramentas
             Text(
                 text = "Ferramentas",
-                fontSize = 18.sp,
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.padding(bottom = 20.dp, top = 10.dp)
             )
@@ -187,7 +219,7 @@ fun TelaInicio() {
                     titulo = "Estoque",
                     corFundo = tomVinho,
                     corTexto = Color.White,
-                    onClick = { }
+                    onClick = {navController.navigate("estoque")}
                 )
 
                 // Botão Cardápio
@@ -195,7 +227,7 @@ fun TelaInicio() {
                     titulo = "Cardápio",
                     corFundo = tomBege,
                     corTexto = Color.DarkGray,
-                    onClick = { }
+                    onClick = {navController.navigate("cardapio")}
                 )
 
                 // Botão Baixas
@@ -203,7 +235,7 @@ fun TelaInicio() {
                     titulo = "Baixas",
                     corFundo = tomVinho,
                     corTexto = Color.White,
-                    onClick = { }
+                    onClick = {navController.navigate("baixas")}
                 )
             }
 
@@ -211,40 +243,36 @@ fun TelaInicio() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp, 15.dp, 0.dp, 0.dp),
+                    .padding(top = 15.dp),
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Ver mais",
                     color = Color.DarkGray,
-                    fontSize = 16.sp
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(25.dp))
 
-                Box(
+                IconButton(
+                    onClick = { navController.navigate("ferramentas") },
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(15.dp)
                         .clip(CircleShape)
-                        .background(tomVinho),
-                    contentAlignment = Alignment.Center
+                        .background(tomVinho)
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
                         contentDescription = "Ver mais",
                         tint = Color.White,
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
-
-            }
-            }
         }
-
-
-
+    }
+}
 
 @Composable
 fun ParteSuperiorInicio() {
@@ -262,8 +290,15 @@ fun ParteSuperiorInicio() {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text("Josué", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Text("Administrador", fontSize = 16.sp, color = Color.Gray)
+                Text(
+                    "Josué",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    "Administrador",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
             }
         }
     }
@@ -294,19 +329,19 @@ fun FerramentaItem(
             // Ícone específico para cada ferramenta
             when (titulo) {
                 "Estoque" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_estoque),
+                    painter = painterResource(id = R.drawable.box),
                     contentDescription = titulo,
                     tint = corTexto,
                     modifier = Modifier.size(24.dp)
                 )
                 "Cardápio" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_cardapio),
+                    painter = painterResource(id = R.drawable.scroll),
                     contentDescription = titulo,
                     tint = corTexto,
                     modifier = Modifier.size(24.dp)
                 )
                 "Baixas" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_baixas),
+                    painter = painterResource(id = R.drawable.store),
                     contentDescription = titulo,
                     tint = corTexto,
                     modifier = Modifier.size(24.dp)
@@ -318,8 +353,7 @@ fun FerramentaItem(
             Text(
                 text = titulo,
                 color = corTexto,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
             )
         }
     }
@@ -328,5 +362,5 @@ fun FerramentaItem(
 @Preview(showBackground = true)
 @Composable
 fun TelaInicioPreview() {
-    TelaInicio()
+    TelaInicio(rememberNavController())
 }

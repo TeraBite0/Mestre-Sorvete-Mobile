@@ -26,26 +26,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            TelaLogin()
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaLogin() {
+fun TelaLogin(navController: NavHostController) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
-    val poppins = FontFamily.SansSerif
     val context = LocalContext.current // Para navegação entre telas
 
     Box(
@@ -73,7 +65,6 @@ fun TelaLogin() {
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF1C97B),
-                fontFamily = poppins
             )
 
             Spacer(modifier = Modifier.height(48.dp))
@@ -84,7 +75,6 @@ fun TelaLogin() {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
-                    fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -95,7 +85,6 @@ fun TelaLogin() {
                         Text(
                             "exemplo@email.com",
                             color = Color(0xFF000000).copy(alpha = 0.6f),
-                            fontFamily = poppins,
                         )
                     },
                     colors = TextFieldDefaults.textFieldColors(
@@ -114,7 +103,6 @@ fun TelaLogin() {
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
-                    fontFamily = poppins,
                     modifier = Modifier.padding(start = 12.dp)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -122,7 +110,7 @@ fun TelaLogin() {
                     value = senha,
                     onValueChange = { senha = it },
                     placeholder = {
-                        Text("digite sua senha...", color = Color(0xFF000000).copy(alpha = 0.6f), fontFamily = poppins)
+                        Text("digite sua senha...", color = Color(0xFF000000).copy(alpha = 0.6f),)
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFD9D9D9)
@@ -139,7 +127,6 @@ fun TelaLogin() {
                 color = Color.White,
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
-                fontFamily = poppins,
                 modifier = Modifier
                     .align(Alignment.Start)
                     .padding(start = 12.dp)
@@ -151,14 +138,14 @@ fun TelaLogin() {
             Spacer(modifier = Modifier.height(48.dp))
 
             Button(
-                onClick = { /* Implementar lógica de login */ },
+                onClick = { navController.navigate("inicio") },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD07E0E)),
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
                     .width(150.dp)
                     .height(50.dp)
             ) {
-                Text("Entrar", color = Color.White, fontSize = 18.sp, fontFamily = poppins)
+                Text("Entrar", color = Color.White, fontSize = 18.sp,)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -184,7 +171,6 @@ fun TelaLogin() {
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),
-            fontFamily = poppins
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -192,7 +178,6 @@ fun TelaLogin() {
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),
-            fontFamily = poppins
         )
     }
 }
@@ -200,5 +185,5 @@ fun TelaLogin() {
 @Preview(showBackground = true)
 @Composable
 fun TelaLoginPreview() {
-    TelaLogin()
+    TelaLogin(rememberNavController())
 }

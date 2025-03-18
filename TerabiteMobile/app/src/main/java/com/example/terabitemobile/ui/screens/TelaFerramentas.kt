@@ -1,6 +1,7 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,9 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.terabitemobile.R
 import androidx.compose.ui.layout.ContentScale
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaFerramentas() {
+fun TelaFerramentas(navController: NavHostController) {
+
     val fundoCinza = Color(0xFFD3D3D3)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
@@ -44,7 +52,6 @@ fun TelaFerramentas() {
     val tomEstoque = Color(0xFF0E7A4A)
     val tomDestaques = Color(0xFFF6992F)
 
-    // Definindo a família de fontes Poppins com as variantes disponíveis
     val poppins = FontFamily(
         Font(R.font.poppins_light, FontWeight.Light),
         Font(R.font.poppins_regular, FontWeight.Normal),
@@ -114,7 +121,7 @@ fun TelaFerramentas() {
             }
 
             // Conteúdo principal - Lista de ferramentas
-            Column(
+            Column (
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,7 +133,8 @@ fun TelaFerramentas() {
                     titulo = "Cardápio",
                     descricao = "Gerencie seus produtos",
                     corIcone = tomVinho,
-                    fontFamily = poppins
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("login")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -136,7 +144,8 @@ fun TelaFerramentas() {
                     titulo = "Baixas",
                     descricao = "Gerencie a saída de estoque",
                     corIcone = tomBaixas,
-                    fontFamily = poppins
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("baixas")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -146,7 +155,8 @@ fun TelaFerramentas() {
                     titulo = "Estoque",
                     descricao = "Organize os produtos em estoque",
                     corIcone = tomEstoque,
-                    fontFamily = poppins
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("estoque")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -156,7 +166,8 @@ fun TelaFerramentas() {
                     titulo = "Destaques",
                     descricao = "Altere a recomendação do dia",
                     corIcone = tomDestaques,
-                    fontFamily = poppins
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("destaques")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +182,8 @@ fun FerramentaItem(
     titulo: String,
     descricao: String,
     corIcone: Color,
-    fontFamily: FontFamily
+    fontFamily: FontFamily,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -186,7 +198,8 @@ fun FerramentaItem(
                 color = Color(0x40000000),
                 shape = RoundedCornerShape(22.dp)
             )
-            .padding(horizontal = 25.dp),
+            .padding(horizontal = 25.dp)
+            .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
@@ -220,5 +233,5 @@ fun FerramentaItem(
 @Preview(showBackground = true)
 @Composable
 fun TelaFerramentasPreview() {
-    TelaFerramentas()
+    TelaFerramentas(rememberNavController())
 }
