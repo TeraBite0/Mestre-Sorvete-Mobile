@@ -2,6 +2,7 @@ package com.example.terabitemobile.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,7 +46,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,10 +61,17 @@ import com.example.terabitemobile.ui.theme.TerabiteMobileTheme
 @Composable
 fun TelaInicio(navController: NavHostController) {
     val colors = TelaInicioColors()
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         containerColor = colors.background,
-        bottomBar = { BottomNavigationBar(colors) }
+        bottomBar = { BottomNavigationBar(colors, navController) },
+        modifier = Modifier
+            .pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+            })
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -299,7 +309,7 @@ private fun FerramentaItem(
 }
 
 @Composable
-private fun BottomNavigationBar(colors: TelaInicioColors) {
+private fun BottomNavigationBar(colors: TelaInicioColors, navController: NavHostController) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.onda_imagem),
@@ -315,16 +325,16 @@ private fun BottomNavigationBar(colors: TelaInicioColors) {
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             val navItems = listOf(
-                NavItem("Início", Icons.Default.Home, true),
-                NavItem("Cardápio", Icons.Default.Menu, false),
-                NavItem("Estoque", Icons.Default.Search, false),
-                NavItem("Conta", Icons.Default.Person, false)
+                NavItem("Início", Icons.Default.Home, true, "inicio"),
+                NavItem("Cardápio", Icons.Default.Menu, false, "cardapio"),
+                NavItem("Estoque", Icons.Default.Search, false, "estoque"),
+                NavItem("Conta", Icons.Default.Person, false, "conta")
             )
 
             navItems.forEach { item ->
                 NavigationBarItem(
                     selected = item.selected,
-                    onClick = { },
+                    onClick = { navController.navigate(item.route) },
                     icon = { Icon(item.icon, contentDescription = item.label) },
                     label = {
                         Text(
@@ -342,7 +352,8 @@ private fun BottomNavigationBar(colors: TelaInicioColors) {
 private data class NavItem(
     val label: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
-    val selected: Boolean
+    val selected: Boolean,
+    val route: String
 )
 
 private class TelaInicioColors {
