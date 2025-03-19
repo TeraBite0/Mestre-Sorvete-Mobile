@@ -89,17 +89,17 @@ val TerabiteTypography = Typography(
     // Rótulos
     labelLarge = TextStyle(
         fontFamily = PoppinsFamily,
-//        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Medium,
         fontSize = 14.sp
     ),
     labelMedium = TextStyle(
         fontFamily = PoppinsFamily,
-//        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Medium,
         fontSize = 12.sp
     ),
     labelSmall = TextStyle(
         fontFamily = PoppinsFamily,
-//        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.Medium,
         fontSize = 11.sp
     )
 )

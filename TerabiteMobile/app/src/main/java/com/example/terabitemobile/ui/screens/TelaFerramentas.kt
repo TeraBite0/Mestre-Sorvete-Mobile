@@ -96,7 +96,9 @@ fun TelaFerramentas(navController: NavHostController) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
-                    onClick = {navController.navigate("inicio")},
+                    onClick = {
+                        navController.navigateUp()
+                    },
                     modifier = Modifier
                         .size(30.dp)
                         .background(
@@ -213,6 +215,7 @@ fun FerramentaItem(
 ) {
     Row(
         modifier = Modifier
+            .clickable(onClick = onClick)
             .fillMaxWidth()
             .background(
                 color = Color.White,
@@ -224,8 +227,7 @@ fun FerramentaItem(
                 color = Color(0x40000000),
                 shape = RoundedCornerShape(22.dp)
             )
-            .padding(horizontal = 20.dp)
-            .clickable(onClick = onClick),
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(

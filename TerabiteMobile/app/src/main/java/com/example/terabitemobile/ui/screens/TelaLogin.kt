@@ -183,7 +183,10 @@ fun TelaLogin(navController: NavHostController) {
             Spacer(modifier = Modifier.height(48.dp))
 
             Button(
-                onClick = { navController.navigate("inicio") },
+                onClick = {
+                    navController.popBackStack()
+                    navController.navigate("inicio")
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD07E0E)),
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
