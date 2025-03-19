@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,6 +41,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.semantics.Role
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +55,8 @@ fun TelaFerramentas(navController: NavHostController) {
     val tomBaixas = Color(0xFFE8C726)
     val tomEstoque = Color(0xFF0E7A4A)
     val tomDestaques = Color(0xFFF6992F)
+    val tomMarcas = Color(0xFF4A89DA)
+    val tomRecomendados = Color(0xFFFF541B)
 
     val poppins = FontFamily(
         Font(R.font.poppins_light, FontWeight.Light),
@@ -83,14 +89,14 @@ fun TelaFerramentas(navController: NavHostController) {
                     .padding(
                         start = 25.dp,
                         end = 25.dp,
-                        top = 40.dp,
+                        top = 50.dp,
                         bottom = 25.dp
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
-                    onClick = { /* Lógica de voltar */ },
+                    onClick = {navController.navigate("inicio")},
                     modifier = Modifier
                         .size(30.dp)
                         .background(
@@ -109,14 +115,14 @@ fun TelaFerramentas(navController: NavHostController) {
                 // Texto "Ferramentas" no meio
                 Text(
                     text = "Ferramentas",
-                    fontSize = 26.sp,
+                    fontSize = 24.sp,
                     color = Color(0xFF2C2C2C),
                     fontFamily = poppins,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .weight(1f)
                         .wrapContentWidth(Alignment.CenterHorizontally)
-                        .padding(top = 3.dp, end = 31.dp)
+                        .padding(top = 3.dp, end = 24.dp)
                 )
             }
 
@@ -125,7 +131,7 @@ fun TelaFerramentas(navController: NavHostController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 20.dp, start = 15.dp, end = 15.dp)
+                    .padding(top = 6.dp, bottom = 20.dp, start = 15.dp, end = 15.dp)
                     .wrapContentHeight()
             ) {
                 FerramentaItem(
@@ -153,7 +159,7 @@ fun TelaFerramentas(navController: NavHostController) {
                 FerramentaItem(
                     iconeResId = R.drawable.box,
                     titulo = "Estoque",
-                    descricao = "Organize os produtos em estoque",
+                    descricao = "Organize seus produtos",
                     corIcone = tomEstoque,
                     fontFamily = poppins,
                     onClick = {navController.navigate("estoque")}
@@ -163,7 +169,7 @@ fun TelaFerramentas(navController: NavHostController) {
 
                 FerramentaItem(
                     iconeResId = R.drawable.star,
-                    titulo = "Destaques",
+                    titulo = "Destaque",
                     descricao = "Altere a recomendação do dia",
                     corIcone = tomDestaques,
                     fontFamily = poppins,
@@ -171,6 +177,26 @@ fun TelaFerramentas(navController: NavHostController) {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
+                FerramentaItem(
+                    iconeResId = R.drawable.tag,
+                    titulo = "Marcas",
+                    descricao = "Gerencie suas marcas existentes",
+                    corIcone = tomMarcas,
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("marcas")}
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FerramentaItem(
+                    iconeResId = R.drawable.fire,
+                    titulo = "Recomendados",
+                    descricao = "Gerencie os produtos recomendados",
+                    corIcone = tomRecomendados,
+                    fontFamily = poppins,
+                    onClick = {navController.navigate("recomendados")}
+                )
             }
         }
     }
@@ -192,39 +218,40 @@ fun FerramentaItem(
                 color = Color.White,
                 shape = RoundedCornerShape(25.dp)
             )
-            .height(97.dp)
+            .height(90.dp)
             .border(
                 width = 2.dp,
                 color = Color(0x40000000),
                 shape = RoundedCornerShape(22.dp)
             )
-            .padding(horizontal = 25.dp)
+            .padding(horizontal = 20.dp)
             .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(iconeResId),
             contentDescription = titulo,
-            modifier = Modifier.size(57.dp),
+            modifier = Modifier.size(40.dp),
             colorFilter = ColorFilter.tint(corIcone)
         )
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(15.dp))
         Column {
             Text(
                 text = titulo,
                 fontSize = 21.sp,
+                color = Color(0xFF000000),
                 fontWeight = FontWeight.Bold,
                 fontFamily = fontFamily,
-                letterSpacing = -1.sp
+                letterSpacing = -0.7.sp
             )
             Spacer(modifier = Modifier.height(3.dp))
             Text(
                 text = descricao,
-                fontSize = 17.5.sp,
+                fontSize = 15.5.sp,
                 color = Color(0xA1000000),
                 fontFamily = fontFamily,
-                fontWeight = FontWeight.Normal,
-                letterSpacing = -1.sp
+                fontWeight = FontWeight.Medium,
+                letterSpacing = -0.7.sp
             )
         }
     }

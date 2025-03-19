@@ -226,7 +226,7 @@ fun TelaInicio(navController: NavHostController) {
                 FerramentaItem(
                     titulo = "Cardápio",
                     corFundo = tomBege,
-                    corTexto = Color.DarkGray,
+                    corTexto = Color(0xFF343434),
                     onClick = {navController.navigate("cardapio")}
                 )
 
@@ -258,7 +258,7 @@ fun TelaInicio(navController: NavHostController) {
                 IconButton(
                     onClick = { navController.navigate("ferramentas") },
                     modifier = Modifier
-                        .size(15.dp)
+                        .size(20.dp)
                         .clip(CircleShape)
                         .background(tomVinho)
                 ) {
