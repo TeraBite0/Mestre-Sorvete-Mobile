@@ -138,7 +138,7 @@ private fun EstoqueCard(colors: TelaInicioColors) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(horizontal = 7.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -154,7 +154,8 @@ private fun EstoqueCard(colors: TelaInicioColors) {
                     text = "Estoque",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = Color(0xFF343434)
                 )
 
                 Button(
@@ -165,7 +166,7 @@ private fun EstoqueCard(colors: TelaInicioColors) {
                 ) {
                     Text(
                         "Acessar",
-                        style = MaterialTheme.typography.labelLarge
+                        style = MaterialTheme.typography.labelLarge,
                     )
                 }
             }
@@ -176,7 +177,7 @@ private fun EstoqueCard(colors: TelaInicioColors) {
                 modifier = Modifier
                     .padding(16.dp)
                     .size(65.dp),
-                colorFilter = ColorFilter.tint(Color.Black)
+                colorFilter = ColorFilter.tint(Color(0xFF343434))
             )
         }
     }
@@ -243,7 +244,7 @@ private fun VerMaisButton(colors: TelaInicioColors, navController: NavHostContro
         IconButton(
             onClick = { navController.navigate("ferramentas") },
             modifier = Modifier
-                .size(20.dp)
+                .size(30.dp)
                 .clip(CircleShape)
                 .background(colors.primary)
         ) {
