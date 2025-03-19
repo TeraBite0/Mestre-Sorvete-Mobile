@@ -8,15 +8,19 @@ import androidx.compose.foundation.Image
 // import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 // import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -31,6 +35,39 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.terabitemobile.R
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
+
+class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        if (text.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
+
+        val passwordChar = '\u2022' // Bullet character
+        val lastChar = text.text.last()
+
+        val transformedText = buildString {
+            // Replace all characters except the last one with bullets
+            repeat(text.length - 1) {
+                append(passwordChar)
+            }
+            // Show the last character as is
+            append(lastChar)
+        }
+
+        return TransformedText(
+            AnnotatedString(transformedText),
+            object : OffsetMapping {
+                override fun originalToTransformed(offset: Int): Int = offset
+                override fun transformedToOriginal(offset: Int): Int = offset
+            }
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,12 +75,18 @@ fun TelaLogin(navController: NavHostController) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
-    val context = LocalContext.current // Para navegação entre telas
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF482C21)),
+            .background(Color(0xFF482C21))
+            // Tira o teclado da tela quando o elemento é clicado
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            },
         contentAlignment = Alignment.BottomCenter
     ) {
         Column(
@@ -116,7 +159,9 @@ fun TelaLogin(navController: NavHostController) {
                         containerColor = Color(0xFFD9D9D9)
                     ),
                     shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = if (senha.isEmpty()) PasswordVisualTransformation() else PasswordVisualTransformationWithLastCharVisible(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }
 
