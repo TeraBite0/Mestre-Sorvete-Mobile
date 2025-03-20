@@ -58,16 +58,6 @@ fun TelaGenerica(navController: NavHostController) {
 
     Scaffold(
         containerColor = colors.background,
-        bottomBar = {
-            BottomNavigationBar(
-                colors,
-                navController,
-                inicio = false,
-                cardapio = false,
-                estoque = false,
-                conta = false
-            )
-        },
         modifier = Modifier.pointerInput(Unit) {
             detectTapGestures(onTap = {
                 focusManager.clearFocus()
