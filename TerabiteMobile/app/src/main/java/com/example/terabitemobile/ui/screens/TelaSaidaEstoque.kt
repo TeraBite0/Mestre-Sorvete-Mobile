@@ -1,9 +1,5 @@
 package com.example.terabitemobile.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -26,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TelaProduto() {
+fun TelaSaidaEstoque() {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
@@ -212,6 +208,6 @@ fun BottomNavigationBar() {
 
 @Preview(showBackground = true)
 @Composable
-fun TelaProdutoPreview() {
-    TelaProduto()
+fun TelaSaidaEstoquePreview() {
+    TelaSaidaEstoque()
 }

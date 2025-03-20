@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -29,6 +30,7 @@ local.properties
 Thumbs.db
 
 # Arquivos temporários do Android Studio
+.idea
 .idea/.name
 .idea/modules
 .idea/gradle.xml

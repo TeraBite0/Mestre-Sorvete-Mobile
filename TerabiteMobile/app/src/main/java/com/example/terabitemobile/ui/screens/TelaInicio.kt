@@ -2,6 +2,7 @@ package com.example.terabitemobile.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,24 +12,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
@@ -43,71 +45,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
+import com.example.terabitemobile.ui.theme.TerabiteMobileTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaInicio() {
-    val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFF8C3829)
-    val tomBege = Color(0xFFE9DEB0)
-    var searchText by remember { mutableStateOf("") }
+fun TelaInicio(navController: NavHostController) {
+    val colors = TelaInicioColors()
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
-        containerColor = fundoCinza, // Cor de fundo para toda a tela
-        bottomBar = {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
-                Image(
-                    painter = painterResource(id = R.drawable.onda_imagem),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(220.dp),
-                    contentScale = ContentScale.FillBounds
-                )
-
-
-                // Barra de navegação
-                NavigationBar(
-                    containerColor = Color.White,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                ) {
-                    NavigationBarItem(
-                        selected = true,
-                        onClick = { },
-                        icon = { Icon(Icons.Default.Home, contentDescription = "Início") },
-                        label = { Text("Início") }
-                    )
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = { },
-                        icon = { Icon(Icons.Default.Menu, contentDescription = "Cardápio") },
-                        label = { Text("Cardápio") }
-                    )
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = { },
-                        icon = { Icon(Icons.Default.Search, contentDescription = "Estoque") },
-                        label = { Text("Estoque") }
-                    )
-                    NavigationBarItem(
-                        selected = false,
-                        onClick = { },
-                        icon = { Icon(Icons.Default.Person, contentDescription = "Conta") },
-                        label = { Text("Conta") }
-                    )
-                }
+        containerColor = colors.background,
+        bottomBar = { BottomNavigationBar(
+            colors,
+            navController,
+            inicio = true,
+            cardapio = false,
+            estoque = false,
+            conta = false
+        ) },
+        modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
             }
-        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -115,139 +87,19 @@ fun TelaInicio() {
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            // Parte superior (cabeçalho)
-            ParteSuperiorInicio()
-
+            ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo de busca
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text("Buscar...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, RoundedCornerShape(8.dp)),
-                shape = RoundedCornerShape(8.dp),
-                singleLine = true
-            )
-
+            SearchField()
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Card de Gerenciar Estoque
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = tomBege),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "Gerenciar",
-                        fontSize = 14.sp,
-                        color = Color.DarkGray
-                    )
-                    Text(
-                        text = "Estoque",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-
-                    Button(
-                        onClick = { },
-                        colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.width(120.dp)
-                    ) {
-                        Text("Acessar")
-                    }
-                }
-            }
-
+            EstoqueCard(colors)
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Seção Ferramentas
-            Text(
-                text = "Ferramentas",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(bottom = 20.dp, top = 10.dp)
-            )
-
-            // Grade de ferramentas
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                // Botão Estoque
-                FerramentaItem(
-                    titulo = "Estoque",
-                    corFundo = tomVinho,
-                    corTexto = Color.White,
-                    onClick = { }
-                )
-
-                // Botão Cardápio
-                FerramentaItem(
-                    titulo = "Cardápio",
-                    corFundo = tomBege,
-                    corTexto = Color.DarkGray,
-                    onClick = { }
-                )
-
-                // Botão Baixas
-                FerramentaItem(
-                    titulo = "Baixas",
-                    corFundo = tomVinho,
-                    corTexto = Color.White,
-                    onClick = { }
-                )
-            }
-
-            // Botão Ver mais
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp, 15.dp, 0.dp, 0.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Ver mais",
-                    color = Color.DarkGray,
-                    fontSize = 16.sp
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Box(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .background(tomVinho),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.ArrowForward,
-                        contentDescription = "Ver mais",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-            }
-
-            }
-            }
+            FerramentasSection(colors, navController)
         }
-
-
-
+    }
+}
 
 @Composable
-fun ParteSuperiorInicio() {
+private fun ProfileHeader() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -262,24 +114,179 @@ fun ParteSuperiorInicio() {
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column {
-                Text("Josué", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Text("Administrador", fontSize = 16.sp, color = Color.Gray)
+                Text(
+                    "Josué",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    "Administrador",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun SearchField() {
+    var searchText by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = searchText,
+        onValueChange = { searchText = it },
+        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        singleLine = true,
+        textStyle = MaterialTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+private fun EstoqueCard(colors: TelaInicioColors) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = colors.cardBege),
+        shape = RoundedCornerShape(16.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 7.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Gerenciar",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.DarkGray,
+                )
+                Text(
+                    text = "Estoque",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    color = Color(0xFF343434)
+                )
+
+                Button(
+                    onClick = { },
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.width(120.dp)
+                ) {
+                    Text(
+                        "Acessar",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+            }
+
+            Image(
+                painter = painterResource(R.drawable.box),
+                contentDescription = "ícone de caixa",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(65.dp),
+                colorFilter = ColorFilter.tint(Color(0xFF343434))
+            )
+        }
+    }
+}
+
+@Composable
+private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostController) {
+    Text(
+        text = "Ferramentas",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier.padding(bottom = 20.dp)
+    )
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        FerramentaItem(
+            titulo = "Estoque",
+            corFundo = colors.primary,
+            corTexto = Color.White,
+            iconRes = R.drawable.box,
+            onClick = { navController.navigate("generica") }
+        )
+
+        FerramentaItem(
+            titulo = "Cardápio",
+            corFundo = colors.cardBege,
+            corTexto = Color(0xFF343434),
+            iconRes = R.drawable.scroll,
+            onClick = { navController.navigate("generica") }
+        )
+
+        FerramentaItem(
+            titulo = "Baixas",
+            corFundo = colors.primary,
+            corTexto = Color.White,
+            iconRes = R.drawable.store,
+            onClick = { navController.navigate("generica") }
+        )
+    }
+
+    VerMaisButton(colors, navController)
+}
+
+@Composable
+private fun VerMaisButton(colors: TelaInicioColors, navController: NavHostController) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 30.dp, end = 14.dp),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Ver mais",
+            color = Color.DarkGray,
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Spacer(modifier = Modifier.width(25.dp))
+
+        IconButton(
+            onClick = { navController.navigate("ferramentas") },
+            modifier = Modifier
+                .size(30.dp)
+                .clip(CircleShape)
+                .background(colors.primary)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                contentDescription = "Ver mais",
+                tint = Color.White,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FerramentaItem(
+private fun FerramentaItem(
     titulo: String,
     corFundo: Color,
     corTexto: Color,
+    iconRes: Int,
     onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .size(100.dp),
+        modifier = Modifier.size(100.dp),
         colors = CardDefaults.cardColors(containerColor = corFundo),
         shape = RoundedCornerShape(16.dp),
         onClick = onClick
@@ -291,42 +298,92 @@ fun FerramentaItem(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Ícone específico para cada ferramenta
-            when (titulo) {
-                "Estoque" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_estoque),
-                    contentDescription = titulo,
-                    tint = corTexto,
-                    modifier = Modifier.size(24.dp)
-                )
-                "Cardápio" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_cardapio),
-                    contentDescription = titulo,
-                    tint = corTexto,
-                    modifier = Modifier.size(24.dp)
-                )
-                "Baixas" -> Icon(
-                    painter = painterResource(id = R.drawable.icone_baixas),
-                    contentDescription = titulo,
-                    tint = corTexto,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = titulo,
+                tint = corTexto,
+                modifier = Modifier.size(24.dp)
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = titulo,
                 color = corTexto,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
+                style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Medium)
             )
         }
     }
 }
 
+@Composable
+fun BottomNavigationBar(
+    colors: TelaInicioColors, navController: NavHostController,
+    inicio: Boolean?,
+    cardapio: Boolean?,
+    estoque: Boolean?,
+    conta: Boolean?
+) {
+    if (inicio == null || cardapio == null || estoque == null || conta == null) {
+        return
+    }
+
+    Box() {
+        Image(
+            painter = painterResource(id = R.drawable.onda),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(220.dp),
+            contentScale = ContentScale.FillBounds
+        )
+
+        NavigationBar(
+            containerColor = Color.White,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            val navItems = listOf(
+                NavItem("Início", Icons.Default.Home, inicio, "inicio"),
+                NavItem("Cardápio", Icons.Default.Menu, cardapio, "generica"),
+                NavItem("Estoque", Icons.Default.Search, estoque, "generica"),
+                NavItem("Conta", Icons.Default.Person, conta, "generica")
+            )
+
+            navItems.forEach { item ->
+                NavigationBarItem(
+                    selected = item.selected,
+                    onClick = { navController.navigate(item.route) },
+                    icon = { Icon(item.icon, contentDescription = item.label) },
+                    label = {
+                        Text(
+                            item.label,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = if (item.selected) FontWeight.SemiBold else FontWeight.Bold
+                        )
+                    }
+                )
+            }
+        }
+    }
+}
+
+data class NavItem(
+    val label: String,
+    val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    val selected: Boolean,
+    val route: String
+)
+
+class TelaInicioColors {
+    val background = Color(0xFFF9FBFF)
+    val primary = Color(0xFF8C3829)
+    val cardBege = Color(0xFFE9DEB0)
+}
+
 @Preview(showBackground = true)
 @Composable
 fun TelaInicioPreview() {
-    TelaInicio()
+    TerabiteMobileTheme {
+        TelaInicio(rememberNavController())
+    }
 }
