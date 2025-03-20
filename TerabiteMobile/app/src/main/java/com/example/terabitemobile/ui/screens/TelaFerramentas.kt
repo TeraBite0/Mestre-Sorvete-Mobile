@@ -194,7 +194,7 @@ fun TelaFerramentas(navController: NavHostController) {
                 FerramentaItem(
                     iconeResId = R.drawable.fire,
                     titulo = "Recomendados",
-                    descricao = "Gerencie os produtos recomendados",
+                    descricao = "Gerencie suas recomendações",
                     corIcone = tomRecomendados,
                     fontFamily = poppins,
                     onClick = {navController.navigate("recomendados")}

@@ -53,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
@@ -65,13 +66,20 @@ fun TelaInicio(navController: NavHostController) {
 
     Scaffold(
         containerColor = colors.background,
-        bottomBar = { BottomNavigationBar(colors, navController) },
+        bottomBar = { BottomNavigationBar(
+            colors,
+            navController,
+            inicio = true,
+            cardapio = false,
+            estoque = false,
+            conta = false
+        ) },
         modifier = Modifier
             .pointerInput(Unit) {
-            detectTapGestures(onTap = {
-                focusManager.clearFocus()
-            })
-        }
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -211,7 +219,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.box,
-            onClick = { navController.navigate("estoque") }
+            onClick = { navController.navigate("generica") }
         )
 
         FerramentaItem(
@@ -219,7 +227,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.cardBege,
             corTexto = Color(0xFF343434),
             iconRes = R.drawable.scroll,
-            onClick = { navController.navigate("cardapio") }
+            onClick = { navController.navigate("generica") }
         )
 
         FerramentaItem(
@@ -227,7 +235,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.store,
-            onClick = { navController.navigate("baixas") }
+            onClick = { navController.navigate("generica") }
         )
     }
 
@@ -309,10 +317,20 @@ private fun FerramentaItem(
 }
 
 @Composable
-private fun BottomNavigationBar(colors: TelaInicioColors, navController: NavHostController) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+fun BottomNavigationBar(
+    colors: TelaInicioColors, navController: NavHostController,
+    inicio: Boolean?,
+    cardapio: Boolean?,
+    estoque: Boolean?,
+    conta: Boolean?
+) {
+    if (inicio == null || cardapio == null || estoque == null || conta == null) {
+        return
+    }
+
+    Box() {
         Image(
-            painter = painterResource(id = R.drawable.onda_imagem),
+            painter = painterResource(id = R.drawable.onda),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -325,10 +343,10 @@ private fun BottomNavigationBar(colors: TelaInicioColors, navController: NavHost
             modifier = Modifier.align(Alignment.BottomCenter)
         ) {
             val navItems = listOf(
-                NavItem("Início", Icons.Default.Home, true, "inicio"),
-                NavItem("Cardápio", Icons.Default.Menu, false, "cardapio"),
-                NavItem("Estoque", Icons.Default.Search, false, "estoque"),
-                NavItem("Conta", Icons.Default.Person, false, "conta")
+                NavItem("Início", Icons.Default.Home, inicio, "inicio"),
+                NavItem("Cardápio", Icons.Default.Menu, cardapio, "generica"),
+                NavItem("Estoque", Icons.Default.Search, estoque, "generica"),
+                NavItem("Conta", Icons.Default.Person, conta, "generica")
             )
 
             navItems.forEach { item ->
@@ -349,14 +367,14 @@ private fun BottomNavigationBar(colors: TelaInicioColors, navController: NavHost
     }
 }
 
-private data class NavItem(
+data class NavItem(
     val label: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector,
     val selected: Boolean,
     val route: String
 )
 
-private class TelaInicioColors {
+class TelaInicioColors {
     val background = Color(0xFFF9FBFF)
     val primary = Color(0xFF8C3829)
     val cardBege = Color(0xFFE9DEB0)
