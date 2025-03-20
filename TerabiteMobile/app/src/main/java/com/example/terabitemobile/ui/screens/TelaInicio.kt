@@ -91,7 +91,7 @@ fun TelaInicio(navController: NavHostController) {
             Spacer(modifier = Modifier.height(16.dp))
             SearchField()
             Spacer(modifier = Modifier.height(16.dp))
-            EstoqueCard(colors)
+            EstoqueCard(colors, navController)
             Spacer(modifier = Modifier.height(16.dp))
             FerramentasSection(colors, navController)
         }
@@ -147,7 +147,7 @@ private fun SearchField() {
 }
 
 @Composable
-private fun EstoqueCard(colors: TelaInicioColors) {
+private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colors.cardBege),
@@ -177,7 +177,7 @@ private fun EstoqueCard(colors: TelaInicioColors) {
                 )
 
                 Button(
-                    onClick = { },
+                    onClick = {navController.navigate("generica") },
                     colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.width(120.dp)
