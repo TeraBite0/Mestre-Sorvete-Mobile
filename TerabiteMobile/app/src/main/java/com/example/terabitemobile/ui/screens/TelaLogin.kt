@@ -71,7 +71,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaLogin(navController: NavHostController) {
+public fun TelaLogin(navController: NavHostController) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 

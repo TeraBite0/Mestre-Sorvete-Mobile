@@ -44,19 +44,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import com.example.terabitemobile.ui.theme.tomBaixas
+import com.example.terabitemobile.ui.theme.tomDestaques
+import com.example.terabitemobile.ui.theme.tomEstoque
+import com.example.terabitemobile.ui.theme.tomMarcas
+import com.example.terabitemobile.ui.theme.tomRecomendados
+import com.example.terabitemobile.ui.theme.tomVinho
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaFerramentas(navController: NavHostController) {
-
-    val fundoCinza = Color(0xFFD3D3D3)
-    val tomVinho = Color(0xFF8C3829)
-    val tomBege = Color(0xFFE9DEB0)
-    val tomBaixas = Color(0xFFE8C726)
-    val tomEstoque = Color(0xFF0E7A4A)
-    val tomDestaques = Color(0xFFF6992F)
-    val tomMarcas = Color(0xFF4A89DA)
-    val tomRecomendados = Color(0xFFFF541B)
 
     val poppins = FontFamily(
         Font(R.font.poppins_light, FontWeight.Light),
@@ -102,7 +99,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     modifier = Modifier
                         .size(30.dp)
                         .background(
-                            color = Color(tomVinho.value),
+                            color = tomVinho,
                             shape = CircleShape
                         )
                 ) {

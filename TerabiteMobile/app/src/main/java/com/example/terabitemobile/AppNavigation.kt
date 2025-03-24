@@ -6,7 +6,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
-import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.screens.TelaInicio
 import TelaFerramentas
 import androidx.compose.animation.core.tween
@@ -15,6 +14,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import com.example.terabitemobile.ui.screens.TelaGenerica
+import com.example.terabitemobile.ui.screens.TelaLogin
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -27,20 +27,12 @@ fun AppNavigation(navController: NavHostController) {
         // Login
         composable(route = "login", enterTransition = {
             slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
+                initialOffsetX = { it }, animationSpec = tween(100)
+            ) + fadeIn(animationSpec = tween(100))
         }, exitTransition = {
             slideOutHorizontally(
                 targetOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }, popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
+            ) + fadeOut(animationSpec = tween(100))
         }) {
             TelaLogin(navController)
         }
@@ -48,20 +40,12 @@ fun AppNavigation(navController: NavHostController) {
         // Inicio
         composable(route = "inicio", enterTransition = {
             slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
+                initialOffsetX = { it }, animationSpec = tween(100)
+            ) + fadeIn(animationSpec = tween(100))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }, popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
+                targetOffsetX = { it }, animationSpec = tween(100)
+            ) + fadeOut(animationSpec = tween(100))
         }) {
             TelaInicio(navController)
         }
@@ -69,19 +53,11 @@ fun AppNavigation(navController: NavHostController) {
         // Ferramentas
         composable(route = "ferramentas", enterTransition = {
             slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
+                initialOffsetX = { it }, animationSpec = tween(100)
+            ) + fadeIn(animationSpec = tween(100))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }, popEnterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { -it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, popExitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
+                targetOffsetX = { it }, animationSpec = tween(100)
             ) + fadeOut(animationSpec = tween(300))
         }) {
             TelaFerramentas(navController)

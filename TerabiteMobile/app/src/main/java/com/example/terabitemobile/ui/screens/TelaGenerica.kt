@@ -49,7 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
-import com.example.terabitemobile.ui.theme.TerabiteMobileTheme
+import com.example.terabitemobile.ui.theme.primary
+import com.example.terabitemobile.ui.theme.tomVinho
 
 @Composable
 fun TelaGenerica(navController: NavHostController) {
@@ -60,12 +61,7 @@ fun TelaGenerica(navController: NavHostController) {
         containerColor = colors.background,
         bottomBar = {
             BottomNavigationBar(
-                colors,
                 navController,
-                inicio = false,
-                cardapio = false,
-                estoque = false,
-                conta = false
             )
         },
         modifier = Modifier.pointerInput(Unit) {
@@ -82,13 +78,13 @@ fun TelaGenerica(navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            PaginaNaoEncontradaContent(colors, navController)
+            PaginaNaoEncontradaContent(navController)
         }
     }
 }
 
 @Composable
-fun PaginaNaoEncontradaContent(colors: TelaInicioColors, navController: NavHostController) {
+fun PaginaNaoEncontradaContent(navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,7 +105,7 @@ fun PaginaNaoEncontradaContent(colors: TelaInicioColors, navController: NavHostC
                 contentDescription = "Página não encontrada",
                 modifier = Modifier.size(80.dp),
 
-                tint = colors.primary
+                tint = primary
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -135,10 +131,9 @@ fun PaginaNaoEncontradaContent(colors: TelaInicioColors, navController: NavHostC
 
             Button(
                 onClick = {
-                    navController.popBackStack()
                     navController.navigate("inicio")
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
+                colors = ButtonDefaults.buttonColors(containerColor = primary),
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.width(200.dp)
             ) {
@@ -155,7 +150,5 @@ fun PaginaNaoEncontradaContent(colors: TelaInicioColors, navController: NavHostC
 @Preview(showBackground = true)
 @Composable
 fun TelaGenericaPreview() {
-    TerabiteMobileTheme {
-        TelaGenerica(rememberNavController())
-    }
+    TelaGenerica(rememberNavController())
 }

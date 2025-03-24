@@ -57,7 +57,7 @@ import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
-import com.example.terabitemobile.ui.theme.TerabiteMobileTheme
+import com.example.terabitemobile.ui.theme.background
 
 @Composable
 fun TelaInicio(navController: NavHostController) {
@@ -65,15 +65,8 @@ fun TelaInicio(navController: NavHostController) {
     val focusManager = LocalFocusManager.current
 
     Scaffold(
-        containerColor = colors.background,
-        bottomBar = { BottomNavigationBar(
-            colors,
-            navController,
-            inicio = true,
-            cardapio = false,
-            estoque = false,
-            conta = false
-        ) },
+        containerColor = background,
+        bottomBar = { BottomNavigationBar(navController) },
         modifier = Modifier
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
@@ -316,64 +309,6 @@ private fun FerramentaItem(
     }
 }
 
-@Composable
-fun BottomNavigationBar(
-    colors: TelaInicioColors, navController: NavHostController,
-    inicio: Boolean?,
-    cardapio: Boolean?,
-    estoque: Boolean?,
-    conta: Boolean?
-) {
-    if (inicio == null || cardapio == null || estoque == null || conta == null) {
-        return
-    }
-
-    Box() {
-        Image(
-            painter = painterResource(id = R.drawable.onda),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp),
-            contentScale = ContentScale.FillBounds
-        )
-
-        NavigationBar(
-            containerColor = Color.White,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        ) {
-            val navItems = listOf(
-                NavItem("Início", Icons.Default.Home, inicio, "inicio"),
-                NavItem("Cardápio", Icons.Default.Menu, cardapio, "generica"),
-                NavItem("Estoque", Icons.Default.Search, estoque, "generica"),
-                NavItem("Conta", Icons.Default.Person, conta, "generica")
-            )
-
-            navItems.forEach { item ->
-                NavigationBarItem(
-                    selected = item.selected,
-                    onClick = { navController.navigate(item.route) },
-                    icon = { Icon(item.icon, contentDescription = item.label) },
-                    label = {
-                        Text(
-                            item.label,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = if (item.selected) FontWeight.SemiBold else FontWeight.Bold
-                        )
-                    }
-                )
-            }
-        }
-    }
-}
-
-data class NavItem(
-    val label: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
-    val selected: Boolean,
-    val route: String
-)
-
 class TelaInicioColors {
     val background = Color(0xFFF9FBFF)
     val primary = Color(0xFF8C3829)
@@ -383,7 +318,5 @@ class TelaInicioColors {
 @Preview(showBackground = true)
 @Composable
 fun TelaInicioPreview() {
-    TerabiteMobileTheme {
-        TelaInicio(rememberNavController())
-    }
+    TelaInicio(rememberNavController())
 }
