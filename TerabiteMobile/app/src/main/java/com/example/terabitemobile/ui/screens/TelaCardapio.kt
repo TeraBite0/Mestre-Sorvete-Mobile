@@ -37,12 +37,14 @@ import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun TelaCardapio() {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
+    var searchText by remember { mutableStateOf("") }
 
     Scaffold(
         bottomBar = {
@@ -58,12 +60,19 @@ fun TelaCardapio() {
         ) {
             ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
-            CampoBusca()
+            CampoBusca(
+                searchText = searchText,
+                onSearchTextChanged = { searchText = it }
+            )
             Spacer(modifier = Modifier.height(14.dp))
             Text("Cardápio", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            ListaProdutosCardapio(tomBege, tomVinho, fundoCinza)
+            ListaProdutosCardapio(
+                tomBege = tomBege,
+                tomVinho = tomVinho,
+                fundoCinza = fundoCinza,
+                searchText = searchText
+            )
         }
     }
 }
@@ -140,12 +149,13 @@ fun ParteSuperiorCardapio() {
 }
 
 @Composable
-fun CampoBusca() {
-    var searchText by remember { mutableStateOf("") }
-    // Campo de busca
+fun CampoBusca(
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit
+) {
     OutlinedTextField(
         value = searchText,
-        onValueChange = { searchText = it },
+        onValueChange = onSearchTextChanged,
         placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
@@ -165,7 +175,12 @@ data class Produto(
 )
 
 @Composable
-fun ListaProdutosCardapio(tomBege: Color, tomVinho: Color, fundoCinza: Color) {
+fun ListaProdutosCardapio(
+    tomBege: Color,
+    tomVinho: Color,
+    fundoCinza: Color,
+    searchText: String
+) {
     val produtos = listOf(
         Produto(1, "Sorvete 1", "R$9,99", true),
         Produto(2, "Sorvete 2", "R$12,99", false),
@@ -175,66 +190,91 @@ fun ListaProdutosCardapio(tomBege: Color, tomVinho: Color, fundoCinza: Color) {
         Produto(6, "Sorvete 6", "R$7,99", true)
     )
 
+    val produtosFiltrados = produtos.filter {
+        it.nome.contains(searchText, ignoreCase = true)
+    }
+
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        items(
-            items = produtos,
-            key = { produto -> produto.hashCode() }
-        ) { produto ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                colors = CardDefaults.cardColors(containerColor = tomVinho),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+        if (produtosFiltrados.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillParentMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .background(fundoCinza, shape = RoundedCornerShape(8.dp))
+                    Text(
+                        text = if (searchText.isEmpty()) {
+                            "Nenhum produto cadastrado"
+                        } else {
+                            "Nenhum produto encontrado para \"$searchText\""
+                        },
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = produto.nome,
-                            color = Color.White,
-                            fontSize = 16.5.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(text = produto.preco, color = Color.White, fontSize = 15.sp)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Button(
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(containerColor = tomBege),
-                            shape = RoundedCornerShape(12.dp),
+                }
+            }
+        } else {
+            items(
+                items = produtosFiltrados,
+                key = { produto -> produto.id }
+            ) { produto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = tomVinho),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
                             modifier = Modifier
-                                .width(86.dp)
-                        ) {
-                            Text("Editar", color = tomVinho)
+                                .size(50.dp)
+                                .background(fundoCinza, shape = RoundedCornerShape(8.dp))
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = produto.nome,
+                                color = Color.White,
+                                fontSize = 16.5.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(text = produto.preco, color = Color.White, fontSize = 15.sp)
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Button(
+                                onClick = {},
+                                colors = ButtonDefaults.buttonColors(containerColor = tomBege),
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.width(86.dp)
+                            ) {
+                                Text("Editar", color = tomVinho)
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                        }
                     }
                 }
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }
 
 @Composable
 fun BottomNavigationBarCardapio() {
-    var itemSelecionado by remember { mutableStateOf(0) }
+    var itemSelecionado by remember { mutableIntStateOf(0) }
     val items = listOf(
         "Início" to Icons.Filled.Home,
         "Cardápio" to Icons.Filled.List,
