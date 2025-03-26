@@ -36,6 +36,7 @@ import com.example.terabitemobile.R
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 
@@ -118,35 +119,6 @@ private fun ProfileHeader() {
     }
 }
 
-@Composable
-fun ParteSuperiorCardapio() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.AccountBox,
-                contentDescription = "Usuário",
-                tint = Color(0xFF8C3829),
-                modifier = Modifier.size(60.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column {
-                Text("Josué", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Text("Administrador", fontSize = 16.sp, color = Color.Gray)
-            }
-        }
-        Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8C3829)),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Text("Adicionar +", color = Color.White)
-        }
-    }
-}
 
 @Composable
 fun CampoBusca(
@@ -163,7 +135,14 @@ fun CampoBusca(
             .background(Color.White, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         singleLine = true,
-        textStyle = MaterialTheme.typography.bodyMedium
+        textStyle = MaterialTheme.typography.bodyMedium,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = tomVinho,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = tomVinho,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White
+        )
     )
 }
 
@@ -255,11 +234,10 @@ fun ListaProdutosCardapio(
                                 onClick = {},
                                 colors = ButtonDefaults.buttonColors(containerColor = tomBege),
                                 shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.width(86.dp)
+                                modifier = Modifier.width(90.dp)
                             ) {
                                 Text("Editar", color = tomVinho)
                             }
-                            Spacer(modifier = Modifier.width(10.dp))
                         }
                     }
                 }
