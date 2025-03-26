@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -35,17 +37,17 @@ import com.example.terabitemobile.ui.theme.tomVinho
 
 data class NavItem(
     val label: String,
-    val icon: ImageVector,
+    val icon: Painter,
     val route: String
 )
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     val navItems = listOf(
-        NavItem("Início", Icons.Filled.Home, "inicio"),
-        NavItem("Cardápio", Icons.Filled.Menu, "cardapio"),
-        NavItem("Estoque", Icons.Filled.Search, "generica"),
-        NavItem("Conta", Icons.Filled.Person, "generica")
+        NavItem("Início", painterResource(R.drawable.house), "inicio"),
+        NavItem("Cardápio", painterResource(R.drawable.scroll), "cardapio"),
+        NavItem("Estoque", painterResource(R.drawable.box), "generica"),
+        NavItem("Conta", painterResource(R.drawable.user), "generica")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -70,7 +72,12 @@ fun BottomNavigationBar(navController: NavHostController) {
                 NavigationBarItem(
                     selected = currentRoute == item.route,
                     onClick = { navController.navigate(item.route) },
-                    icon = { Icon(item.icon, contentDescription = item.label) },
+                    icon = { Icon(
+                        item.icon,
+                        contentDescription = item.label,
+                        modifier = Modifier
+                            .size(21.dp)
+                    ) },
                     colors = NavigationBarItemColors(
                         selectedIndicatorColor = tomVinho,
                         selectedIconColor = Color(0xFFFFFFFF),

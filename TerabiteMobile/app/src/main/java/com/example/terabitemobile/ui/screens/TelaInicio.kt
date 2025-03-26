@@ -200,7 +200,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.cardBege,
             corTexto = Color(0xFF343434),
             iconRes = R.drawable.scroll,
-            onClick = { navController.navigate("generica") }
+            onClick = { navController.navigate("cardapio") }
         )
 
         FerramentaItem(

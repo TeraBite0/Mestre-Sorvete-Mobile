@@ -29,7 +29,7 @@ fun AppNavigation(navController: NavHostController) {
             ) + fadeIn(animationSpec = tween(300))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { it }, animationSpec = tween(300)
+                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
             TelaLogin(navController)
@@ -42,7 +42,7 @@ fun AppNavigation(navController: NavHostController) {
             ) + fadeIn(animationSpec = tween(300))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
+                targetOffsetX = { -it  / 2}, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
             TelaInicio(navController)
@@ -55,7 +55,7 @@ fun AppNavigation(navController: NavHostController) {
             ) + fadeIn(animationSpec = tween(300))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
+                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
             TelaFerramentas(navController)
@@ -68,7 +68,7 @@ fun AppNavigation(navController: NavHostController) {
             ) + fadeIn(animationSpec = tween(300))
         }, exitTransition = {
             slideOutHorizontally(
-                targetOffsetX = { -it }, animationSpec = tween(300)
+                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
             TelaCardapio()
