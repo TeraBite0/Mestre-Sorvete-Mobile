@@ -82,8 +82,6 @@ fun TelaInicio(navController: NavHostController) {
         ) {
             ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
-            SearchField()
-            Spacer(modifier = Modifier.height(16.dp))
             EstoqueCard(colors)
             Spacer(modifier = Modifier.height(16.dp))
             FerramentasSection(colors, navController)
@@ -119,24 +117,6 @@ private fun ProfileHeader() {
             }
         }
     }
-}
-
-@Composable
-private fun SearchField() {
-    var searchText by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        value = searchText,
-        onValueChange = { searchText = it },
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
-        singleLine = true,
-        textStyle = MaterialTheme.typography.bodyMedium
-    )
 }
 
 @Composable

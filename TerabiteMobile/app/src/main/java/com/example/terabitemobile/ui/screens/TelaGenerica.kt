@@ -57,31 +57,17 @@ fun TelaGenerica(navController: NavHostController) {
     val focusManager = LocalFocusManager.current
     val colors = TelaInicioColors()
 
-    Scaffold(
-        containerColor = colors.background,
-        bottomBar = {
-            BottomNavigationBar(
-                navController,
-            )
-        },
-        modifier = Modifier.pointerInput(Unit) {
-            detectTapGestures(onTap = {
-                focusManager.clearFocus()
-            })
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            PaginaNaoEncontradaContent(navController)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        PaginaNaoEncontradaContent(navController)
     }
 }
+
 
 @Composable
 fun PaginaNaoEncontradaContent(navController: NavHostController) {

@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic)
     )
 
-
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

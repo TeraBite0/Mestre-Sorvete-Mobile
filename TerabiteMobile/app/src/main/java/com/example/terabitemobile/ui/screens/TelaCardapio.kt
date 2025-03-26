@@ -1,8 +1,11 @@
 package com.example.terabitemobile.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -28,7 +31,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
 import com.example.terabitemobile.R
+import com.example.terabitemobile.ui.theme.background
+import com.example.terabitemobile.ui.theme.tomVinho
+import androidx.compose.foundation.lazy.items
+import androidx.compose.ui.graphics.Brush
 
 @Composable
 fun TelaCardapio() {
@@ -39,8 +47,8 @@ fun TelaCardapio() {
     Scaffold(
         bottomBar = {
             BottomNavigationBarCardapio()
-                    },
-        containerColor = fundoCinza
+        },
+        containerColor = background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -48,7 +56,7 @@ fun TelaCardapio() {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            ParteSuperiorCardapio()
+            ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
             CampoBusca()
             Spacer(modifier = Modifier.height(14.dp))
@@ -56,6 +64,47 @@ fun TelaCardapio() {
             Spacer(modifier = Modifier.height(14.dp))
             Spacer(modifier = Modifier.weight(1f))
             ListaProdutosCardapio(tomBege, tomVinho, fundoCinza)
+        }
+    }
+}
+
+@Composable
+private fun ProfileHeader() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = "Usuário",
+                tint = Color(0xFF8C3829),
+                modifier = Modifier.size(60.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+                Text(
+                    "Josué",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    "Administrador",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+            }
+        }
+
+        Button(
+            onClick = {},
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+
+        ) {
+            Text(
+                text = "Adicionar",
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
         }
     }
 }
@@ -97,30 +146,47 @@ fun CampoBusca() {
     OutlinedTextField(
         value = searchText,
         onValueChange = { searchText = it },
-        placeholder = { Text("Buscar...") },
+        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(8.dp)),
-        shape = RoundedCornerShape(8.dp),
-        singleLine = true
+            .background(Color.White, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        singleLine = true,
+        textStyle = MaterialTheme.typography.bodyMedium
     )
 }
+
+data class Produto(
+    val id: Int,
+    val nome: String,
+    val preco: String,
+    val ativo: Boolean
+)
 
 @Composable
 fun ListaProdutosCardapio(tomBege: Color, tomVinho: Color, fundoCinza: Color) {
     val produtos = listOf(
-        Triple("Nescolak", "R$9,99", true),
-        Triple("Nescolak", "R$9,99", false),
-        Triple("Nescolak", "R$9,99", true),
-        Triple("Nescolak", "R$9,99", false),
-        Triple("Nescolak", "R$9,99", true)
+        Produto(1, "Sorvete 1", "R$9,99", true),
+        Produto(2, "Sorvete 2", "R$12,99", false),
+        Produto(3, "Sorvete 3", "R$11,99", true),
+        Produto(4, "Sorvete 4", "R$10,99", false),
+        Produto(5, "Sorvete 5", "R$8,99", true),
+        Produto(6, "Sorvete 6", "R$7,99", true)
     )
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        produtos.forEach { (nome, preco, ativo) ->
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        items(
+            items = produtos,
+            key = { produto -> produto.hashCode() }
+        ) { produto ->
             Card(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 colors = CardDefaults.cardColors(containerColor = tomVinho),
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -135,39 +201,34 @@ fun ListaProdutosCardapio(tomBege: Color, tomVinho: Color, fundoCinza: Color) {
                     )
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(text = nome, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = produto.nome,
+                            color = Color.White,
+                            fontSize = 16.5.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(2.dp))
-                        Text(text = preco, color = Color.White, fontSize = 16.sp)
+                        Text(text = produto.preco, color = Color.White, fontSize = 15.sp)
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Button(
                             onClick = {},
                             colors = ButtonDefaults.buttonColors(containerColor = tomBege),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(12.dp),
+                            modifier = Modifier
+                                .width(86.dp)
                         ) {
                             Text("Editar", color = tomVinho)
                         }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        // Lógica produto ativo/inativo
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .background(if (ativo) Color.Green else Color.Red, shape = CircleShape)
-                        )
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Image(
-            painter = painterResource(id = R.drawable.onda_imagem),
-            contentDescription = "Onda decorativa vinho",
-            modifier = Modifier
-                .fillMaxWidth()
-                .zIndex(1f)
-                .height(220.dp),
-            contentScale = ContentScale.FillBounds
-        )
+
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
 
