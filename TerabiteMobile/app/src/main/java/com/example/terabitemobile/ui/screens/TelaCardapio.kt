@@ -37,6 +37,7 @@ import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 
@@ -108,9 +109,18 @@ private fun ProfileHeader() {
 
         Button(
             onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
+            modifier = Modifier
+                .width(145.dp)
 
         ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Favorite",
+                tint = Color.White,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+
             Text(
                 text = "Adicionar",
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
