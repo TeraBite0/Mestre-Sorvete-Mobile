@@ -38,18 +38,28 @@ import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.terabitemobile.ui.models.CardapioModel
+import com.example.terabitemobile.ui.models.cardapioItem
 
 @Composable
-fun TelaCardapio() {
+fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
     var searchText by remember { mutableStateOf("") }
 
+    val produtos by viewModel.produtos.observeAsState(emptyList())
+
     Scaffold(
         bottomBar = {
+            /*
+                Não faço ideia porque mas tirar essa bottom bar aqui desativa o scroll os
+                itens do cardapio (macabro)
+             */
             BottomNavigationBarCardapio()
         },
         containerColor = background
@@ -60,7 +70,7 @@ fun TelaCardapio() {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            ProfileHeader()
+            ProfileHeader(viewModel)
             Spacer(modifier = Modifier.height(16.dp))
             CampoBusca(
                 searchText = searchText,
@@ -73,14 +83,16 @@ fun TelaCardapio() {
                 tomBege = tomBege,
                 tomVinho = tomVinho,
                 fundoCinza = fundoCinza,
-                searchText = searchText
+                searchText = searchText,
+                produtos = produtos,
+                viewModel = viewModel
             )
         }
     }
 }
 
 @Composable
-private fun ProfileHeader() {
+private fun ProfileHeader(viewModel: CardapioModel) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -108,7 +120,23 @@ private fun ProfileHeader() {
         }
 
         Button(
-            onClick = {},
+            onClick = {
+                viewModel.adicionarProduto(
+                    cardapioItem(
+                        id = (viewModel.produtos.value?.size ?: 0) + 1,
+                        nome = "Novo Sorvete",
+                        marca = "Nova Marca",
+                        tipo = "Sorvete",
+                        subtipo = "Cremoso",
+                        preco = "R$19,99",
+                        qtdCaixa = 10,
+                        qtdPorCaixa = 20,
+                        ativo = true,
+                        temLactose = false,
+                        temGluten = false
+                    )
+                )
+            },
             colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
             modifier = Modifier
                 .width(145.dp)
@@ -128,7 +156,6 @@ private fun ProfileHeader() {
         }
     }
 }
-
 
 @Composable
 fun CampoBusca(
@@ -168,16 +195,10 @@ fun ListaProdutosCardapio(
     tomBege: Color,
     tomVinho: Color,
     fundoCinza: Color,
-    searchText: String
+    searchText: String,
+    produtos: List<cardapioItem>,
+    viewModel: CardapioModel
 ) {
-    val produtos = listOf(
-        Produto(1, "Sorvete 1", "R$9,99", true),
-        Produto(2, "Sorvete 2", "R$12,99", false),
-        Produto(3, "Sorvete 3", "R$11,99", true),
-        Produto(4, "Sorvete 4", "R$10,99", false),
-        Produto(5, "Sorvete 5", "R$8,99", true),
-        Produto(6, "Sorvete 6", "R$7,99", true)
-    )
 
     val produtosFiltrados = produtos.filter {
         it.nome.contains(searchText, ignoreCase = true)
