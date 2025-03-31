@@ -36,20 +36,34 @@ import com.example.terabitemobile.R
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.terabitemobile.ui.models.CardapioModel
 import com.example.terabitemobile.ui.models.cardapioItem
+import kotlinx.coroutines.launch
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
+
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedProduct by remember { mutableStateOf<cardapioItem?>(null) }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
+
     var searchText by remember { mutableStateOf("") }
 
     val produtos by viewModel.produtos.observeAsState(emptyList())
@@ -85,8 +99,30 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
                 fundoCinza = fundoCinza,
                 searchText = searchText,
                 produtos = produtos,
-                viewModel = viewModel
+                viewModel = viewModel,
+                onEditClick = { produto ->
+                    selectedProduct = produto
+                    showBottomSheet = true
+                }
             )
+        }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState
+            ) {
+                EditBottomSheetContent(
+                    product = selectedProduct,
+                    onClose = {
+                        scope.launch { sheetState.hide() }.invokeOnCompletion {
+                            showBottomSheet = false
+                        }
+                    },
+                    tomVinho = tomVinho,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
@@ -169,7 +205,7 @@ fun CampoBusca(
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp)),
+            .background(Color.Transparent, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         singleLine = true,
         textStyle = MaterialTheme.typography.bodyMedium,
@@ -197,7 +233,8 @@ fun ListaProdutosCardapio(
     fundoCinza: Color,
     searchText: String,
     produtos: List<cardapioItem>,
-    viewModel: CardapioModel
+    viewModel: CardapioModel,
+    onEditClick: (cardapioItem) -> Unit
 ) {
 
     val produtosFiltrados = produtos.filter {
@@ -258,11 +295,11 @@ fun ListaProdutosCardapio(
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = produto.preco, color = Color.White, fontSize = 15.sp)
+                            Text(text = "R$" + produto.preco, color = Color.White, fontSize = 15.sp)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Button(
-                                onClick = {},
+                                onClick = { onEditClick(produto) },
                                 colors = ButtonDefaults.buttonColors(containerColor = tomBege),
                                 shape = RoundedCornerShape(12.dp),
                                 modifier = Modifier.width(90.dp)
@@ -286,7 +323,7 @@ fun BottomNavigationBarCardapio() {
     var itemSelecionado by remember { mutableIntStateOf(0) }
     val items = listOf(
         "Início" to Icons.Filled.Home,
-        "Cardápio" to Icons.Filled.List,
+        "Cardápio" to Icons.AutoMirrored.Filled.List,
         "Estoque" to Icons.Filled.ShoppingCart,
         "Conta" to Icons.Filled.Person
     )
@@ -302,6 +339,280 @@ fun BottomNavigationBarCardapio() {
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditBottomSheetContent(
+    product: cardapioItem?,
+    onClose: () -> Unit,
+    tomVinho: Color,
+    viewModel: CardapioModel
+) {
+    // Estados para todos os campos editáveis
+    var editedName by remember { mutableStateOf(product?.nome ?: "") }
+    var editedMarca by remember { mutableStateOf(product?.marca ?: "") }
+    var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
+    var editedSubtipo by remember { mutableStateOf(product?.subtipo ?: "") }
+    var editedPreco by remember { mutableStateOf(product?.preco ?: "") }
+    var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa.toString() ?: "") }
+    var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixa.toString() ?: "") }
+    var editedAtivo by remember { mutableStateOf(product?.ativo ?: true) }
+    var editedLactose by remember { mutableStateOf(product?.temLactose ?: false) }
+    var editedGluten by remember { mutableStateOf(product?.temGluten ?: false) }
+
+    val tipos = listOf("Sorvete", "Picolé", "Açaí", "Bebida", "Sobremesa")
+    val subtipos = listOf("Cremoso", "Frutas", "Natural", "Torta", "Sundae")
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                "Editar ${product?.nome}",
+                style = MaterialTheme.typography.headlineSmall,
+                color = tomVinho,
+                textAlign = TextAlign.Center,
+            )
+        }
+
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+        Text("Informações Básicas", style = MaterialTheme.typography.titleMedium)
+        OutlinedTextField(
+            value = editedName,
+            onValueChange = { editedName = it },
+            label = { Text("Nome") },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+            )
+        )
+
+        OutlinedTextField(
+            value = editedMarca,
+            onValueChange = { editedMarca = it },
+            label = { Text("Marca") },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+            )
+        )
+
+        // Seção de Tipo e Subtipo
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Categorização", style = MaterialTheme.typography.titleMedium)
+        ExposedDropdownMenuBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent, RoundedCornerShape(16.dp)),
+            expanded = false,
+            onExpandedChange = {}
+        ) {
+            OutlinedTextField(
+                value = editedTipo,
+                onValueChange = {},
+                label = { Text("Tipo") },
+                modifier = Modifier
+                    .menuAnchor()
+                    .background(Color.Transparent, RoundedCornerShape(20.dp)),
+                readOnly = true
+            )
+            ExposedDropdownMenu(
+                expanded = false,
+                onDismissRequest = {}
+            ) {
+                tipos.forEach { tipo ->
+                    DropdownMenuItem(
+                        text = { Text(tipo) },
+                        onClick = { editedTipo = tipo }
+                    )
+                }
+            }
+        }
+
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = false,
+            onExpandedChange = {}
+        ) {
+            OutlinedTextField(
+                value = editedSubtipo,
+                onValueChange = {},
+                label = { Text("Subtipo") },
+                modifier = Modifier.menuAnchor(),
+                readOnly = true
+            )
+            ExposedDropdownMenu(
+                expanded = false,
+                onDismissRequest = {}
+            ) {
+                subtipos.forEach { subtipo ->
+                    DropdownMenuItem(
+                        text = { Text(subtipo) },
+                        onClick = { editedSubtipo = subtipo }
+                    )
+                }
+            }
+        }
+
+        // Seção de Estoque e Preço
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Estoque e Preço", style = MaterialTheme.typography.titleMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            NumberTextField(
+                value = editedQtdCaixa,
+                onValueChange = { editedQtdCaixa = it },
+                label = "Caixas",
+                modifier = Modifier.weight(1f)
+            )
+            NumberTextField(
+                value = editedQtdPorCaixa,
+                onValueChange = { editedQtdPorCaixa = it },
+                label = "Unid./Caixa",
+                modifier = Modifier.weight(1f)
+            )
+        }
+        OutlinedTextField(
+            value = editedPreco,
+            onValueChange = { editedPreco = it },
+            label = { Text("Preço") },
+            prefix = { Text("R$") },
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            textStyle = MaterialTheme.typography.bodyMedium,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+            )
+        )
+
+        // Seção de Status e Restrições
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Status e Restrições", style = MaterialTheme.typography.titleMedium)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = editedAtivo,
+                onCheckedChange = { editedAtivo = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = Color.Gray
+                )
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text("Disponível no cardápio")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = editedLactose,
+                onCheckedChange = { editedLactose = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = Color.Gray
+                )
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text("Contém lactose")
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Switch(
+                checked = editedGluten,
+                onCheckedChange = { editedGluten = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color.White,
+                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = Color.Gray
+                )
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Text("Contém glúten")
+        }
+
+        // Botões de Ação
+        Spacer(modifier = Modifier.height(24.dp))
+        Button(
+            onClick = {
+                product?.let {
+                    val updatedProduct = it.copy(
+                        nome = editedName,
+                        marca = editedMarca,
+                        tipo = editedTipo,
+                        subtipo = editedSubtipo,
+                        preco = editedPreco,
+                        qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
+                        qtdPorCaixa = editedQtdPorCaixa.toIntOrNull() ?: 0,
+                        ativo = editedAtivo,
+                        temLactose = editedLactose,
+                        temGluten = editedGluten
+                    )
+                    viewModel.atualizarProduto(updatedProduct)
+                }
+                onClose()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+        ) {
+            Text("Salvar Alterações", color = Color.White)
+        }
+
+        TextButton(
+            onClick = onClose,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Cancelar", color = Color.Gray)
+        }
+    }
+}
+
+@Composable
+fun NumberTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = { newValue ->
+            if (newValue.all { it.isDigit() }) {
+                onValueChange(newValue)
+            }
+        },
+        label = { Text(label) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Number
+        ),
+        modifier = modifier
+    )
+}
+
 
 @Preview(showBackground = true)
 @Composable

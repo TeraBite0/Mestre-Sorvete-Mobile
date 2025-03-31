@@ -66,6 +66,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
 
+
     // Navegação
 
     val nav_version = "2.8.9"
