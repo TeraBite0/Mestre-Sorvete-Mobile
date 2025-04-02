@@ -36,9 +36,8 @@ import com.example.terabitemobile.ui.theme.tomVinho
 @Composable
 fun TelaRecomendacao() {
     val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFF8C3829)
+    val tomVinho = Color(0xFFA73E2B)
     val tomBranco = Color.White
-    val tomVermelho = Color(0xFFC34A36)
 
     Scaffold(
         bottomBar = {
@@ -59,7 +58,7 @@ fun TelaRecomendacao() {
             Text("Recomendados", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
             Spacer(modifier = Modifier.weight(1f))
-            ListaProdutosRecomendacao(tomBranco, tomVermelho)
+            ListaProdutosRecomendacao(tomBranco, tomVinho)
         }
     }
 }
@@ -112,7 +111,7 @@ fun CampoBusca() {
 }
 
 @Composable
-fun ListaProdutosRecomendacao(tomBranco: Color, tomVermelho: Color) {
+fun ListaProdutosRecomendacao(tomBranco: Color, tomVinho: Color) {
     val produtos = listOf(
         Pair("Produto", "Marca"),
         Pair("Produto", "Marca")
@@ -150,7 +149,7 @@ fun ListaProdutosRecomendacao(tomBranco: Color, tomVermelho: Color) {
                             tint = Color.White,
                             modifier = Modifier
                                 .size(36.dp)
-                                .background(tomVermelho, shape = CircleShape)
+                                .background(tomVinho, shape = RoundedCornerShape(12.dp))
                                 .padding(6.dp)
                         )
                     }
