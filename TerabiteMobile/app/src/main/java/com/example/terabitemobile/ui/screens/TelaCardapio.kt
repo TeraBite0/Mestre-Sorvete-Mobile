@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -44,6 +45,8 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -54,19 +57,19 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
+fun TelaCardapio(viewModel: CardapioModel) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedProduct by remember { mutableStateOf<cardapioItem?>(null) }
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     var searchText by remember { mutableStateOf("") }
 
-    val produtos by viewModel.produtos.observeAsState(emptyList())
+    val produtos by viewModel.produtos.observeAsState()
 
     Scaffold(
         bottomBar = {
@@ -84,7 +87,12 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            ProfileHeader(viewModel)
+            ProfileCardapio(
+                onAddClick = {
+                    selectedProduct = null
+                    showBottomSheet = true
+                }
+            )
             Spacer(modifier = Modifier.height(16.dp))
             CampoBusca(
                 searchText = searchText,
@@ -93,18 +101,20 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
             Spacer(modifier = Modifier.height(14.dp))
             Text("Cardápio", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
-            ListaProdutosCardapio(
-                tomBege = tomBege,
-                tomVinho = tomVinho,
-                fundoCinza = fundoCinza,
-                searchText = searchText,
-                produtos = produtos,
-                viewModel = viewModel,
-                onEditClick = { produto ->
-                    selectedProduct = produto
-                    showBottomSheet = true
-                }
-            )
+            produtos?.let {
+                ListaProdutosCardapio(
+                    tomBege = tomBege,
+                    tomVinho = tomVinho,
+                    fundoCinza = fundoCinza,
+                    searchText = searchText,
+                    produtos = it,
+                    viewModel = viewModel,
+                    onEditClick = { produto ->
+                        selectedProduct = produto
+                        showBottomSheet = true
+                    }
+                )
+            }
         }
 
         if (showBottomSheet) {
@@ -128,7 +138,9 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
 }
 
 @Composable
-private fun ProfileHeader(viewModel: CardapioModel) {
+private fun ProfileCardapio(
+    onAddClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -156,23 +168,7 @@ private fun ProfileHeader(viewModel: CardapioModel) {
         }
 
         Button(
-            onClick = {
-                viewModel.adicionarProduto(
-                    cardapioItem(
-                        id = (viewModel.produtos.value?.size ?: 0) + 1,
-                        nome = "Novo Sorvete",
-                        marca = "Nova Marca",
-                        tipo = "Sorvete",
-                        subtipo = "Cremoso",
-                        preco = "R$19,99",
-                        qtdCaixa = 10,
-                        qtdPorCaixa = 20,
-                        ativo = true,
-                        temLactose = false,
-                        temGluten = false
-                    )
-                )
-            },
+            onClick = onAddClick,
             colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
             modifier = Modifier
                 .width(145.dp)
@@ -287,12 +283,17 @@ fun ListaProdutosCardapio(
                                 .background(fundoCinza, shape = RoundedCornerShape(8.dp))
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
+                        Column(modifier = Modifier
+                            .weight(2f)
+                        ) {
                             Text(
                                 text = produto.nome,
                                 color = Color.White,
                                 fontSize = 16.5.sp,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                modifier = Modifier.fillMaxWidth(),
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(text = "R$" + produto.preco, color = Color.White, fontSize = 15.sp)
@@ -302,9 +303,10 @@ fun ListaProdutosCardapio(
                                 onClick = { onEditClick(produto) },
                                 colors = ButtonDefaults.buttonColors(containerColor = tomBege),
                                 shape = RoundedCornerShape(12.dp),
-                                modifier = Modifier.width(90.dp)
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
                             ) {
-                                Text("Editar", color = tomVinho)
+                                Text("Editar", color = tomVinho, softWrap = false)
                             }
                         }
                     }
@@ -348,12 +350,14 @@ fun EditBottomSheetContent(
     tomVinho: Color,
     viewModel: CardapioModel
 ) {
+    val focusManager = LocalFocusManager.current
+
     // Estados para todos os campos editáveis
     var editedName by remember { mutableStateOf(product?.nome ?: "") }
     var editedMarca by remember { mutableStateOf(product?.marca ?: "") }
     var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
     var editedSubtipo by remember { mutableStateOf(product?.subtipo ?: "") }
-    var editedPreco by remember { mutableStateOf(product?.preco ?: "") }
+    var editedPreco by remember { mutableStateOf(product?.preco ?: 0.0) }
     var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa.toString() ?: "") }
     var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixa.toString() ?: "") }
     var editedAtivo by remember { mutableStateOf(product?.ativo ?: true) }
@@ -368,6 +372,12 @@ fun EditBottomSheetContent(
             .fillMaxWidth()
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
+            .fillMaxHeight(0.9f)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -375,7 +385,7 @@ fun EditBottomSheetContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "Editar ${product?.nome}",
+                if (product != null) "Editar ${product.nome}" else "Adicionar Novo Produto",
                 style = MaterialTheme.typography.headlineSmall,
                 color = tomVinho,
                 textAlign = TextAlign.Center,
@@ -399,6 +409,7 @@ fun EditBottomSheetContent(
                 focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
                 unfocusedBorderColor = Color.Gray,
                 cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedLabelColor = tomVinho,
             )
         )
 
@@ -415,6 +426,7 @@ fun EditBottomSheetContent(
                 focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
                 unfocusedBorderColor = Color.Gray,
                 cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedLabelColor = tomVinho
             )
         )
 
@@ -429,13 +441,19 @@ fun EditBottomSheetContent(
             onExpandedChange = {}
         ) {
             OutlinedTextField(
+                shape = RoundedCornerShape(16.dp),
                 value = editedTipo,
                 onValueChange = {},
                 label = { Text("Tipo") },
                 modifier = Modifier
-                    .menuAnchor()
-                    .background(Color.Transparent, RoundedCornerShape(20.dp)),
-                readOnly = true
+                    .menuAnchor(),
+                readOnly = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    unfocusedBorderColor = Color.Gray,
+                    cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    focusedLabelColor = tomVinho
+                )
             )
             ExposedDropdownMenu(
                 expanded = false,
@@ -456,11 +474,19 @@ fun EditBottomSheetContent(
             onExpandedChange = {}
         ) {
             OutlinedTextField(
+                shape = RoundedCornerShape(16.dp),
                 value = editedSubtipo,
                 onValueChange = {},
                 label = { Text("Subtipo") },
                 modifier = Modifier.menuAnchor(),
-                readOnly = true
+                readOnly = false,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    unfocusedBorderColor = Color.Gray,
+                    cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    focusedTrailingIconColor = tomVinho,
+                    focusedLabelColor = tomVinho
+                )
             )
             ExposedDropdownMenu(
                 expanded = false,
@@ -493,8 +519,8 @@ fun EditBottomSheetContent(
             )
         }
         OutlinedTextField(
-            value = editedPreco,
-            onValueChange = { editedPreco = it },
+            value = editedPreco.toString(),
+            onValueChange = { editedPreco = it.toString().toDoubleOrNull() ?: 0.0 },
             label = { Text("Preço") },
             prefix = { Text("R$") },
             modifier = Modifier
@@ -506,6 +532,10 @@ fun EditBottomSheetContent(
                 focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
                 unfocusedBorderColor = Color.Gray,
                 cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedLabelColor = tomVinho,
+            ),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number
             )
         )
 
@@ -559,8 +589,26 @@ fun EditBottomSheetContent(
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                product?.let {
-                    val updatedProduct = it.copy(
+                if (product == null) {
+                    // Add new product
+                    val newId = (viewModel.produtos.value?.size ?: 0) + 1
+                    val newProduct = cardapioItem(
+                        id = newId,
+                        nome = editedName,
+                        marca = editedMarca,
+                        tipo = editedTipo,
+                        subtipo = editedSubtipo,
+                        preco = editedPreco,
+                        qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
+                        qtdPorCaixa = editedQtdPorCaixa.toIntOrNull() ?: 0,
+                        ativo = editedAtivo,
+                        temLactose = editedLactose,
+                        temGluten = editedGluten
+                    )
+                    viewModel.adicionarProduto(newProduct)
+                } else {
+                    // Update existing product
+                    val updatedProduct = product.copy(
                         nome = editedName,
                         marca = editedMarca,
                         tipo = editedTipo,
@@ -599,12 +647,19 @@ fun NumberTextField(
     modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
+        shape = RoundedCornerShape(16.dp),
         value = value,
         onValueChange = { newValue ->
             if (newValue.all { it.isDigit() }) {
                 onValueChange(newValue)
             }
         },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+            focusedLabelColor = tomVinho,
+        ),
         label = { Text(label) },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Number
@@ -617,5 +672,4 @@ fun NumberTextField(
 @Preview(showBackground = true)
 @Composable
 fun TelaCardapioPreview() {
-    TelaCardapio()
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,18 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.terabitemobile.ui.models.CardapioModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
 
 class MainActivity : ComponentActivity() {
-    val poppins = FontFamily(
-        Font(R.font.poppins_light, FontWeight.Light),
-        Font(R.font.poppins_regular, FontWeight.Normal),
-        Font(R.font.poppins_medium, FontWeight.Medium),
-        Font(R.font.poppins_bold, FontWeight.Bold),
-        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic)
-    )
+    private val cardapioViewModel: CardapioModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val focusManager = LocalFocusManager.current
+
 
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
@@ -57,7 +54,10 @@ class MainActivity : ComponentActivity() {
                         focusManager.clearFocus()
                     })
                 }) {
-                    AppNavigation(navController)
+                    AppNavigation(
+                        navController,
+                        cardapioViewModel = cardapioViewModel
+                    )
                 }
             }
         }

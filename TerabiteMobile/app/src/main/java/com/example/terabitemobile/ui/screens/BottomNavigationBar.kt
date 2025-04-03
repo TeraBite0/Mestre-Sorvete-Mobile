@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.terabitemobile.R
+import com.example.terabitemobile.navigateIfDifferent
 import com.example.terabitemobile.ui.theme.tomVinho
 
 data class NavItem(
@@ -71,7 +72,7 @@ fun BottomNavigationBar(navController: NavHostController) {
             navItems.forEach { item ->
                 NavigationBarItem(
                     selected = currentRoute == item.route,
-                    onClick = { navController.navigate(item.route) },
+                    onClick = { navController.navigateIfDifferent(item.route) },
                     icon = { Icon(
                         item.icon,
                         contentDescription = item.label,

@@ -2,10 +2,10 @@ package com.example.terabitemobile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import com.example.terabitemobile.ui.screens.TelaInicio
 import TelaFerramentas
 import androidx.compose.animation.core.tween
@@ -13,12 +13,23 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import com.example.terabitemobile.ui.models.CardapioModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaGenerica
 import com.example.terabitemobile.ui.screens.TelaLogin
 
+
+fun NavController.navigateIfDifferent(route: String) {
+    if (currentDestination?.route != route) {
+        navigate(route)
+    }
+}
+
 @Composable
-fun AppNavigation(navController: NavHostController) {
+fun AppNavigation(
+    navController: NavHostController,
+    cardapioViewModel: CardapioModel
+) {
     NavHost(
         navController = navController, startDestination = "login", modifier = Modifier
     ) {
@@ -34,7 +45,6 @@ fun AppNavigation(navController: NavHostController) {
         }) {
             TelaLogin(navController)
         }
-
         // Inicio
         composable(route = "inicio", enterTransition = {
             slideInHorizontally(
@@ -47,7 +57,6 @@ fun AppNavigation(navController: NavHostController) {
         }) {
             TelaInicio(navController)
         }
-
         // Ferramentas
         composable(route = "ferramentas", enterTransition = {
             slideInHorizontally(
@@ -60,7 +69,6 @@ fun AppNavigation(navController: NavHostController) {
         }) {
             TelaFerramentas(navController)
         }
-
         //Cardapio
         composable(route = "cardapio", enterTransition = {
             slideInHorizontally(
@@ -71,14 +79,11 @@ fun AppNavigation(navController: NavHostController) {
                 targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
-            TelaCardapio()
+            TelaCardapio(viewModel = cardapioViewModel)
         }
-
-
         // Genérico (SEMPRE DEIXE ESTA ROTA NO FINAL)
         composable(route = "generica") {
             TelaGenerica(navController)
         }
-
     }
 }
