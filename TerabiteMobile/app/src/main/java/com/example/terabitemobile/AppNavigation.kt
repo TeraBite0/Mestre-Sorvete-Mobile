@@ -13,10 +13,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.ui.models.CardapioModel
+import com.example.terabitemobile.ui.models.MarcaModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaGenerica
 import com.example.terabitemobile.ui.screens.TelaLogin
+import com.example.terabitemobile.ui.screens.TelaMarcas
 
 
 fun NavController.navigateIfDifferent(route: String) {
@@ -27,8 +30,10 @@ fun NavController.navigateIfDifferent(route: String) {
 
 @Composable
 fun AppNavigation(
+    paddingValues: PaddingValues,
     navController: NavHostController,
-    cardapioViewModel: CardapioModel
+    cardapioViewModel: CardapioModel,
+    marcaViewModel: MarcaModel
 ) {
     NavHost(
         navController = navController, startDestination = "login", modifier = Modifier
@@ -45,6 +50,7 @@ fun AppNavigation(
         }) {
             TelaLogin(navController)
         }
+
         // Inicio
         composable(route = "inicio", enterTransition = {
             slideInHorizontally(
@@ -57,6 +63,7 @@ fun AppNavigation(
         }) {
             TelaInicio(navController)
         }
+
         // Ferramentas
         composable(route = "ferramentas", enterTransition = {
             slideInHorizontally(
@@ -69,7 +76,11 @@ fun AppNavigation(
         }) {
             TelaFerramentas(navController)
         }
-        //Cardapio
+
+        // Telas abaixo PRECISAM do parâmetro padding value, já que o scaffold no Main
+        // irá aplicar o padding correto para a bottom bar.
+
+        // Cardapio
         composable(route = "cardapio", enterTransition = {
             slideInHorizontally(
                 initialOffsetX = { it }, animationSpec = tween(300)
@@ -81,6 +92,22 @@ fun AppNavigation(
         }) {
             TelaCardapio(viewModel = cardapioViewModel)
         }
+
+        // Marcas
+        composable(route = "marcas", enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it }, animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        }, exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        }) {
+            TelaMarcas(paddingValues, viewModel = marcaViewModel)
+        }
+
+
+        // Essa aqui não precisa do parâmetro, ela já está configurada
         // Genérico (SEMPRE DEIXE ESTA ROTA NO FINAL)
         composable(route = "generica") {
             TelaGenerica(navController)

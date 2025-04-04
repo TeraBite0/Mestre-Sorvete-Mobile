@@ -190,7 +190,7 @@ private fun ProfileCardapio(
 }
 
 @Composable
-fun CampoBusca(
+private fun CampoBusca(
     searchText: String,
     onSearchTextChanged: (String) -> Unit
 ) {
