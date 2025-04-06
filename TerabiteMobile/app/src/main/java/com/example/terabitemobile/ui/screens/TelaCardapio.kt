@@ -54,10 +54,9 @@ import com.example.terabitemobile.ui.models.CardapioModel
 import com.example.terabitemobile.ui.models.cardapioItem
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaCardapio(viewModel: CardapioModel) {
+fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
@@ -69,14 +68,18 @@ fun TelaCardapio(viewModel: CardapioModel) {
 
     var searchText by remember { mutableStateOf("") }
 
+    // Observa os estados do ViewModel
     val produtos by viewModel.produtos.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val error by viewModel.error.observeAsState("")
+
+    // Efeito para carregar dados quando a composição é criada
+    LaunchedEffect(key1 = Unit) {
+        viewModel.carregarProdutos()
+    }
 
     Scaffold(
         bottomBar = {
-            /*
-                Não faço ideia porque mas tirar essa bottom bar aqui desativa o scroll os
-                itens do cardapio (macabro)
-             */
             BottomNavigationBarCardapio()
         },
         containerColor = background
@@ -101,19 +104,54 @@ fun TelaCardapio(viewModel: CardapioModel) {
             Spacer(modifier = Modifier.height(14.dp))
             Text("Cardápio", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
-            produtos?.let {
-                ListaProdutosCardapio(
-                    tomBege = tomBege,
-                    tomVinho = tomVinho,
-                    fundoCinza = fundoCinza,
-                    searchText = searchText,
-                    produtos = it,
-                    viewModel = viewModel,
-                    onEditClick = { produto ->
-                        selectedProduct = produto
-                        showBottomSheet = true
+
+            // Mostra indicador de carregamento quando estiver buscando dados
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                // Mostra mensagem de erro se houver falha
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            "Falha ao carregar dados",
+                            color = Color.Red,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.carregarProdutos() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text("Tentar novamente")
+                        }
                     }
-                )
+                }
+            } else {
+                produtos?.let {
+                    ListaProdutosCardapio(
+                        tomBege = tomBege,
+                        tomVinho = tomVinho,
+                        fundoCinza = fundoCinza,
+                        searchText = searchText,
+                        produtos = it,
+                        viewModel = viewModel,
+                        onEditClick = { produto ->
+                            selectedProduct = produto
+                            showBottomSheet = true
+                        }
+                    )
+                }
             }
         }
 

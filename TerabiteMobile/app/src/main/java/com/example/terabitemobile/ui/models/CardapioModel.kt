@@ -1,8 +1,11 @@
 package com.example.terabitemobile.ui.models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 data class cardapioItem(
     val id: Int,
@@ -23,96 +26,102 @@ class CardapioModel : ViewModel() {
     private val _produtos = MutableLiveData<List<cardapioItem>?>()
     val produtos: MutableLiveData<List<cardapioItem>?> = _produtos
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: MutableLiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String>()
+    val error: MutableLiveData<String> = _error
+
     init {
-        if (_produtos.value == null) {
-            _produtos.value = listOf(
-                cardapioItem(
-                    id = 1,
-                    nome = "Sorvete Napolitano",
-                    marca = "Kibon",
-                    tipo = "Sorvete",
-                    subtipo = "Cremoso",
-                    preco = 19.99,
-                    qtdCaixa = 10,
-                    qtdPorCaixa = 20,
-                    ativo = true,
-                    temLactose = true,
-                    temGluten = false
-                ), cardapioItem(
-                    id = 2,
-                    nome = "Picolé de Limão",
-                    marca = "Frutto",
-                    tipo = "Picolé",
-                    subtipo = "Frutas",
-                    preco = 3.50,
-                    qtdCaixa = 24,
-                    qtdPorCaixa = 48,
-                    ativo = false,
-                    temLactose = true,
-                    temGluten = false
-                ), cardapioItem(
-                    id = 3,
-                    nome = "Açaí Tradicional",
-                    marca = "Açaí do Pará",
-                    tipo = "Açaí",
-                    subtipo = "Natural",
-                    preco = 15.90,
-                    qtdCaixa = 12,
-                    qtdPorCaixa = 24,
-                    ativo = true,
-                    temLactose = true,
-                    temGluten = false
-                ), cardapioItem(
-                    id = 4,
-                    nome = "Torta Alemã",
-                    marca = "Nestlé",
-                    tipo = "Sorvete",
-                    subtipo = "Torta",
-                    preco = 24.99,
-                    qtdCaixa = 8,
-                    qtdPorCaixa = 16,
-                    ativo = true,
-                    temLactose = true,
-                    temGluten = false
-                ), cardapioItem(
-                    id = 5,
-                    nome = "Milkshake Chocolate",
-                    marca = "Bauducco",
-                    tipo = "Bebida",
-                    subtipo = "Milkshake",
-                    preco = 12.75,
-                    qtdCaixa = 15,
-                    qtdPorCaixa = 30,
-                    ativo = false,
-                    temLactose = true,
-                    temGluten = false
-                ), cardapioItem(
-                    id = 6,
-                    nome = "Sundae Caramelo",
-                    marca = "McDonald's",
-                    tipo = "Sobremesa",
-                    subtipo = "Sundae",
-                    preco = 9.90,
-                    qtdCaixa = 20,
-                    qtdPorCaixa = 40,
-                    ativo = true,
-                    temLactose = true,
-                    temGluten = false
-                )
-            )
-        }
+        carregarProdutos()
+    }
+
+    fun carregarProdutos() {
+        _isLoading.value = true
+        RetrofitClient.cardapioService.getProdutos().enqueue(object : Callback<List<cardapioItem>> {
+            override fun onResponse(call: Call<List<cardapioItem>>, response: Response<List<cardapioItem>>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    _produtos.value = response.body()
+                } else {
+                    _error.value = "Erro ${response.code()}: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: Call<List<cardapioItem>>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha na conexão: ${t.message}"
+
+                // Carrega dados locais como fallback em caso de falha
+                carregarDadosLocais()
+            }
+        })
+    }
+
+    private fun carregarDadosLocais() {
+        // Mantém os dados estáticos como fallback
+        _produtos.value = listOf(
+            cardapioItem(
+                id = 1,
+                nome = "Sorvete Napolitano",
+                marca = "Kibon",
+                tipo = "Sorvete",
+                subtipo = "Cremoso",
+                preco = 19.99,
+                qtdCaixa = 10,
+                qtdPorCaixa = 20,
+                ativo = true,
+                temLactose = true,
+                temGluten = false
+            ),
+            // Outros itens...
+        )
     }
 
     fun adicionarProduto(novoProduto: cardapioItem) {
-        val listaAtual = _produtos.value?.toMutableList() ?: mutableListOf()
-        listaAtual.add(novoProduto)
-        _produtos.value = listaAtual
+        _isLoading.value = true
+        RetrofitClient.cardapioService.adicionarProduto(novoProduto).enqueue(object : Callback<cardapioItem> {
+            override fun onResponse(call: Call<cardapioItem>, response: Response<cardapioItem>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val produtoAdicionado = response.body()
+                    produtoAdicionado?.let {
+                        val listaAtual = _produtos.value?.toMutableList() ?: mutableListOf()
+                        listaAtual.add(it)
+                        _produtos.value = listaAtual
+                    }
+                } else {
+                    _error.value = "Erro ao adicionar: ${response.code()}"
+                }
+            }
+
+            override fun onFailure(call: Call<cardapioItem>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha ao adicionar: ${t.message}"
+            }
+        })
     }
 
     fun atualizarProduto(produtoAtualizado: cardapioItem) {
-        val listaAtualizada = _produtos.value?.map { item ->
-            if (item.id == produtoAtualizado.id) produtoAtualizado else item
-        }
-        _produtos.value = listaAtualizada
+        _isLoading.value = true
+        RetrofitClient.cardapioService.atualizarProduto(produtoAtualizado.id, produtoAtualizado)
+            .enqueue(object : Callback<cardapioItem> {
+                override fun onResponse(call: Call<cardapioItem>, response: Response<cardapioItem>) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        val listaAtualizada = _produtos.value?.map { item ->
+                            if (item.id == produtoAtualizado.id) produtoAtualizado else item
+                        }
+                        _produtos.value = listaAtualizada
+                    } else {
+                        _error.value = "Erro ao atualizar: ${response.code()}"
+                    }
+                }
+
+                override fun onFailure(call: Call<cardapioItem>, t: Throwable) {
+                    _isLoading.value = false
+                    _error.value = "Falha ao atualizar: ${t.message}"
+                }
+            })
     }
 }
