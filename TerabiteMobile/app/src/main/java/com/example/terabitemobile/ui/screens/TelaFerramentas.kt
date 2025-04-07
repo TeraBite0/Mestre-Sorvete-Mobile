@@ -139,7 +139,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Gerencie seus produtos",
                     corIcone = tomVinho,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("login")}
+                    onClick = {navController.navigate("cardapio")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

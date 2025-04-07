@@ -82,7 +82,7 @@ fun TelaInicio(navController: NavHostController) {
         ) {
             ProfileHeader()
             Spacer(modifier = Modifier.height(16.dp))
-            EstoqueCard(colors)
+            EstoqueCard(colors, navController)
             Spacer(modifier = Modifier.height(16.dp))
             FerramentasSection(colors, navController)
         }
@@ -120,7 +120,7 @@ private fun ProfileHeader() {
 }
 
 @Composable
-private fun EstoqueCard(colors: TelaInicioColors) {
+private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostController) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = colors.cardBege),
@@ -150,7 +150,7 @@ private fun EstoqueCard(colors: TelaInicioColors) {
                 )
 
                 Button(
-                    onClick = { },
+                    onClick = {navController.navigate("estoque")},
                     colors = ButtonDefaults.buttonColors(containerColor = colors.primary),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.width(120.dp)
@@ -192,7 +192,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.box,
-            onClick = { navController.navigate("generica") }
+            onClick = { navController.navigate("estoque") }
         )
 
         FerramentaItem(
@@ -208,7 +208,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.store,
-            onClick = { navController.navigate("generica") }
+            onClick = { navController.navigate("baixas") }
         )
     }
 

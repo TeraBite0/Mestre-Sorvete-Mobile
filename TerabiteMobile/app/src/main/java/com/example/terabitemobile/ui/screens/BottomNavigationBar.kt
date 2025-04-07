@@ -47,8 +47,8 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navItems = listOf(
         NavItem("Início", painterResource(R.drawable.house), "inicio"),
         NavItem("Cardápio", painterResource(R.drawable.scroll), "cardapio"),
-        NavItem("Estoque", painterResource(R.drawable.box), "generica"),
-        NavItem("Conta", painterResource(R.drawable.user), "generica")
+        NavItem("Estoque", painterResource(R.drawable.box), "estoque"),
+        NavItem("Conta", painterResource(R.drawable.user), "destaques")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
