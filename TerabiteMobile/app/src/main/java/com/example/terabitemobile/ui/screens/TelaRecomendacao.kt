@@ -30,11 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
+import com.example.terabitemobile.ui.models.MarcaModel
 import com.example.terabitemobile.ui.theme.tomVinho
 
 @Composable
-fun TelaRecomendacao() {
+//fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel) {
+fun TelaRecomendacao(navController: NavHostController) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFFA73E2B)
     val tomBranco = Color.White
@@ -209,5 +213,5 @@ fun BottomNavigationBarRecomendacao() {
 @Preview(showBackground = true)
 @Composable
 fun TelaRecomendacaoPreview() {
-    TelaRecomendacao()
+    TelaRecomendacao(rememberNavController())
 }

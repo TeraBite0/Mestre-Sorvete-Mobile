@@ -177,6 +177,7 @@ public fun TelaLogin(navController: NavHostController) {
                     .padding(start = 12.dp)
                     .clickable {
                         //context.startActivity
+                        navController.navigate("esqueceu senha")
                     }
             )
 

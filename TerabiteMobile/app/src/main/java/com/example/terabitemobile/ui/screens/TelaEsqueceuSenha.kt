@@ -26,6 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 
@@ -41,7 +43,7 @@ import com.example.terabitemobile.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaEsqueceuSenha() {
+fun TelaEsqueceuSenha(navController: NavHostController) {
     var senha_nova by remember { mutableStateOf("") }
     var repetir_senha by remember { mutableStateOf("") }
 
@@ -188,5 +190,5 @@ fun TelaEsqueceuSenha() {
 @Preview(showBackground = true)
 @Composable
 fun TelaEsqueceuSenhaPreview() {
-    TelaEsqueceuSenha()
+    TelaEsqueceuSenha(rememberNavController())
 }

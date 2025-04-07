@@ -31,11 +31,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
 import com.example.terabitemobile.ui.theme.tomVinho
 
 @Composable
-fun TelaDestaque() {
+fun TelaDestaque(navController: NavHostController) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFFA73E2B)
     val tomBranco = Color.White
@@ -246,5 +248,5 @@ fun InfoItemComFundo(label: String, value: String, fundoCinza: Color) {
 @Preview(showBackground = true)
 @Composable
 fun TelaDestaquePreview() {
-    TelaDestaque()
+    TelaDestaque(rememberNavController())
 }

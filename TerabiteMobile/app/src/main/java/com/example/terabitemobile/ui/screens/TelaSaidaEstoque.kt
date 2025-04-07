@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun TelaSaidaEstoque() {
+fun TelaSaidaEstoque(navController: NavHostController) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFFA73E2B)
     val tomBege = Color(0xFFE9DEB0)
@@ -40,10 +42,10 @@ fun TelaSaidaEstoque() {
             ParteSuperior()
             Spacer(modifier = Modifier.height(16.dp))
             CamposData()
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text("Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
-            Spacer(modifier = Modifier.height(14.dp))
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
+//            Spacer(modifier = Modifier.weight(1f))
             ListaProdutos(tomBege, tomVinho)
         }
     }
@@ -112,7 +114,7 @@ fun CamposData() {
 @Composable
 fun ListaProdutos(tomBege: Color, tomVinho: Color) {
     Column {
-        repeat(3) {
+        repeat(2) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -209,5 +211,5 @@ fun BottomNavigationBar() {
 @Preview(showBackground = true)
 @Composable
 fun TelaSaidaEstoquePreview() {
-    TelaSaidaEstoque()
+    TelaSaidaEstoque(rememberNavController())
 }
