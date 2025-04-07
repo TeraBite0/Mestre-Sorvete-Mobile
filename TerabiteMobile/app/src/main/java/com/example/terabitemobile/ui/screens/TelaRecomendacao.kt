@@ -93,6 +93,7 @@ fun ParteSuperiorRecomendacao() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CampoBusca() {
     var searchText by remember { mutableStateOf("") }
@@ -104,9 +105,14 @@ fun CampoBusca() {
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(8.dp)),
-        shape = RoundedCornerShape(8.dp),
-        singleLine = true
+            .background(Color.White, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Transparent,
+            unfocusedBorderColor = Color.Transparent,
+            disabledBorderColor = Color.Transparent
+        )
     )
 }
 

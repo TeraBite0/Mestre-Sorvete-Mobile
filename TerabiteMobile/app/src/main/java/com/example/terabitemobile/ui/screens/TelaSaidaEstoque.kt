@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun TelaSaidaEstoque() {
     val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFF8C3829)
+    val tomVinho = Color(0xFFA73E2B)
     val tomBege = Color(0xFFE9DEB0)
 
     Scaffold(
