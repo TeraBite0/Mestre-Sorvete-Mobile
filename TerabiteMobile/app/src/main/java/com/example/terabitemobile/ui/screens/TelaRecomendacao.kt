@@ -72,7 +72,7 @@ fun ParteSuperiorRecomendacao() {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Filled.AccountBox,
+                imageVector = Icons.Filled.AccountCircle,
                 contentDescription = "Usuário",
                 tint = Color(0xFF8C3829),
                 modifier = Modifier.size(60.dp)
