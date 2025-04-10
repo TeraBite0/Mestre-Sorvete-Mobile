@@ -150,7 +150,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Gerencie a saída de estoque",
                     corIcone = tomBaixas,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("generica")}
+                    onClick = {navController.navigate("baixas")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +161,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Organize seus produtos",
                     corIcone = tomEstoque,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("generica")}
+                    onClick = {navController.navigate("estoque")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -172,7 +172,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Altere a recomendação do dia",
                     corIcone = tomDestaques,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("generica")}
+                    onClick = {navController.navigate("destaques")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -183,7 +183,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Gerencie suas marcas existentes",
                     corIcone = tomMarcas,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("generica")}
+                    onClick = {navController.navigate("marcas")}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -194,7 +194,7 @@ fun TelaFerramentas(navController: NavHostController) {
                     descricao = "Gerencie suas recomendações",
                     corIcone = tomRecomendados,
                     fontFamily = poppins,
-                    onClick = {navController.navigate("generica")}
+                    onClick = {navController.navigate("recomendados")}
                 )
             }
         }

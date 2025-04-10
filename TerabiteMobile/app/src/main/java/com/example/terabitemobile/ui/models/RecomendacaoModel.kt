@@ -19,7 +19,16 @@ class RecomendacaoModel : ViewModel() {
             _recomendacoes.value = listOf(
                 RecomendacaoItem(id = 1, nome = "Sorvete de Banana", marca = "Mestre Sorvete"),
                 RecomendacaoItem(id = 2, nome = "Chokito", marca = "Mestre Sorvete"),
-                RecomendacaoItem(id = 3, nome = "Lolo 🚬", marca = "Bob Marley")
+                RecomendacaoItem(id = 3, nome = "Sorvete de Chocolate", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 4, nome = "Sorvete de Manga", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 5, nome = "Sorvete de Leite Condensado", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 6, nome = "Sorvete de Groselha", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 7, nome = "Sorvete de Limão", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 8, nome = "Sorvete de Melancia", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 9, nome = "Paleta de Maracujá", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 10, nome = "Sorvete de Morango", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 11, nome = "Sorvete de Uva", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 12, nome = "Sorvete de Coco queimado", marca = "Mestre Sorvete")
             )
         }
     }
