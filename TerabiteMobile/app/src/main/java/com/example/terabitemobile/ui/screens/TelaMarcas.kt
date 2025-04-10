@@ -19,60 +19,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.room.Delete
-import com.example.terabitemobile.ui.models.RecomendacaoItem
-import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.ui.models.MarcaItem
+import com.example.terabitemobile.ui.models.MarcaModel
 import com.example.terabitemobile.ui.theme.background
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel) {
+fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
 
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
-    var recomendacaoName by remember { mutableStateOf("") }
     var marcaName by remember { mutableStateOf("") }
-    val recomendacoes by viewModel.recomendacoes.observeAsState()
+    val marcas by viewModel.marcas.observeAsState()
 
-    val filteredRecomendacoes = remember(recomendacoes, searchText) {
-        recomendacoes?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
+    val filteredMarcas = remember(marcas, searchText) {
+        marcas?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
     }
 
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Adicionar Recomendação") },
+            title = { Text("Adicionar Marca") },
             text = {
                 Column {
                     OutlinedTextField(
-                        value = recomendacaoName,
-                        onValueChange = { recomendacaoName = it },
-                        label = { Text("Nome da recomendação") },
+                        value = marcaName,
+                        onValueChange = { marcaName = it },
+                        label = { Text("Nome da marca") },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Column {
-                        OutlinedTextField(
-                            value = marcaName,
-                            onValueChange = { marcaName = it },
-                            label = { Text("Nome da marca") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        if (recomendacaoName.isNotBlank() && marcaName.isNotBlank()) {
-                            viewModel.addRecomendacao(recomendacaoName, marcaName)
-                            recomendacaoName = ""
+                        if (marcaName.isNotBlank()) {
+                            viewModel.addMarca(marcaName)
                             marcaName = ""
                             showDialog = false
                         }
@@ -101,14 +89,14 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
                 .padding(paddingValores)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            ProfileRecomendacoes(onAddClick = { showDialog = true })
+            ProfileMarcas(onAddClick = { showDialog = true })
             Spacer(modifier = Modifier.height(16.dp))
             CampoBusca(
                 searchText = searchText,
                 onSearchTextChanged = { searchText = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Recomendados", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text("Marcas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(16.dp))
             LazyColumn(
                 modifier = Modifier
@@ -116,10 +104,10 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
                     .height(5.dp)
                     .weight(1f)
             ) {
-                items(filteredRecomendacoes) { recomendacao ->
-                    RecomendacaoListItem(
-                        recomendacao = recomendacao,
-                        onDeleteClick = { viewModel.deleteRecomendacao(recomendacao.id) }
+                items(filteredMarcas) { marca ->
+                    MarcaListItem(
+                        marca = marca,
+                        onDeleteClick = { viewModel.deleteMarca(marca.id) }
                     )
                 }
             }
@@ -128,7 +116,7 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
 }
 
 @Composable
-private fun ProfileRecomendacoes(onAddClick: () -> Unit) {
+private fun ProfileMarcas(onAddClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -202,50 +190,31 @@ private fun CampoBusca(
 
 
 @Composable
-private fun RecomendacaoListItem(recomendacao: RecomendacaoItem, onDeleteClick: () -> Unit) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
+private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(vertical = 8.dp)
+            .background(Color.White, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+            .height(60.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Text(
+            text = marca.nome,
+            modifier = Modifier.weight(1f),
+            fontSize = 16.sp
+        )
+        IconButton(
+            onClick = onDeleteClick,
+            modifier = Modifier.size(40.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .background(Color.LightGray, RoundedCornerShape(12.dp))
-                    .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(text = recomendacao.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = recomendacao.marca, color = Color.Gray, fontSize = 12.sp)
-            }
-
-            IconButton(onClick = onDeleteClick) {
-                Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Remover",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(36.dp)
-                        .background(tomVinho, shape = RoundedCornerShape(12.dp))
-                        .padding(6.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Excluir",
+                tint = tomVinho
+            )
         }
     }
 }

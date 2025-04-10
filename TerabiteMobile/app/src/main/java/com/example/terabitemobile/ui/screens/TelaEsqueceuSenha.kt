@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 // import androidx.compose.ui.*
@@ -19,29 +20,53 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            TelaEsqueceuSenha()
-//        }
-//    }
-//}
+class PasswordVisualTransformationWithLastCharVisible2 : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        if (text.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
+
+        val passwordChar = '\u2022' // Bullet character
+        val lastChar = text.text.last()
+
+        val transformedText = buildString {
+            // Replace all characters except the last one with bullets
+            repeat(text.length - 1) {
+                append(passwordChar)
+            }
+            // Show the last character as is
+            append(lastChar)
+        }
+
+        return TransformedText(
+            AnnotatedString(transformedText),
+            object : OffsetMapping {
+                override fun originalToTransformed(offset: Int): Int = offset
+                override fun transformedToOriginal(offset: Int): Int = offset
+            }
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaEsqueceuSenha() {
+fun TelaEsqueceuSenha(navController: NavHostController) {
     var senha_nova by remember { mutableStateOf("") }
     var repetir_senha by remember { mutableStateOf("") }
 
@@ -103,6 +128,9 @@ fun TelaEsqueceuSenha() {
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
+                    // visualTransformation = if (senha_nova.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }
 
@@ -132,14 +160,19 @@ fun TelaEsqueceuSenha() {
                         containerColor = Color(0xFFD9D9D9)
                     ),
                     shape = RoundedCornerShape(30.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    // visualTransformation = if (repetir_senha.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }
 
             Spacer(modifier = Modifier.height(68.dp))
 
             Button(
-                onClick = { /* Implementar lógica de redefinir senha */ },
+                onClick = {/* Implementar lógica de redefinir senha */
+                    navController.navigate("login")
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD07E0E)),
                 shape = RoundedCornerShape(30.dp),
                 modifier = Modifier
@@ -188,5 +221,5 @@ fun TelaEsqueceuSenha() {
 @Preview(showBackground = true)
 @Composable
 fun TelaEsqueceuSenhaPreview() {
-    TelaEsqueceuSenha()
+    TelaEsqueceuSenha(rememberNavController())
 }

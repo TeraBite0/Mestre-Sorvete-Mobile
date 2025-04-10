@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.android)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.room.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,10 +59,24 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    //implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.2.2")
     implementation(libs.coil.compose)
     implementation("androidx.compose.material3:material3:1.2.0")
     implementation(libs.coil.svg)
+
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
+
+    val compose_version = "1.6.3"
+    implementation ("androidx.compose.material:material-icons-extended:$compose_version")
+
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation ("com.google.code.gson:gson:2.10")
+    implementation ("com.squareup.retrofit2:converter-gson:2.11.0")
+
+    // OkHttp para logs
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
 
     // Navegação
 
