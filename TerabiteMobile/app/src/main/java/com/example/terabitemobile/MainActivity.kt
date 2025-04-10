@@ -18,8 +18,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.terabitemobile.ui.models.CardapioModel
-import com.example.terabitemobile.ui.models.MarcaModel
+import com.example.terabitemobile.data.models.CardapioModel
+import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin

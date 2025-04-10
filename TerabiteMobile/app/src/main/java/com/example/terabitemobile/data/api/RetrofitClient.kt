@@ -10,7 +10,7 @@ object RetrofitClient {
     // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
     // private const val BASE_URL = "http://192.168.1.100:8080/api/"
 
-    private const val BASE_URL = "http://192.168.200.227:8080/"
+    private const val BASE_URL = "http://192.168.11.47:8080/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -27,4 +27,6 @@ object RetrofitClient {
         .build()
 
     val cardapioService: CardapioApiService = retrofit.create(CardapioApiService::class.java)
+    val subtipoService: TiposApiService = retrofit.create(TiposApiService::class.java)
+    val marcaService: MarcaApiService = retrofit.create(MarcaApiService::class.java)
 }

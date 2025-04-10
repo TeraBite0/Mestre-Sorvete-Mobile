@@ -14,8 +14,8 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
-import com.example.terabitemobile.ui.models.CardapioModel
-import com.example.terabitemobile.ui.models.MarcaModel
+import com.example.terabitemobile.data.models.CardapioModel
+import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque

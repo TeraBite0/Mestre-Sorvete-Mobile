@@ -25,8 +25,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.room.Delete
-import com.example.terabitemobile.ui.models.MarcaItem
-import com.example.terabitemobile.ui.models.MarcaModel
+import com.example.terabitemobile.data.models.MarcaItem
+import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.theme.background
 
 @Composable
@@ -107,7 +107,7 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
                 items(filteredMarcas) { marca ->
                     MarcaListItem(
                         marca = marca,
-                        onDeleteClick = { viewModel.deleteMarca(marca.id) }
+                        onDeleteClick = {  }
                     )
                 }
             }
