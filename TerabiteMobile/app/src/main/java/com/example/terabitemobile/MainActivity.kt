@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.ui.models.CardapioModel
 import com.example.terabitemobile.ui.models.MarcaModel
+import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
@@ -27,6 +28,7 @@ import com.example.terabitemobile.ui.theme.background
 class MainActivity : ComponentActivity() {
     private val cardapioViewModel: CardapioModel by viewModels()
     private val marcaViewModel: MarcaModel by viewModels()
+    private val recomendacaoViewModel: RecomendacaoModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +57,7 @@ class MainActivity : ComponentActivity() {
                         navController,
                         cardapioViewModel = cardapioViewModel,
                         marcaViewModel = marcaViewModel,
+                        recomendacaoViewModel = recomendacaoViewModel,
                     )
                 }
             }

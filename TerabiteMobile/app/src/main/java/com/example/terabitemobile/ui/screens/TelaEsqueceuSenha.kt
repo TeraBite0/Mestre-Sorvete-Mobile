@@ -128,7 +128,8 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (senha_nova.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    // visualTransformation = if (senha_nova.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }
@@ -160,7 +161,8 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (repetir_senha.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    // visualTransformation = if (repetir_senha.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
             }

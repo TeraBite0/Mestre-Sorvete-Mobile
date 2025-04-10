@@ -1,74 +1,134 @@
 package com.example.terabitemobile.ui.screens
 
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.terabitemobile.R
-import com.example.terabitemobile.ui.models.MarcaModel
 import com.example.terabitemobile.ui.theme.tomVinho
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import androidx.room.Delete
+import com.example.terabitemobile.ui.models.RecomendacaoItem
+import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.ui.theme.background
 
 @Composable
-//fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel) {
-fun TelaRecomendacao(navController: NavHostController) {
-    val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFFA73E2B)
-    val tomBranco = Color.White
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel) {
+
+    var searchText by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var recomendacaoName by remember { mutableStateOf("") }
+    var marcaName by remember { mutableStateOf("") }
+    val recomendacoes by viewModel.recomendacoes.observeAsState()
+
+    val filteredRecomendacoes = remember(recomendacoes, searchText) {
+        recomendacoes?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Adicionar Recomendação") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = recomendacaoName,
+                        onValueChange = { recomendacaoName = it },
+                        label = { Text("Nome da recomendação") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Column {
+                        OutlinedTextField(
+                            value = marcaName,
+                            onValueChange = { marcaName = it },
+                            label = { Text("Nome da marca") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (recomendacaoName.isNotBlank() && marcaName.isNotBlank()) {
+                            viewModel.addRecomendacao(recomendacaoName, marcaName)
+                            recomendacaoName = ""
+                            marcaName = ""
+                            showDialog = false
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                ) {
+                    Text("Confirmar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog = false }
+                ) {
+                    Text("Cancelar", color = tomVinho)
+                }
+            }
+        )
+    }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBarRecomendacao()
-        },
-        containerColor = fundoCinza
+        containerColor = background,
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(paddingValores)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            ParteSuperiorRecomendacao()
+            ProfileRecomendacoes(onAddClick = { showDialog = true })
             Spacer(modifier = Modifier.height(16.dp))
-            CampoBusca()
-            Spacer(modifier = Modifier.height(14.dp))
+            CampoBusca(
+                searchText = searchText,
+                onSearchTextChanged = { searchText = it }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
             Text("Recomendados", fontWeight = FontWeight.Bold, fontSize = 22.sp)
-            Spacer(modifier = Modifier.height(14.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            ListaProdutosRecomendacao(tomBranco, tomVinho)
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(5.dp)
+                    .weight(1f)
+            ) {
+                items(filteredRecomendacoes) { recomendacao ->
+                    RecomendacaoListItem(
+                        recomendacao = recomendacao,
+                        onDeleteClick = { viewModel.deleteRecomendacao(recomendacao.id) }
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ParteSuperiorRecomendacao() {
+private fun ProfileRecomendacoes(onAddClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,140 +138,114 @@ fun ParteSuperiorRecomendacao() {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
                 contentDescription = "Usuário",
-                tint = Color(0xFF8C3829),
+                tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(Modifier.width(8.dp))
             Column {
-                Text("Josué", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Text("Administrador", fontSize = 16.sp, color = Color.Gray)
+                Text(
+                    "Josué",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    "Administrador",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
             }
         }
+
         Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8C3829)),
-            shape = RoundedCornerShape(30.dp)
+            onClick = onAddClick,
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
+            modifier = Modifier.width(145.dp)
         ) {
-            Text("Adicionar +", color = Color.White)
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "Adicionar",
+                tint = Color.White,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = "Adicionar",
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoBusca() {
-    var searchText by remember { mutableStateOf("") }
-    // Campo de busca
+private fun CampoBusca(
+    searchText: String,
+    onSearchTextChanged: (String) -> Unit
+) {
     OutlinedTextField(
         value = searchText,
-        onValueChange = { searchText = it },
-        placeholder = { Text("Buscar...") },
+        onValueChange = onSearchTextChanged,
+        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp)),
+            .background(Color.Transparent, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
-            disabledBorderColor = Color.Transparent
+        textStyle = MaterialTheme.typography.bodyMedium,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = tomVinho,
+            unfocusedBorderColor = Color.Gray,
+            cursorColor = tomVinho,
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White
         )
     )
 }
 
-@Composable
-fun ListaProdutosRecomendacao(tomBranco: Color, tomVinho: Color) {
-    val produtos = listOf(
-        Pair("Produto", "Marca"),
-        Pair("Produto", "Marca")
-    )
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        produtos.forEach { (nome, marca) ->
-            Card(
+@Composable
+private fun RecomendacaoListItem(recomendacao: RecomendacaoItem, onDeleteClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .shadow(8.dp, RoundedCornerShape(16.dp)),
-                colors = CardDefaults.cardColors(containerColor = tomBranco),
-                shape = RoundedCornerShape(16.dp)
+                    .size(60.dp)
+                    .background(Color.LightGray, RoundedCornerShape(12.dp))
+                    .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp)),
+                contentAlignment = Alignment.Center
             ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .background(Color.LightGray, shape = RoundedCornerShape(8.dp))
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(text = nome, color = Color.Black, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(text = marca, color = Color.Gray, fontSize = 16.sp)
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "Remover",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(36.dp)
-                                .background(tomVinho, shape = RoundedCornerShape(12.dp))
-                                .padding(6.dp)
-                        )
-                    }
-                }
+//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = recomendacao.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(text = recomendacao.marca, color = Color.Gray, fontSize = 12.sp)
+            }
+
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Remover",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(36.dp)
+                        .background(tomVinho, shape = RoundedCornerShape(12.dp))
+                        .padding(6.dp)
+                )
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("+ Adicionar outro Produto", color = Color.White, fontSize = 16.sp)
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-//        Image(
-//            painter = painterResource(id = R.drawable.onda_imagem),
-//            contentDescription = "Onda decorativa vinho",
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .zIndex(1f)
-//                .height(220.dp),
-//            contentScale = ContentScale.FillBounds
-//        )
     }
-}
-
-@Composable
-fun BottomNavigationBarRecomendacao() {
-    var itemSelecionado by remember { mutableStateOf(0) }
-    val items = listOf(
-        "Início" to Icons.Filled.Home,
-        "Cardápio" to Icons.Filled.List,
-        "Estoque" to Icons.Filled.ShoppingCart,
-        "Conta" to Icons.Filled.Person
-    )
-
-    NavigationBar(containerColor = Color.White) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = itemSelecionado == index,
-                onClick = { itemSelecionado = index },
-                icon = { Icon(item.second, contentDescription = item.first) },
-                label = { Text(item.first) }
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TelaRecomendacaoPreview() {
-    TelaRecomendacao(rememberNavController())
 }

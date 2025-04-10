@@ -98,10 +98,11 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
             Spacer(modifier = Modifier.height(16.dp))
             Text("Marcas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .height(5.dp)
-                .weight(1f)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .height(5.dp)
+                    .weight(1f)
             ) {
                 items(filteredMarcas) { marca ->
                     MarcaListItem(
