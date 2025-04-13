@@ -55,13 +55,15 @@ fun BottomNavigationBar(navController: NavHostController) {
     var currentRoute = navBackStackEntry?.destination?.route
 
     Box {
-        if (currentRoute == "inicio") {
+        if (currentRoute == "inicio" ||
+//            currentRoute == "recomendados" ||
+            currentRoute == "destaques") {
             Image(
                 painter = painterResource(id = R.drawable.onda),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
+                    .height(240.dp),
                 contentScale = ContentScale.FillBounds
             )
         }

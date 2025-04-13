@@ -1,73 +1,130 @@
 package com.example.terabitemobile.ui.screens
 
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.terabitemobile.R
 import com.example.terabitemobile.ui.theme.tomVinho
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.sp
+import com.example.terabitemobile.ui.models.DestaqueItem
+import com.example.terabitemobile.ui.models.DestaqueModel
+import com.example.terabitemobile.ui.theme.background
+import com.example.terabitemobile.ui.theme.fundoCinza
 
 @Composable
-fun TelaDestaque(navController: NavHostController) {
-    val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFFA73E2B)
-    val tomBranco = Color.White
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+fun TelaDestaque(paddingValores: PaddingValues, viewModel: DestaqueModel) {
+
+    var showDialog by remember { mutableStateOf(false) }
+    var destaqueName by remember { mutableStateOf("") }
+    var destaqueSelecionadoId by remember { mutableIntStateOf(1) }
+    var destaqueDescricao by remember { mutableStateOf("") }
+    val destaque by viewModel.destaque.observeAsState()
+
+    val destaqueList = destaque ?: emptyList()
+
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Alterar Destaque") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = destaqueName,
+                        onValueChange = { destaqueName = it },
+                        label = { Text("Nome do destaque") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedTextField(
+                        value = destaqueDescricao,
+                        onValueChange = { destaqueDescricao = it },
+                        label = { Text("Descrição") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (destaqueName.isNotBlank() && destaqueDescricao.isNotBlank()) {
+                            viewModel.editDestaque(destaqueSelecionadoId, destaqueName, destaqueDescricao)
+                            destaqueName = ""
+                            destaqueDescricao = ""
+                            showDialog = false
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                ) {
+                    Text("Salvar")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog = false }
+                ) {
+                    Text("Cancelar", color = tomVinho)
+                }
+            }
+        )
+    }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBarDestaque()
-        },
-        containerColor = fundoCinza
-    ) { paddingValues ->
+        containerColor = background,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(
+                    top = paddingValores.calculateTopPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = paddingValores.calculateBottomPadding()
+                )
         ) {
-            ParteSuperiorDestaque()
+            ProfileDestaque()
             Spacer(modifier = Modifier.height(16.dp))
-            CampoBuscaDestaque()
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Text("Destaque", fontWeight = FontWeight.Bold, fontSize = 22.sp)
-            Spacer(modifier = Modifier.height(28.dp))
-            Spacer(modifier = Modifier.weight(1f))
-            ListaProdutosDestaque(tomBranco, tomVinho, fundoCinza)
+            Spacer(modifier = Modifier.height(16.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
+                items(destaqueList) { destaque ->
+                    DestaqueListItem(
+                        destaque = destaque,
+                        onEditClick = { id, nome, descricao ->
+                            destaqueSelecionadoId = id
+                            destaqueName = nome
+                            destaqueDescricao = descricao
+                            showDialog = true
+                        }
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ParteSuperiorDestaque() {
+private fun ProfileDestaque() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,176 +134,95 @@ fun ParteSuperiorDestaque() {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
                 contentDescription = "Usuário",
-                tint = Color(0xFF8C3829),
+                tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(Modifier.width(8.dp))
             Column {
-                Text("Josué", fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                Text("Administrador", fontSize = 16.sp, color = Color.Gray)
-            }
-        }
-        Button(
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8C3829)),
-            shape = RoundedCornerShape(30.dp)
-        ) {
-            Text("Adicionar +", color = Color.White)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CampoBuscaDestaque() {
-    var searchText by remember { mutableStateOf("") }
-    // Campo de busca
-    OutlinedTextField(
-        value = searchText,
-        onValueChange = { searchText = it },
-        placeholder = { Text("Buscar...") },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
-        singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
-            disabledBorderColor = Color.Transparent
-        )
-    )
-}
-
-
-@Composable
-fun ListaProdutosDestaque(tomBranco: Color, tomVinho: Color, fundoCinza: Color) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp), // altura aumentada
-            colors = CardDefaults.cardColors(containerColor = tomBranco),
-            shape = RoundedCornerShape(16.dp),
-            elevation = CardDefaults.cardElevation(6.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(verticalAlignment = Alignment.Top) {
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .border(2.dp, tomVinho, RoundedCornerShape(12.dp)) // borda vermelha
-                            .background(Color.LightGray, RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("470 × 470", color = Color.Gray, fontSize = 12.sp)
-                    }
-
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    Column(
-                        modifier = Modifier
-                            .background(fundoCinza, RoundedCornerShape(16.dp))
-                            .padding(12.dp)
-                    ) {
-                        InfoItemComFundo("Nome:", "Nescolak", fundoCinza)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        InfoItemComFundo("Marca:", "Senhor Sorvete", fundoCinza)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        InfoItemComFundo("Categoria:", "Lorem", fundoCinza)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
                 Text(
-                    "Descrição....",
-                    color = Color.Gray,
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .background(Color(0xFFF2F2F2), RoundedCornerShape(8.dp))
-                        .padding(8.dp)
+                    "Josué",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
+                Text(
+                    "Administrador",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { /* ação */ },
-            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(40.dp)
-        ) {
-            Text("Alterar Destaque", color = Color.White, fontSize = 18.sp)
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-    }
-}
-
-
-@Composable
-fun BottomNavigationBarDestaque() {
-    var itemSelecionado by remember { mutableStateOf(0) }
-    val items = listOf(
-        "Início" to Icons.Filled.Home,
-        "Cardápio" to Icons.Filled.List,
-        "Estoque" to Icons.Filled.ShoppingCart,
-        "Conta" to Icons.Filled.Person
-    )
-
-    NavigationBar(containerColor = Color.White) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = itemSelecionado == index,
-                onClick = { itemSelecionado = index },
-                icon = { Icon(item.second, contentDescription = item.first) },
-                label = { Text(item.first) }
-            )
-        }
     }
 }
 
 @Composable
-fun InfoItemComFundo(label: String, value: String, fundoCinza: Color) {
-    Box(
+private fun DestaqueListItem(destaque: DestaqueItem,
+                             onEditClick: (Int, String, String) -> Unit) {
+    Card(
+        shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .background(fundoCinza, RoundedCornerShape(16.dp))
-            .padding(6.dp)
+            .padding(vertical = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row {
-            Text(
-                label,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                color = Color.DarkGray
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                value,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                color = Color.Black
-            )
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(90.dp)
+                        .background(Color.LightGray, RoundedCornerShape(12.dp))
+                        .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(2f)) {
+
+                    Row { Text(text = destaque.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp) }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row (modifier = Modifier
+                        .fillMaxWidth()
+                        .background(fundoCinza, RoundedCornerShape(8.dp))
+                        .padding(4.dp))
+                    { Text("Marca: Senhor Sorvete", fontSize = 12.sp) }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row (modifier = Modifier
+                        .fillMaxWidth()
+                        .background(fundoCinza, RoundedCornerShape(8.dp))
+                        .padding(5.dp))
+                    { Text("Categoria: Picolé", fontSize = 12.sp) }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            Row (modifier = Modifier
+                .fillMaxWidth()
+                .background(fundoCinza, RoundedCornerShape(8.dp))
+                .padding(5.dp))
+            {
+                Text(text = destaque.descricao, fontSize = 12.sp)
+            }
         }
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun TelaDestaquePreview() {
-    TelaDestaque(rememberNavController())
+    Spacer(modifier = Modifier.height(16.dp))
+    Button(
+        onClick = { onEditClick(destaque.id, destaque.nome, destaque.descricao) },
+        colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Alterar Destaque", color = Color.White)
+        Icon(
+            imageVector = Icons.Filled.Edit,
+            contentDescription = "Editar",
+            tint = Color.White,
+            modifier = Modifier
+                .padding(start = 6.dp)
+                .size(16.dp)
+        )
+    }
 }

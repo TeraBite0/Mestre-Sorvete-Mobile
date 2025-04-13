@@ -1,7 +1,6 @@
 package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -20,13 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.room.Delete
 import com.example.terabitemobile.ui.models.RecomendacaoItem
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.theme.background
@@ -57,14 +53,12 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
                         label = { Text("Nome da recomendação") },
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Column {
-                        OutlinedTextField(
-                            value = marcaName,
-                            onValueChange = { marcaName = it },
-                            label = { Text("Nome da marca") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+                    OutlinedTextField(
+                        value = marcaName,
+                        onValueChange = { marcaName = it },
+                        label = { Text("Nome da marca") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             },
             confirmButton = {
@@ -94,7 +88,7 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
 
     Scaffold(
         containerColor = background,
-    ) { paddingValues ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -113,7 +107,6 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .height(5.dp)
                     .weight(1f)
             ) {
                 items(filteredRecomendacoes) { recomendacao ->
@@ -199,7 +192,6 @@ private fun CampoBusca(
         )
     )
 }
-
 
 @Composable
 private fun RecomendacaoListItem(recomendacao: RecomendacaoItem, onDeleteClick: () -> Unit) {

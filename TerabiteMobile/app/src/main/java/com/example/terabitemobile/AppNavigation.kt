@@ -16,6 +16,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.MarcaModel
+import com.example.terabitemobile.ui.models.DestaqueModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque
@@ -40,7 +41,8 @@ fun AppNavigation(
     navController: NavHostController,
     cardapioViewModel: CardapioModel,
     marcaViewModel: MarcaModel,
-    recomendacaoViewModel: RecomendacaoModel
+    recomendacaoViewModel: RecomendacaoModel,
+    destaqueViewModel: DestaqueModel
 ) {
     NavHost(
         navController = navController, startDestination = "login", modifier = Modifier
@@ -139,6 +141,19 @@ fun AppNavigation(
             TelaRecomendacao(paddingValues, viewModel = recomendacaoViewModel)
         }
 
+        // Destaque
+        composable(route = "destaques", enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it }, animationSpec = tween(300)
+            ) + fadeIn(animationSpec = tween(300))
+        }, exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
+            ) + fadeOut(animationSpec = tween(300))
+        }) {
+            TelaDestaque(paddingValues, viewModel = destaqueViewModel)
+        }
+
         // Saída estoque
         composable(route = "baixas", enterTransition = {
             slideInHorizontally(
@@ -166,21 +181,6 @@ fun AppNavigation(
             TelaEstoque(navController)
 //            TelaEstoque(paddingValues, viewModel = estoqueViewModel)
         }
-
-        // Destaque
-        composable(route = "destaques", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
-            TelaDestaque(navController)
-//            TelaDestaque(paddingValues, viewModel = destaqueViewModel)
-        }
-
 
         // Essa aqui não precisa do parâmetro, ela já está configurada
         // Genérico (SEMPRE DEIXE ESTA ROTA NO FINAL)

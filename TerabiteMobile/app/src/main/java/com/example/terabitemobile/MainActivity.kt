@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.MarcaModel
+import com.example.terabitemobile.ui.models.DestaqueModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
     private val cardapioViewModel: CardapioModel by viewModels()
     private val marcaViewModel: MarcaModel by viewModels()
     private val recomendacaoViewModel: RecomendacaoModel by viewModels()
+    private val destaqueViewModel: DestaqueModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +46,10 @@ class MainActivity : ComponentActivity() {
 
             MaterialTheme {
                 Scaffold(containerColor = background, bottomBar = {
-                    if (currentRoute != "login" && currentRoute != "ferramentas") BottomNavigationBar(
+                    if (currentRoute != "login" &&
+                        currentRoute != "ferramentas" &&
+                        currentRoute != "esqueceu senha")
+                        BottomNavigationBar(
                         navController
                     )
                 }, modifier = Modifier.pointerInput(Unit) {
@@ -58,6 +63,7 @@ class MainActivity : ComponentActivity() {
                         cardapioViewModel = cardapioViewModel,
                         marcaViewModel = marcaViewModel,
                         recomendacaoViewModel = recomendacaoViewModel,
+                        destaqueViewModel = destaqueViewModel,
                     )
                 }
             }

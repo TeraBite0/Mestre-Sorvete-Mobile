@@ -17,9 +17,9 @@ class RecomendacaoModel : ViewModel() {
     init {
         if (_recomendacoes.value == null) {
             _recomendacoes.value = listOf(
-                RecomendacaoItem(id = 1, nome = "Sorvete de Banana", marca = "Mestre Sorvete"),
-                RecomendacaoItem(id = 2, nome = "Chokito", marca = "Mestre Sorvete"),
-                RecomendacaoItem(id = 3, nome = "Lolo 🚬", marca = "Bob Marley")
+                RecomendacaoItem(id = 1, nome = "Picolé de Groselha", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 2, nome = "Sorvete de Chocolate", marca = "Mestre Sorvete"),
+                RecomendacaoItem(id = 3, nome = "Picolé de Limão", marca = "Mestre Sorvete")
             )
         }
     }
