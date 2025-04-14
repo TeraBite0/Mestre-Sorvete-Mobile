@@ -22,6 +22,7 @@ import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.models.DestaqueModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.ui.models.BaixasModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
     private val marcaViewModel: MarcaModel by viewModels()
     private val recomendacaoViewModel: RecomendacaoModel by viewModels()
     private val destaqueViewModel: DestaqueModel by viewModels()
+    private val baixaViewModel: BaixasModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         marcaViewModel = marcaViewModel,
                         recomendacaoViewModel = recomendacaoViewModel,
                         destaqueViewModel = destaqueViewModel,
+                        baixaViewModel = baixaViewModel,
                     )
                 }
             }

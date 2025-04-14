@@ -34,7 +34,7 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var recomendacaoName by remember { mutableStateOf("") }
-    var marcaName by remember { mutableStateOf("") }
+    var recomendacaoMarca by remember { mutableStateOf("") }
     val recomendacoes by viewModel.recomendacoes.observeAsState()
 
     val filteredRecomendacoes = remember(recomendacoes, searchText) {
@@ -54,8 +54,8 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
-                        value = marcaName,
-                        onValueChange = { marcaName = it },
+                        value = recomendacaoMarca,
+                        onValueChange = { recomendacaoMarca = it },
                         label = { Text("Nome da marca") },
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -64,10 +64,10 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
             confirmButton = {
                 Button(
                     onClick = {
-                        if (recomendacaoName.isNotBlank() && marcaName.isNotBlank()) {
-                            viewModel.addRecomendacao(recomendacaoName, marcaName)
+                        if (recomendacaoName.isNotBlank() && recomendacaoMarca.isNotBlank()) {
+                            viewModel.addRecomendacao(recomendacaoName, recomendacaoMarca)
                             recomendacaoName = ""
-                            marcaName = ""
+                            recomendacaoMarca = ""
                             showDialog = false
                         }
                     },
@@ -92,8 +92,12 @@ fun TelaRecomendacao(paddingValores: PaddingValues, viewModel: RecomendacaoModel
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValores)
-                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                .padding(
+                    top = paddingValores.calculateTopPadding() + 16.dp,
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = paddingValores.calculateBottomPadding()
+                )
         ) {
             ProfileRecomendacoes(onAddClick = { showDialog = true })
             Spacer(modifier = Modifier.height(16.dp))

@@ -16,6 +16,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.MarcaModel
+import com.example.terabitemobile.ui.models.BaixasModel
 import com.example.terabitemobile.ui.models.DestaqueModel
 import com.example.terabitemobile.ui.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
@@ -26,7 +27,7 @@ import com.example.terabitemobile.ui.screens.TelaGenerica
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.screens.TelaMarcas
 import com.example.terabitemobile.ui.screens.TelaRecomendacao
-import com.example.terabitemobile.ui.screens.TelaSaidaEstoque
+import com.example.terabitemobile.ui.screens.TelaBaixas
 
 
 fun NavController.navigateIfDifferent(route: String) {
@@ -42,7 +43,8 @@ fun AppNavigation(
     cardapioViewModel: CardapioModel,
     marcaViewModel: MarcaModel,
     recomendacaoViewModel: RecomendacaoModel,
-    destaqueViewModel: DestaqueModel
+    destaqueViewModel: DestaqueModel,
+    baixaViewModel: BaixasModel
 ) {
     NavHost(
         navController = navController, startDestination = "login", modifier = Modifier
@@ -164,8 +166,7 @@ fun AppNavigation(
                 targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
-            TelaSaidaEstoque(navController)
-//            TelaSaidaEstoque(paddingValues, viewModel = saidaEstoqueViewModel)
+            TelaBaixas(paddingValues, viewModel = baixaViewModel)
         }
 
         // Estoque
