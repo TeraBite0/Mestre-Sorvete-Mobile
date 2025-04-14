@@ -1,7 +1,7 @@
 package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,21 +22,27 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.room.Delete
+import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.MarcaItem
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.theme.background
+import com.example.terabitemobile.ui.theme.tomMarcas
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
+fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
 
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var marcaName by remember { mutableStateOf("") }
+
     val marcas by viewModel.marcas.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val error by viewModel.error.observeAsState("")
 
     val filteredMarcas = remember(marcas, searchText) {
         marcas?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
@@ -44,6 +50,7 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
 
     if (showDialog) {
         AlertDialog(
+            containerColor = Color.White,
             onDismissRequest = { showDialog = false },
             title = { Text("Adicionar Marca") },
             text = {
@@ -52,7 +59,21 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
                         value = marcaName,
                         onValueChange = { marcaName = it },
                         label = { Text("Nome da marca") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Transparent, RoundedCornerShape(16.dp)),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = tomVinho,
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = tomVinho,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedLabelColor = tomVinho,
+                            focusedSuffixColor = tomVinho
+                        )
                     )
                 }
             },
@@ -86,7 +107,7 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValores)
+                .padding(paddingScaffold)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             ProfileMarcas(onAddClick = { showDialog = true })
@@ -98,17 +119,51 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
             Spacer(modifier = Modifier.height(16.dp))
             Text("Marcas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(5.dp)
-                    .weight(1f)
-            ) {
-                items(filteredMarcas) { marca ->
-                    MarcaListItem(
-                        marca = marca,
-                        onDeleteClick = {  }
-                    )
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                // Mostra mensagem de erro se houver falha
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            "Falha ao carregar dados",
+                            color = Color.Red,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.carregarMarcas() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text("Tentar novamente")
+                        }
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(5.dp)
+                        .weight(1f)
+                ) {
+                    items(filteredMarcas) { marca ->
+                        MarcaListItem(
+                            marca = marca,
+                            onDeleteClick = { TODO() }
+                        )
+                    }
                 }
             }
         }
@@ -201,6 +256,15 @@ private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Image(
+            painter = painterResource(R.drawable.tag),
+            contentDescription = "",
+            modifier = Modifier
+                .padding(end = 10.dp)
+                .size(25.dp),
+            colorFilter = ColorFilter.tint(tomMarcas)
+        )
+
         Text(
             text = marca.nome,
             modifier = Modifier.weight(1f),

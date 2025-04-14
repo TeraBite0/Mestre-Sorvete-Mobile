@@ -1,4 +1,4 @@
-package com.example.terabitemobile.ui.models
+package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

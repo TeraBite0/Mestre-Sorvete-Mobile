@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     // Se estiver desenvolvendo localmente, use o endereço IP do
     // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
-    // private const val BASE_URL = "http://192.168.1.100:8080/api/"
+    // private const val BASE_URL = "http://192.168.1.100:8080"
 
     private const val BASE_URL = "http://192.168.11.47:8080/"
 
@@ -29,4 +29,5 @@ object RetrofitClient {
     val cardapioService: CardapioApiService = retrofit.create(CardapioApiService::class.java)
     val subtipoService: TiposApiService = retrofit.create(TiposApiService::class.java)
     val marcaService: MarcaApiService = retrofit.create(MarcaApiService::class.java)
+    val recomendacaoService: RecomendacaoApiService = retrofit.create(RecomendacaoApiService::class.java)
 }

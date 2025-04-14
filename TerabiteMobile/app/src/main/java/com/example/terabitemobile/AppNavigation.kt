@@ -15,10 +15,10 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.data.models.CardapioModel
+import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.models.BaixasModel
-import com.example.terabitemobile.ui.models.DestaqueModel
-import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque
 import com.example.terabitemobile.ui.screens.TelaEsqueceuSenha
@@ -140,7 +140,7 @@ fun AppNavigation(
                 targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
-            TelaRecomendacao(paddingValues, viewModel = recomendacaoViewModel)
+            TelaRecomendacao(paddingValues, RecomendacaoViewModel = recomendacaoViewModel, ProdutosViewModel = cardapioViewModel)
         }
 
         // Destaque

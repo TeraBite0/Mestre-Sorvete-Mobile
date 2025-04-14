@@ -3,6 +3,7 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.RetrofitClient
+import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -10,9 +11,15 @@ import retrofit2.Response
 data class CardapioItem(
     val id: Int,
     val nome: String,
+
+    @SerializedName("marca")
     val nomeMarca: String,
+
     val tipo: String,
+
+    @SerializedName("subtipo")
     val nomeSubtipo: String,
+
     val preco: Double,
     val qtdCaixa: Int,
     val qtdPorCaixas: Int,

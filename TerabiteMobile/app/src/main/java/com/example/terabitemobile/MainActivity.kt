@@ -19,9 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.data.models.CardapioModel
+import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
-import com.example.terabitemobile.ui.models.DestaqueModel
-import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.models.BaixasModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
@@ -42,16 +42,12 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val focusManager = LocalFocusManager.current
 
-
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
             MaterialTheme {
                 Scaffold(containerColor = background, bottomBar = {
-                    if (currentRoute != "login" &&
-                        currentRoute != "ferramentas" &&
-                        currentRoute != "esqueceu senha")
-                        BottomNavigationBar(
+                    if (currentRoute != "login" && currentRoute != "ferramentas") BottomNavigationBar(
                         navController
                     )
                 }, modifier = Modifier.pointerInput(Unit) {
@@ -66,7 +62,7 @@ class MainActivity : ComponentActivity() {
                         marcaViewModel = marcaViewModel,
                         recomendacaoViewModel = recomendacaoViewModel,
                         destaqueViewModel = destaqueViewModel,
-                        baixaViewModel = baixaViewModel,
+                        baixaViewModel = baixaViewModel
                     )
                 }
             }
