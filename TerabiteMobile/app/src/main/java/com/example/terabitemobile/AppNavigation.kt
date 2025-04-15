@@ -114,7 +114,7 @@ fun AppNavigation(
                 targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
-            TelaCardapio(viewModel = cardapioViewModel)
+            TelaCardapio(paddingValues, viewModel = cardapioViewModel)
         }
 
         // Marcas

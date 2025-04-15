@@ -103,7 +103,7 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
 
     Scaffold(
         containerColor = background,
-    ) { paddingValues ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

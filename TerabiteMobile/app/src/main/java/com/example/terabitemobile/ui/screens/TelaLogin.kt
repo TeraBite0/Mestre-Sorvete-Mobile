@@ -1,9 +1,5 @@
 package com.example.terabitemobile.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 // import androidx.compose.foundation.*
 import androidx.compose.foundation.background
@@ -17,25 +13,21 @@ import androidx.compose.runtime.*
 // import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -71,7 +63,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-public fun TelaLogin(navController: NavHostController) {
+fun TelaLogin(navController: NavHostController) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
@@ -104,7 +96,7 @@ public fun TelaLogin(navController: NavHostController) {
         ) {
             Spacer(modifier = Modifier.height(36.dp))
             Text(
-                text = "Login",
+                text = stringResource(R.string.login_title_txt),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF1C97B),
@@ -114,7 +106,7 @@ public fun TelaLogin(navController: NavHostController) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Usuário",
+                    text = stringResource(R.string.login_user_txt),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
@@ -126,7 +118,7 @@ public fun TelaLogin(navController: NavHostController) {
                     onValueChange = { usuario = it },
                     placeholder = {
                         Text(
-                            "exemplo@email.com",
+                            stringResource(R.string.login_email_placeholder),
                             color = Color(0xFF000000).copy(alpha = 0.6f),
                         )
                     },
@@ -142,7 +134,7 @@ public fun TelaLogin(navController: NavHostController) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Senha",
+                    text = stringResource(R.string.login_passw_txt),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
@@ -153,7 +145,10 @@ public fun TelaLogin(navController: NavHostController) {
                     value = senha,
                     onValueChange = { senha = it },
                     placeholder = {
-                        Text("digite sua senha...", color = Color(0xFF000000).copy(alpha = 0.6f),)
+                        Text(
+                            stringResource(R.string.login_passw_placeholder),
+                            color = Color(0xFF000000).copy(alpha = 0.6f),
+                        )
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color(0xFFD9D9D9)
@@ -168,7 +163,7 @@ public fun TelaLogin(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Esqueceu a senha?",
+                text = stringResource(R.string.login_resetPassw_label),
                 color = Color.White,
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
@@ -194,7 +189,7 @@ public fun TelaLogin(navController: NavHostController) {
                     .width(150.dp)
                     .height(50.dp)
             ) {
-                Text("Entrar", color = Color.White, fontSize = 18.sp,)
+                Text("Entrar", color = Color.White, fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -202,7 +197,7 @@ public fun TelaLogin(navController: NavHostController) {
         }
         Image(
             painter = painterResource(id = R.drawable.wave_login_cinza),
-            contentDescription = "Onda decorativa",
+            contentDescription = stringResource(R.string.accessibility_loginWave_img),
             modifier = Modifier
                 .fillMaxWidth()
                 .zIndex(1f)
@@ -216,14 +211,14 @@ public fun TelaLogin(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Mestre Sorvete",
+            text = stringResource(R.string.app_name),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Bem-vindo de volta!",
+            text = stringResource(R.string.login_welcomeMsg_txt),
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),

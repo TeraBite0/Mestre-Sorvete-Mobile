@@ -21,8 +21,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.sp
-import com.example.terabitemobile.ui.models.DestaqueItem
-import com.example.terabitemobile.ui.models.DestaqueModel
+import com.example.terabitemobile.data.models.DestaqueItem
+import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.fundoCinza
 

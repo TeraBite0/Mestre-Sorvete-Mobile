@@ -49,7 +49,7 @@ import com.example.terabitemobile.ui.theme.tomBege
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
+fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewModel()) {
     val fundoCinza = Color(0xFFD1D1D1)
     val tomVinho = Color(0xFF8C3829)
     val tomBege = Color(0xFFE9DEB0)
@@ -72,16 +72,13 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
     }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBarCardapio()
-        },
         containerColor = background
-    ) { paddingValues ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(paddingBottom)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             ProfileCardapio(
                 onAddClick = {

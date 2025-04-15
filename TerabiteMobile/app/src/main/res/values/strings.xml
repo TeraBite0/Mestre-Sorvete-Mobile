@@ -1,3 +1,28 @@
 <resources>
-    <string name="app_name">Mestre Sorvete</string>
+    <string name="app_name" translatable="false">Mestre Sorvete</string>
+
+    <string name="login_welcomeMsg_txt">Bem-vindo de volta!</string>
+    <string name="login_title_txt">Login</string>
+    <string name="login_user_txt">Usuário</string>
+    <string name="login_email_placeholder">exemplo@email.com</string>
+    <string name="login_passw_txt">Senha</string>
+    <string name="login_passw_placeholder">Digite a sua senha...</string>
+    <string name="login_resetPassw_label">Esqueceu a senha?</string>
+    <string name="login_loginBtn_label">Entrar</string>
+
+    <string name="home_manage_txt">Gerenciar</string>
+    <string name="home_accessBtn_label">Acessar</string>
+    <string name="home_viewMore_label">Ver mais</string>
+
+    <string name="any_role_txt">Administrador</string>
+    <string name="any_stock_txt">Estoque</string>
+    <string name="any_tools_txt">Ferramentas</string>
+    <string name="any_menu_txt">Cardápio</string>
+    <string name="any_depletions_txt">Baixas</string>
+
+    <string name="accessibility_loginWave_img">Onda decorativa</string>
+    <string name="accessibility_box_img">Ícone de caixa</string>
+    <string name="accessibility_userProfile_img">Ícone do usuário</string>
+
+
 </resources>
