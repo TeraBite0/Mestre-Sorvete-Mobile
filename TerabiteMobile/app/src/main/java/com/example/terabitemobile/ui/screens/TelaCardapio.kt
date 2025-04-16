@@ -8,9 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
@@ -27,7 +24,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.input.pointer.pointerInput
@@ -42,18 +38,18 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
 import com.example.terabitemobile.data.models.CardapioItem
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.SubtipoModel
+import com.example.terabitemobile.ui.theme.fundoCinza
 import com.example.terabitemobile.ui.theme.tomBege
+import com.example.terabitemobile.R
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewModel()) {
-    val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFF8C3829)
-    val tomBege = Color(0xFFE9DEB0)
-
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedProduct by remember { mutableStateOf<CardapioItem?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -92,7 +88,7 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
                 onSearchTextChanged = { searchText = it }
             )
             Spacer(modifier = Modifier.height(14.dp))
-            Text("Cardápio", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(stringResource(R.string.any_menu_txt), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
 
             // Mostra indicador de carregamento quando estiver buscando dados
@@ -111,7 +107,7 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "Falha ao carregar dados",
+                            stringResource(R.string.error_loadData_txt),
                             color = Color.Red,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
@@ -123,7 +119,7 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
                             onClick = { viewModel.carregarProdutos() },
                             colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                         ) {
-                            Text("Tentar novamente")
+                            Text(stringResource(R.string.error_tryAgain_label))
                         }
                     }
                 }
@@ -135,7 +131,6 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
                         fundoCinza = fundoCinza,
                         searchText = searchText,
                         produtos = it,
-                        viewModel = viewModel,
                         onEditClick = { produto ->
                             selectedProduct = produto
                             showBottomSheet = true
@@ -188,7 +183,7 @@ private fun ProfileCardapio(
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -204,13 +199,13 @@ private fun ProfileCardapio(
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Favorite",
+                contentDescription = stringResource(R.string.any_addItem_txt),
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
 
             Text(
-                text = "Adicionar",
+                text = stringResource(R.string.any_addItem_txt),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -225,7 +220,7 @@ private fun CampoBusca(
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChanged,
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
+        placeholder = { Text(stringResource(R.string.any_searchField_placeholder), style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
@@ -251,7 +246,6 @@ fun ListaProdutosCardapio(
     fundoCinza: Color,
     searchText: String,
     produtos: List<CardapioItem>,
-    viewModel: CardapioModel,
     onEditClick: (CardapioItem) -> Unit
 ) {
 
@@ -272,9 +266,9 @@ fun ListaProdutosCardapio(
                 ) {
                     Text(
                         text = if (searchText.isEmpty()) {
-                            "Nenhum produto cadastrado"
+                            stringResource(R.string.menu_noItems_txt)
                         } else {
-                            "Nenhum produto encontrado para \"$searchText\""
+                            stringResource(R.string.menu_itemsNotFound_txt, searchText)
                         },
                         color = Color.Gray,
                         fontSize = 16.sp,
@@ -333,7 +327,7 @@ fun ListaProdutosCardapio(
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp)
                             ) {
-                                Text("Editar", color = tomVinho, softWrap = false)
+                                Text(stringResource(R.string.menu_editBtn_label), color = tomVinho, softWrap = false)
                             }
                         }
                     }
@@ -343,28 +337,6 @@ fun ListaProdutosCardapio(
             item {
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-    }
-}
-
-@Composable
-fun BottomNavigationBarCardapio() {
-    var itemSelecionado by remember { mutableIntStateOf(0) }
-    val items = listOf(
-        "Início" to Icons.Filled.Home,
-        "Cardápio" to Icons.AutoMirrored.Filled.List,
-        "Estoque" to Icons.Filled.ShoppingCart,
-        "Conta" to Icons.Filled.Person
-    )
-
-    NavigationBar(containerColor = Color.White) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = itemSelecionado == index,
-                onClick = { itemSelecionado = index },
-                icon = { Icon(item.second, contentDescription = item.first) },
-                label = { Text(item.first) }
-            )
         }
     }
 }
@@ -380,11 +352,7 @@ fun EditBottomSheetContent(
     val focusManager = LocalFocusManager.current
     val subtipoViewModel: SubtipoModel = viewModel()
     val marcasViewModel: MarcaModel = viewModel()
-    val scope = rememberCoroutineScope()
 
-    val isEditMode = product != null
-
-    // Estados para todos os campos editáveis
     var editedName by remember { mutableStateOf(product?.nome ?: "") }
     var editedMarca by remember { mutableStateOf(product?.nomeMarca ?: "") }
     var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
@@ -392,14 +360,12 @@ fun EditBottomSheetContent(
     var editedPreco by remember { mutableStateOf(product?.preco?.toString() ?: "") }
     var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa?.toString() ?: "") }
     var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixas?.toString() ?: "") }
-    var editedAtivo by remember { mutableStateOf(product?.ativo ?: true) }
-    var editedLactose by remember { mutableStateOf(product?.temLactose ?: false) }
-    var editedGluten by remember { mutableStateOf(product?.temGluten ?: false) }
+    var editedAtivo by remember { mutableStateOf(product?.ativo != false) }
+    var editedLactose by remember { mutableStateOf(product?.temLactose == true) }
+    var editedGluten by remember { mutableStateOf(product?.temGluten == true) }
 
-    // Estado para controlar quando a validação deve ser exibida
     var showValidationErrors by remember { mutableStateOf(false) }
 
-    // Estados para validação de campos
     val nameError = editedName.isEmpty() && showValidationErrors
     val marcaError = editedMarca.isEmpty() && showValidationErrors
     val subtipoError = editedSubtipo.isEmpty() && showValidationErrors
@@ -408,7 +374,6 @@ fun EditBottomSheetContent(
     val qtdPorCaixaError =
         (editedQtdPorCaixa.isEmpty() || editedQtdPorCaixa.toIntOrNull() == null || editedQtdPorCaixa.toIntOrNull()!! <= 0) && showValidationErrors
 
-    // Verifica se o formulário é válido
     val isFormValid = editedName.isNotEmpty() &&
             editedMarca.isNotEmpty() &&
             editedSubtipo.isNotEmpty() &&
@@ -418,14 +383,9 @@ fun EditBottomSheetContent(
     var showSubtipoSelector by remember { mutableStateOf(false) }
     var showMarcasSelector by remember { mutableStateOf(false) }
 
-    // Observar os subtipos do ViewModel
     val subtipos by subtipoViewModel.subtipos.observeAsState()
-    val subtiposLoading by subtipoViewModel.isLoading.observeAsState(initial = false)
-    val subtiposError by subtipoViewModel.error.observeAsState("")
 
     val marcas by marcasViewModel.marcas.observeAsState()
-    val marcasLoading by marcasViewModel.isLoading.observeAsState(initial = false)
-    val marcasError by marcasViewModel.error.observeAsState("")
 
     LaunchedEffect(key1 = Unit) {
         subtipoViewModel.carregarSubtipos()
@@ -458,7 +418,7 @@ fun EditBottomSheetContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                if (product != null) "Editar ${product.nome}" else "Adicionar Novo Produto",
+                if (product != null) stringResource(R.string.edit_product_title, product.nome) else stringResource(R.string.add_new_product_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = tomVinho,
                 textAlign = TextAlign.Center,
@@ -466,13 +426,13 @@ fun EditBottomSheetContent(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Informações Básicas", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.basic_info_section), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(10.dp))
 
         OutlinedTextField(
             value = editedName,
             onValueChange = { editedName = it },
-            label = { Text("Nome*") },
+            label = { Text(stringResource(R.string.name_label)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
@@ -480,7 +440,7 @@ fun EditBottomSheetContent(
             isError = nameError,
             supportingText = {
                 if (nameError) {
-                    Text("Nome é obrigatório", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.name_required_error), color = MaterialTheme.colorScheme.error)
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -496,7 +456,7 @@ fun EditBottomSheetContent(
         OutlinedTextField(
             value = editedMarca,
             onValueChange = { /* No direct input, read-only */ },
-            label = { Text("Marca*") },
+            label = { Text(stringResource(R.string.brand_label)) },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showMarcasSelector = true }) {
@@ -508,7 +468,7 @@ fun EditBottomSheetContent(
             isError = marcaError,
             supportingText = {
                 if (marcaError) {
-                    Text("Marca é obrigatória", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.brand_required_error), color = MaterialTheme.colorScheme.error)
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -524,16 +484,15 @@ fun EditBottomSheetContent(
         if (showMarcasSelector) {
             AlertDialog(
                 containerColor = Color.White,
-                onDismissRequest = { showSubtipoSelector = false },
-                title = { Text("Selecionar Subtipo") },
+                onDismissRequest = { showMarcasSelector = false },
+                title = { Text(stringResource(R.string.select_brand_dialog_title)) },
                 text = {
                     LazyColumn(
                         modifier = Modifier.height(350.dp)
                     ) {
                         items(marcasList) { marca ->
                             TextButton(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.textButtonColors(
                                     containerColor = tomBege,
                                     contentColor = Color(0xFF343434)
@@ -557,7 +516,7 @@ fun EditBottomSheetContent(
                         onClick = { showMarcasSelector = false }
                     ) {
                         Text(
-                            text = "Cancelar",
+                            text = stringResource(R.string.dialog_cancel_button),
                             modifier = Modifier.padding(horizontal = 10.dp)
                         )
                     }
@@ -565,17 +524,15 @@ fun EditBottomSheetContent(
             )
         }
 
-        // Seção de Tipo e Subtipo
         Spacer(modifier = Modifier.height(10.dp))
-        Text("Categorização", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.categorization_section), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Campo de Tipo (somente leitura)
         OutlinedTextField(
             shape = RoundedCornerShape(16.dp),
             value = editedTipo,
             onValueChange = { /* Não modificável */ },
-            label = { Text("Tipo") },
+            label = { Text(stringResource(R.string.type_label)) },
             modifier = Modifier.fillMaxWidth(),
             readOnly = true,
             colors = OutlinedTextFieldDefaults.colors(
@@ -589,11 +546,10 @@ fun EditBottomSheetContent(
             enabled = false
         )
 
-        // Campo de Subtipo (com diálogo de seleção)
         OutlinedTextField(
             value = editedSubtipo,
             onValueChange = { /* No direct input, read-only */ },
-            label = { Text("Subtipo*") },
+            label = { Text(stringResource(R.string.subtype_label)) },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showSubtipoSelector = true }) {
@@ -605,7 +561,7 @@ fun EditBottomSheetContent(
             isError = subtipoError,
             supportingText = {
                 if (subtipoError) {
-                    Text("Subtipo é obrigatório", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.subtype_required_error), color = MaterialTheme.colorScheme.error)
                 }
             },
             colors = OutlinedTextFieldDefaults.colors(
@@ -622,15 +578,14 @@ fun EditBottomSheetContent(
             AlertDialog(
                 containerColor = Color.White,
                 onDismissRequest = { showSubtipoSelector = false },
-                title = { Text("Selecionar Subtipo") },
+                title = { Text(stringResource(R.string.select_subtype_dialog_title)) },
                 text = {
                     LazyColumn(
                         modifier = Modifier.height(350.dp)
                     ) {
                         items(subtiposList) { subtipo ->
                             TextButton(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth(),
                                 colors = ButtonDefaults.textButtonColors(
                                     containerColor = tomBege,
                                     contentColor = Color(0xFF343434)
@@ -655,32 +610,31 @@ fun EditBottomSheetContent(
                         onClick = { showSubtipoSelector = false }
                     ) {
                         Text(
-                            text = "Cancelar",
-                            modifier = Modifier.padding(horizontal = 10.dp)
+                            text = stringResource(R.string.dialog_cancel_button),
+                            Modifier.padding(horizontal = 10.dp)
                         )
                     }
                 }
             )
         }
 
-        // Seção de Estoque e Preço
         Spacer(modifier = Modifier.height(10.dp))
-        Text("Estoque e Preço", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.stock_price_section), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(10.dp))
 
         NumberTextField(
             value = editedQtdPorCaixa,
             onValueChange = { editedQtdPorCaixa = it },
-            label = "Unid./Caixa*",
+            label = stringResource(R.string.units_per_box_label),
             modifier = Modifier.fillMaxWidth(),
             isError = qtdPorCaixaError,
-            errorMessage = if (qtdPorCaixaError) "Quantidade por caixa é obrigatória e deve ser maior que zero" else null
+            errorMessage = if (qtdPorCaixaError) stringResource(R.string.units_per_box_error) else null
         )
 
         OutlinedTextField(
             value = editedPreco,
             onValueChange = { editedPreco = it },
-            label = { Text("Preço*") },
+            label = { Text(stringResource(R.string.price_label)) },
             prefix = { Text("R$") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -690,7 +644,7 @@ fun EditBottomSheetContent(
             supportingText = {
                 if (precoError) {
                     Text(
-                        "Preço é obrigatório e deve ser maior que zero",
+                        stringResource(R.string.price_error),
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -708,9 +662,8 @@ fun EditBottomSheetContent(
             )
         )
 
-        // Seção de Status e Restrições
         Spacer(modifier = Modifier.height(10.dp))
-        Text("Status e Restrições", style = MaterialTheme.typography.titleMedium)
+        Text(stringResource(R.string.status_restrictions_section), style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(10.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -725,7 +678,7 @@ fun EditBottomSheetContent(
                 )
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text("Contém lactose")
+            Text(stringResource(R.string.contains_lactose))
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
@@ -739,27 +692,23 @@ fun EditBottomSheetContent(
                 )
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text("Contém glúten")
+            Text(stringResource(R.string.contains_gluten))
         }
 
-        // Texto indicando campos obrigatórios
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "* Campos obrigatórios",
+            stringResource(R.string.required_fields_note),
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )
 
-        // Botões de Ação
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                // Ativa validações
                 showValidationErrors = true
 
                 if (isFormValid) {
                     if (product == null) {
-                        // Adicionar novo produto
                         val newId = (viewModel.produtos.value?.size ?: 0) + 1
                         val newProduct = CardapioItem(
                             id = newId,
@@ -776,7 +725,6 @@ fun EditBottomSheetContent(
                         )
                         viewModel.adicionarProduto(newProduct)
                     } else {
-                        // Atualizar produto existente
                         val updatedProduct = product.copy(
                             nome = editedName,
                             nomeMarca = editedMarca,
@@ -797,14 +745,14 @@ fun EditBottomSheetContent(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
         ) {
-            Text("Salvar Alterações", color = Color.White)
+            Text(stringResource(R.string.save_changes_button), color = Color.White)
         }
 
         TextButton(
             onClick = onClose,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cancelar", color = Color.Gray)
+            Text(stringResource(R.string.cancel_button), color = Color.Gray)
         }
     }
 }
@@ -845,35 +793,6 @@ fun NumberTextField(
                 Text(errorMessage, color = MaterialTheme.colorScheme.error)
             }
         }
-    )
-}
-
-@Composable
-fun NumberTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier
-) {
-    OutlinedTextField(
-        shape = RoundedCornerShape(16.dp),
-        value = value,
-        onValueChange = { newValue ->
-            if (newValue.all { it.isDigit() }) {
-                onValueChange(newValue)
-            }
-        },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
-            unfocusedBorderColor = Color.Gray,
-            cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
-            focusedLabelColor = tomVinho,
-        ),
-        label = { Text(label) },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        ),
-        modifier = modifier
     )
 }
 
