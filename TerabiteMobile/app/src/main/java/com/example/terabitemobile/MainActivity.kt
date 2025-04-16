@@ -22,7 +22,7 @@ import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
-import com.example.terabitemobile.ui.models.BaixasModel
+import com.example.terabitemobile.data.models.BaixasModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
@@ -47,7 +47,10 @@ class MainActivity : ComponentActivity() {
 
             MaterialTheme {
                 Scaffold(containerColor = background, bottomBar = {
-                    if (currentRoute != "login" && currentRoute != "ferramentas") BottomNavigationBar(
+                    if (currentRoute != "login" &&
+                        currentRoute != "ferramentas" &&
+                        currentRoute != "esqueceu senha"
+                        ) BottomNavigationBar(
                         navController
                     )
                 }, modifier = Modifier.pointerInput(Unit) {

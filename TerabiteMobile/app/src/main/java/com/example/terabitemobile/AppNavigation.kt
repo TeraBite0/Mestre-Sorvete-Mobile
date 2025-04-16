@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
-import com.example.terabitemobile.ui.models.BaixasModel
+import com.example.terabitemobile.data.models.BaixasModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque
