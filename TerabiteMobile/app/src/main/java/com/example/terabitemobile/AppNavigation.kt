@@ -153,7 +153,7 @@ fun AppNavigation(
                 targetOffsetX = { -it / 2 }, animationSpec = tween(300)
             ) + fadeOut(animationSpec = tween(300))
         }) {
-            TelaDestaque(paddingValues, viewModel = destaqueViewModel)
+            TelaDestaque(paddingValues, DestaqueViewModel = destaqueViewModel, ProdutosViewModel = cardapioViewModel)
         }
 
         // Saída estoque

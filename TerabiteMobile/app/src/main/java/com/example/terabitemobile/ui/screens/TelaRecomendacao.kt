@@ -39,9 +39,6 @@ import kotlinx.coroutines.launch
 fun TelaRecomendacao(paddingValores: PaddingValues, RecomendacaoViewModel: RecomendacaoModel, ProdutosViewModel: CardapioModel) {
 
     var searchText by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var recomendacaoName by remember { mutableStateOf("") }
-    var marcaName by remember { mutableStateOf("") }
     val recomendacoes by RecomendacaoViewModel.recomendacoes.observeAsState()
 
     var showBottomSheet by remember { mutableStateOf(false) }

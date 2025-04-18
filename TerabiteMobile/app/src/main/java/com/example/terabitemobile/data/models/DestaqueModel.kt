@@ -2,30 +2,82 @@ package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.DestaqueUpdateRequest
+import com.example.terabitemobile.data.api.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 data class DestaqueItem(
     val id: Int,
-    val nome: String,
-    val descricao: String
+    val produto: CardapioItem,
+    val texto: String
 )
 
 class DestaqueModel : ViewModel() {
 
-    private val _destaque = MutableLiveData<List<DestaqueItem>?>()
-    val destaque: MutableLiveData<List<DestaqueItem>?> = _destaque
+    private val _destaque = MutableLiveData<DestaqueItem?>()
+    val destaque: MutableLiveData<DestaqueItem?> = _destaque
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: MutableLiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String>()
+    val error: MutableLiveData<String> = _error
 
     init {
-            _destaque.value = listOf(
-                DestaqueItem(id = 1, nome = "Paleta de Maracujá", descricao = "Teste")
-            )
+            carregarDestaque()
     }
 
-    fun editDestaque(id: Int, novoNome: String, novaDescricao: String) {
-        val currentList = _destaque.value?.toMutableList()
-        val index = currentList?.indexOfFirst { it.id == id }
-        if (index != null && index != -1) {
-            currentList[index] = currentList[index].copy(nome = novoNome, descricao = novaDescricao)
-            _destaque.value = currentList
-        }
+    fun carregarDestaque() {
+        _error.value = ""
+        _isLoading.value = true
+
+        RetrofitClient.destaqueService.getDestaque().enqueue(object :
+            Callback<DestaqueItem> {
+            override fun onResponse(
+                call: Call<DestaqueItem>, response: Response<DestaqueItem>
+            ) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    _destaque.value = response.body()
+                } else {
+                    _error.value = "Erro ${response.code()}: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: Call<DestaqueItem>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha na conexão: ${t.message}"
+            }
+        })
+    }
+
+    fun updateDestaque(produtoId: Int, texto: String) {
+        _error.value = ""
+        _isLoading.value = true
+
+        val request = DestaqueUpdateRequest(produtoId = produtoId, texto = texto)
+
+        RetrofitClient.destaqueService.putDestaque(request).enqueue(object : Callback<DestaqueItem> {
+            override fun onResponse(call: Call<DestaqueItem>, response: Response<DestaqueItem>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val updatedItem = response.body()
+                    if (updatedItem != null) {
+                        _destaque.value = updatedItem
+                    } else {
+                        carregarDestaque()
+                    }
+                } else {
+                    _error.value = "Erro ${response.code()}: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: Call<DestaqueItem>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha na conexão: ${t.message}"
+            }
+        })
     }
 }
