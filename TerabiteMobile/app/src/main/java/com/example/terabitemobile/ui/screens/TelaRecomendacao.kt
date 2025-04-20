@@ -24,7 +24,10 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.CardapioItem
 import com.example.terabitemobile.data.models.RecomendacaoItem
@@ -36,23 +39,30 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaRecomendacao(paddingValores: PaddingValues, RecomendacaoViewModel: RecomendacaoModel, ProdutosViewModel: CardapioModel) {
-
+fun TelaRecomendacao(
+    paddingValores: PaddingValues,
+    recomendacaoViewModel: RecomendacaoModel,
+    produtosViewModel: CardapioModel
+) {
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var recomendacaoName by remember { mutableStateOf("") }
     var marcaName by remember { mutableStateOf("") }
-    val recomendacoes by RecomendacaoViewModel.recomendacoes.observeAsState()
+
+    val recomendacoes by recomendacaoViewModel.recomendacoes.observeAsState()
+    val isLoading by recomendacaoViewModel.isLoading.observeAsState(initial = false)
+    val error by recomendacaoViewModel.error.observeAsState("")
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedRecomendacao by remember { mutableStateOf<RecomendacaoItem?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    val produtos by ProdutosViewModel.produtos.observeAsState()
+    val produtos by produtosViewModel.produtos.observeAsState()
 
     val filteredRecomendacoes = remember(recomendacoes, searchText) {
-        recomendacoes?.filter { it.produto.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
+        recomendacoes?.filter { it.produto.nome.contains(searchText, ignoreCase = true) }
+            ?: emptyList()
     }
 
     Scaffold(
@@ -71,25 +81,64 @@ fun TelaRecomendacao(paddingValores: PaddingValues, RecomendacaoViewModel: Recom
                 onSearchTextChanged = { searchText = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Recomendados", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(
+                text = stringResource(R.string.recommendations_title),
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(5.dp)
-                    .weight(1f)
-            ) {
-                items(filteredRecomendacoes) { recomendacao ->
-                    RecomendacaoListItem(
-                        recomendacao = recomendacao,
-                        onEditClick = { recomendacao ->
-                            selectedRecomendacao = recomendacao
-                            showBottomSheet = true
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                // Mostra mensagem de erro se houver falha
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.error_loadData_txt),
+                            color = tomVinho,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { recomendacaoViewModel.carregarRecomendacoes() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(stringResource(R.string.error_tryAgain_label))
                         }
-                    )
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(5.dp)
+                        .weight(1f)
+                ) {
+                    items(filteredRecomendacoes) { recomendacao ->
+                        RecomendacaoListItem(
+                            recomendacao = recomendacao,
+                            onEditClick = {
+                                selectedRecomendacao = recomendacao
+                                showBottomSheet = true
+                            }
+                        )
+                    }
                 }
             }
         }
+
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
@@ -104,7 +153,7 @@ fun TelaRecomendacao(paddingValores: PaddingValues, RecomendacaoViewModel: Recom
                         }
                     },
                     tomVinho = tomVinho,
-                    viewModel = RecomendacaoViewModel
+                    viewModel = recomendacaoViewModel
                 )
             }
         }
@@ -121,18 +170,18 @@ private fun ProfileRecomendacoes() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Usuário",
+                contentDescription = stringResource(R.string.accessibility_userProfile_img),
                 tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column {
                 Text(
-                    "Josué",
+                    text = stringResource(R.string.user_name_placeholder),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    text = stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -149,8 +198,13 @@ private fun CampoBusca(
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChanged,
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+        placeholder = { Text(stringResource(R.string.any_searchField_placeholder)) },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = stringResource(R.string.search_icon_desc)
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent, RoundedCornerShape(16.dp)),
@@ -167,10 +221,10 @@ private fun CampoBusca(
     )
 }
 
-
 @Composable
 private fun RecomendacaoListItem(
-    recomendacao: RecomendacaoItem, onEditClick: (RecomendacaoItem) -> Unit
+    recomendacao: RecomendacaoItem,
+    onEditClick: (RecomendacaoItem) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
@@ -194,22 +248,28 @@ private fun RecomendacaoListItem(
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
+                // Espaço reservado para imagem
             }
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Text(text = recomendacao.produto.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                Text(text = recomendacao.produto.nomeMarca, color = Color.Gray, fontSize = 12.sp)
+                Text(
+                    text = recomendacao.produto.nome,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = recomendacao.produto.nomeMarca,
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
             }
 
-            IconButton(
-                onClick = { onEditClick(recomendacao) }
-            ) {
+            IconButton(onClick = { onEditClick(recomendacao) }) {
                 Icon(
                     imageVector = Icons.Filled.Edit,
-                    contentDescription = "Editar    ",
+                    contentDescription = stringResource(R.string.edit_icon_desc),
                     tint = Color.White,
                     modifier = Modifier
                         .background(tomVinho, shape = RoundedCornerShape(12.dp))
@@ -229,6 +289,9 @@ fun BottomSheetContent(
     tomVinho: Color,
     viewModel: RecomendacaoModel
 ) {
+    val errorTemplate = stringResource(R.string.error_update_recommendation)
+    val defaultError = stringResource(R.string.error_generic)
+
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
@@ -240,10 +303,8 @@ fun BottomSheetContent(
     var searchQuery by remember { mutableStateOf("") }
 
     val filteredProducts = remember(searchQuery, produtos) {
-        if (searchQuery.isEmpty()) {
-            produtos
-        } else {
-            produtos.filter { it.nome.contains(searchQuery, ignoreCase = true) }
+        if (searchQuery.isEmpty()) produtos else produtos.filter {
+            it.nome.contains(searchQuery, ignoreCase = true)
         }
     }
 
@@ -252,21 +313,20 @@ fun BottomSheetContent(
             .fillMaxWidth()
             .padding(20.dp)
     ) {
-        // Cabeçalho
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Editar Recomendação",
+                text = stringResource(R.string.edit_recommendation_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Fechar",
+                    contentDescription = stringResource(R.string.close_icon_desc),
                     tint = tomVinho
                 )
             }
@@ -274,7 +334,6 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Produto selecionado
         selectedProduct?.let { product ->
             Row(
                 modifier = Modifier
@@ -290,7 +349,7 @@ fun BottomSheetContent(
                         .clip(RoundedCornerShape(8.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Imagem do produto
+                    // Espaço reservado para imagem
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -312,11 +371,10 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de busca
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Buscar produto") },
+            label = { Text(stringResource(R.string.search_product_label)) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
@@ -326,16 +384,8 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Lista de produtos com scroll
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+        Box(modifier = Modifier.weight(1f)) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 items(filteredProducts) { product ->
                     Card(
                         onClick = { selectedProduct = product },
@@ -370,7 +420,6 @@ fun BottomSheetContent(
             }
         }
 
-        // Botão fixo na parte inferior
         Button(
             onClick = {
                 if (recomendacao != null && selectedProduct != null) {
@@ -385,7 +434,9 @@ fun BottomSheetContent(
                             delay(1500)
                             onClose()
                         } catch (e: Exception) {
-                            snackbarHostState.showSnackbar("Erro ao atualizar: ${e.message}")
+                            val errorMsg = e.message ?: defaultError
+                            val fullMessage = errorTemplate.replace("%s", errorMsg)
+                            snackbarHostState.showSnackbar(fullMessage)
                         } finally {
                             isLoading = false
                         }
@@ -406,11 +457,10 @@ fun BottomSheetContent(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Salvar Alterações", fontSize = 16.sp)
+                Text(stringResource(R.string.save_changes_button))
             }
         }
 
-        // Feedback de sucesso
         AnimatedVisibility(visible = showSuccessMessage) {
             Row(
                 modifier = Modifier
@@ -421,11 +471,14 @@ fun BottomSheetContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "Sucesso",
+                    contentDescription = stringResource(R.string.success_icon_desc),
                     tint = Color.Green
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Recomendação atualizada com sucesso!", color = Color.Green)
+                Text(
+                    text = stringResource(R.string.success_update_recommendation),
+                    color = Color.Green
+                )
             }
         }
 

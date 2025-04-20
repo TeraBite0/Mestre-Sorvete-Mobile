@@ -18,6 +18,7 @@ import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.BaixasModel
+import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque
@@ -44,60 +45,29 @@ fun AppNavigation(
     marcaViewModel: MarcaModel,
     recomendacaoViewModel: RecomendacaoModel,
     destaqueViewModel: DestaqueModel,
-    baixaViewModel: BaixasModel
+    baixaViewModel: BaixasModel,
+    estoqueViewModel: EstoqueModel
 ) {
     NavHost(
         navController = navController, startDestination = "login", modifier = Modifier
     ) {
         // Login
-        composable(route = "login", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "login") {
             TelaLogin(navController)
         }
 
         // Esqueceu senha
-        composable(route = "esqueceu senha", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "esqueceu senha") {
             TelaEsqueceuSenha(navController)
         }
 
         // Inicio
-        composable(route = "inicio", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it  / 2}, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "inicio") {
             TelaInicio(navController)
         }
 
         // Ferramentas
-        composable(route = "ferramentas", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "ferramentas") {
             TelaFerramentas(navController)
         }
 
@@ -105,82 +75,33 @@ fun AppNavigation(
         // irá aplicar o padding correto para a bottom bar.
 
         // Cardapio
-        composable(route = "cardapio", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "cardapio") {
             TelaCardapio(paddingValues, viewModel = cardapioViewModel)
         }
 
         // Marcas
-        composable(route = "marcas", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "marcas") {
             TelaMarcas(paddingValues, viewModel = marcaViewModel)
         }
 
         // Recomendação
-        composable(route = "recomendados", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
-            TelaRecomendacao(paddingValues, RecomendacaoViewModel = recomendacaoViewModel, ProdutosViewModel = cardapioViewModel)
+        composable(route = "recomendados") {
+            TelaRecomendacao(paddingValues, recomendacaoViewModel, cardapioViewModel)
         }
 
         // Destaque
-        composable(route = "destaques", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "destaques") {
             TelaDestaque(paddingValues, viewModel = destaqueViewModel)
         }
 
         // Saída estoque
-        composable(route = "baixas", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
+        composable(route = "baixas") {
             TelaBaixas(paddingValues, viewModel = baixaViewModel)
         }
 
         // Estoque
-        composable(route = "estoque", enterTransition = {
-            slideInHorizontally(
-                initialOffsetX = { it }, animationSpec = tween(300)
-            ) + fadeIn(animationSpec = tween(300))
-        }, exitTransition = {
-            slideOutHorizontally(
-                targetOffsetX = { -it / 2 }, animationSpec = tween(300)
-            ) + fadeOut(animationSpec = tween(300))
-        }) {
-            TelaEstoque(navController)
-//            TelaEstoque(paddingValues, viewModel = estoqueViewModel)
+        composable(route = "estoque") {
+            TelaEstoque(paddingValues, viewModel = estoqueViewModel)
         }
 
         // Essa aqui não precisa do parâmetro, ela já está configurada

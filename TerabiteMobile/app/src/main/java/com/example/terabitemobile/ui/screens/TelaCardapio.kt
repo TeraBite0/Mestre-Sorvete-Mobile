@@ -57,7 +57,6 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
 
     var searchText by remember { mutableStateOf("") }
 
-    // Observa os estados do ViewModel
     val produtos by viewModel.produtos.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val error by viewModel.error.observeAsState("")
@@ -108,7 +107,7 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewMo
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             stringResource(R.string.error_loadData_txt),
-                            color = Color.Red,
+                            color = tomVinho,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         )

@@ -56,7 +56,6 @@ fun BottomNavigationBar(navController: NavHostController) {
 
     Box {
         if (currentRoute == "inicio" ||
-            currentRoute == "recomendados" ||
             currentRoute == "destaques") {
             Image(
                 painter = painterResource(id = R.drawable.onda),

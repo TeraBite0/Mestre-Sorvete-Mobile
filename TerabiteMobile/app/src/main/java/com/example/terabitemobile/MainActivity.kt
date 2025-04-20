@@ -23,6 +23,7 @@ import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.data.models.BaixasModel
+import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
@@ -33,6 +34,7 @@ class MainActivity : ComponentActivity() {
     private val recomendacaoViewModel: RecomendacaoModel by viewModels()
     private val destaqueViewModel: DestaqueModel by viewModels()
     private val baixaViewModel: BaixasModel by viewModels()
+    private val estoqueViewModel: EstoqueModel by viewModels()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,9 +52,10 @@ class MainActivity : ComponentActivity() {
                     if (currentRoute != "login" &&
                         currentRoute != "ferramentas" &&
                         currentRoute != "esqueceu senha"
-                        ) BottomNavigationBar(
-                        navController
-                    )
+                        ) BottomNavigationBar(navController)
+                    if (currentRoute == "inicio") {
+
+                    }
                 }, modifier = Modifier.pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
@@ -65,7 +68,8 @@ class MainActivity : ComponentActivity() {
                         marcaViewModel = marcaViewModel,
                         recomendacaoViewModel = recomendacaoViewModel,
                         destaqueViewModel = destaqueViewModel,
-                        baixaViewModel = baixaViewModel
+                        baixaViewModel = baixaViewModel,
+                        estoqueViewModel = estoqueViewModel
                     )
                 }
             }

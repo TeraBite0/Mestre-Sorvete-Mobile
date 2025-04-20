@@ -1,5 +1,7 @@
 <resources>
+
     <string name="app_name" translatable="false">Mestre Sorvete</string>
+    <string name="user_name_placeholder" translatable="false">Josué</string>
 
     <!-- Login -->
     <string name="login_welcomeMsg_txt">Bem-vindo de volta!</string>
@@ -82,6 +84,31 @@
     <!-- Mensagens de erro -->
     <string name="error_loadData_txt">Não foi possível carregar os dados</string>
     <string name="error_tryAgain_label">Tentar novamente</string>
+    <string name="error_generic">Erro desconhecido</string>
 
+    <!-- Tela de Marcas -->
+    <string name="add_brand_dialog_title">Adicionar Marca</string>
+    <string name="brand_name_label">Nome da marca</string>
+    <string name="confirm_button_label">Confirmar</string>
+    <string name="brands_title">Marcas</string>
+    <string name="search_icon_desc">Buscar</string>
+    <string name="tag_icon_desc">Ícone de etiqueta</string>
+    <string name="delete_label">Excluir</string>
+    <string name="error_load_data_failure">Falha ao carregar dados</string>
+
+    <!-- Tela de Recomendações -->
+    <string name="recommendations_title">Recomendados</string>
+    <string name="edit_recommendation_title">Editar Recomendação</string>
+    <string name="search_product_label">Buscar produto</string>
+    <string name="success_update_recommendation">Recomendação atualizada com sucesso!</string>
+    <string name="error_update_recommendation">Erro ao atualizar: %s</string>
+    <string name="edit_icon_desc">Editar</string>
+    <string name="close_icon_desc">Fechar</string>
+    <string name="success_icon_desc">Sucesso</string>
+    <string name="product_image_desc">Imagem do produto</string>
+
+    <!-- Tela de Estoque -->
+    <string name="empty_stock_message">Nenhum item no estoque</string>
+    <string name="no_search_results">Nenhum resultado encontrado</string>
 
 </resources>
