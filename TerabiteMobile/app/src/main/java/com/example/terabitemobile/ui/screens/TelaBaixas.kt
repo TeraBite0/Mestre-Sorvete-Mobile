@@ -176,10 +176,17 @@ fun TelaBaixas(paddingValores: PaddingValues, viewModel: BaixasModel) {
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data início", style = MaterialTheme.typography.bodyMedium)
+                            Text("Data início", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
                         }
                     },
-                    placeholder = { Text("DD/MM/AAAA") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp)},
                     modifier = Modifier.weight(1f),
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp)
@@ -204,10 +211,17 @@ fun TelaBaixas(paddingValores: PaddingValues, viewModel: BaixasModel) {
                                 modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data fim", style = MaterialTheme.typography.bodyMedium)
+                            Text("Data fim", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
                         }
                     },
-                    placeholder = { Text("DD/MM/AAAA") },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp) },
                     modifier = Modifier.weight(1f),
                     singleLine = true,
                     shape = RoundedCornerShape(16.dp)

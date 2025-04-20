@@ -32,4 +32,5 @@ object RetrofitClient {
     val marcaService: MarcaApiService = retrofit.create(MarcaApiService::class.java)
     val recomendacaoService: RecomendacaoApiService = retrofit.create(RecomendacaoApiService::class.java)
     val estoqueService: EstoqueApiService = retrofit.create(EstoqueApiService::class.java)
+    val destaqueService: DestaqueApiService = retrofit.create(DestaqueApiService::class.java)
 }
