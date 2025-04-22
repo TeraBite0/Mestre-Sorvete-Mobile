@@ -28,6 +28,16 @@ data class CardapioItem(
     val temGluten: Boolean
 )
 
+data class CardapioPost (
+    val nome: String,
+    val nomeSubtipo: String,
+    val nomeMarca: String,
+    val preco: Double,
+    val qtdPorCaixas: Int,
+    val temLactose: Boolean,
+    val temGluten: Boolean
+)
+
 class CardapioModel : ViewModel() {
 
     private val _produtos = MutableLiveData<List<CardapioItem>?>()
@@ -63,7 +73,7 @@ class CardapioModel : ViewModel() {
         })
     }
 
-    fun adicionarProduto(novoProduto: CardapioItem) {
+    fun adicionarProduto(novoProduto: CardapioPost) {
         _isLoading.value = true
         RetrofitClient.cardapioService.adicionarProduto(novoProduto).enqueue(object : Callback<CardapioItem> {
             override fun onResponse(call: Call<CardapioItem>, response: Response<CardapioItem>) {

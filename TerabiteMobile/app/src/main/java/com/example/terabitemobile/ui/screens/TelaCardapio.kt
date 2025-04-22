@@ -709,16 +709,12 @@ fun EditBottomSheetContent(
                 if (isFormValid) {
                     if (product == null) {
                         val newId = (viewModel.produtos.value?.size ?: 0) + 1
-                        val newProduct = CardapioItem(
-                            id = newId,
+                        val newProduct = CardapioPost(
                             nome = editedName,
                             nomeMarca = editedMarca,
-                            tipo = editedTipo,
                             nomeSubtipo = editedSubtipo,
                             preco = editedPreco.toDoubleOrNull() ?: 0.0,
-                            qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
                             qtdPorCaixas = editedQtdPorCaixa.toIntOrNull() ?: 0,
-                            ativo = editedAtivo,
                             temLactose = editedLactose,
                             temGluten = editedGluten
                         )
