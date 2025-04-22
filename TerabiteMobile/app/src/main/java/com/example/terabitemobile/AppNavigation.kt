@@ -91,7 +91,7 @@ fun AppNavigation(
 
         // Destaque
         composable(route = "destaques") {
-            TelaDestaque(paddingValues, destaqueViewModel, cardapioViewModel)
+            TelaDestaque(paddingValues, destaqueViewModel = destaqueViewModel, produtosViewModel = cardapioViewModel)
         }
 
         // Saída estoque

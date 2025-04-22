@@ -1,19 +1,13 @@
 package com.example.terabitemobile.ui.screens
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+
 import androidx.compose.foundation.Image
-// import androidx.compose.foundation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-// import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -25,18 +19,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.example.terabitemobile.R
+import androidx.compose.ui.res.stringResource
 
 class PasswordVisualTransformationWithLastCharVisible2 : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
@@ -67,11 +59,10 @@ class PasswordVisualTransformationWithLastCharVisible2 : VisualTransformation {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaEsqueceuSenha(navController: NavHostController) {
-    var senha_nova by remember { mutableStateOf("") }
-    var repetir_senha by remember { mutableStateOf("") }
+    var senhaNova by remember { mutableStateOf("") }
+    var repetirSenha by remember { mutableStateOf("") }
 
     val poppins = FontFamily.SansSerif
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -94,7 +85,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
         ) {
             Spacer(modifier = Modifier.height(36.dp))
             Text(
-                text = "Redefinir Senha",
+                text = stringResource(R.string.reset_passwd_title_txt),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF1C97B),
@@ -105,7 +96,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Nova senha",
+                    text = stringResource(R.string.reset_passwd_field_txt),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
@@ -114,11 +105,11 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 TextField(
-                    value = senha_nova,
-                    onValueChange = { senha_nova = it },
+                    value = senhaNova,
+                    onValueChange = { senhaNova = it },
                     placeholder = {
                         Text(
-                            "digite sua nova senha...",
+                            stringResource(R.string.reset_passwd_placeholder_txt),
                             color = Color(0xFF000000).copy(alpha = 0.6f),
                             fontFamily = poppins,
                         )
@@ -128,7 +119,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    // visualTransformation = if (senha_nova.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    // visualTransformation = if (senhaNova.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
                     visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
@@ -138,7 +129,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Repetir nova senha",
+                    text = stringResource(R.string.reset_passwd_field2_txt),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White,
@@ -147,11 +138,11 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 TextField(
-                    value = repetir_senha,
-                    onValueChange = { repetir_senha = it },
+                    value = repetirSenha,
+                    onValueChange = { repetirSenha = it },
                     placeholder = {
                         Text(
-                            "repita a senha",
+                            stringResource(R.string.reset_passwd_placeholder2_txt),
                             color = Color(0xFF000000).copy(alpha = 0.6f),
                             fontFamily = poppins,
                         )
@@ -161,7 +152,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    // visualTransformation = if (repetir_senha.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
+                    // visualTransformation = if (repetirSenha.isEmpty()) PasswordVisualTransformationWithLastCharVisible2() else PasswordVisualTransformationWithLastCharVisible(),
                     visualTransformation = PasswordVisualTransformationWithLastCharVisible2(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
                 )
@@ -179,7 +170,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
                     .width(150.dp)
                     .height(50.dp)
             ) {
-                Text("Atualizar", color = Color.White, fontSize = 18.sp, fontFamily = poppins)
+                Text(stringResource(R.string.reset_passwd_btn_label), color = Color.White, fontSize = 18.sp, fontFamily = poppins)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -187,7 +178,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
         }
         Image(
             painter = painterResource(id = R.drawable.wave_login_cinza),
-            contentDescription = "Onda decorativa",
+            contentDescription = stringResource(R.string.accessibility_loginWave_img),
             modifier = Modifier
                 .fillMaxWidth()
                 .zIndex(1f)
@@ -201,7 +192,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Mestre Sorvete",
+            text = stringResource(R.string.app_name),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),
@@ -209,7 +200,7 @@ fun TelaEsqueceuSenha(navController: NavHostController) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "Bem-vindo de volta!",
+            text = stringResource(R.string.login_welcomeMsg_txt),
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = Color(0xFFF1C97B),

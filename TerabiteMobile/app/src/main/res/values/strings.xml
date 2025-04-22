@@ -9,9 +9,17 @@
     <string name="login_user_txt">Usuário</string>
     <string name="login_email_placeholder">exemplo@email.com</string>
     <string name="login_passw_txt">Senha</string>
-    <string name="login_passw_placeholder">Digite a sua senha...</string>
+    <string name="login_passw_placeholder">Digite a sua senha…</string>
     <string name="login_resetPassw_label">Esqueceu a senha?</string>
     <string name="login_loginBtn_label">Entrar</string>
+
+    <!-- Esqueceu Senha -->
+    <string name="reset_passwd_title_txt">Redefinir Senha</string>
+    <string name="reset_passwd_field_txt">Nova Senha</string>
+    <string name="reset_passwd_placeholder_txt">digite sua nova senha…</string>
+    <string name="reset_passwd_field2_txt">Repetir nova senha</string>
+    <string name="reset_passwd_placeholder2_txt">repita a senha</string>
+    <string name="reset_passwd_btn_label">Atualizar</string>
 
     <!-- Início -->
     <string name="home_manage_txt">Gerenciar</string>
@@ -74,7 +82,7 @@
     <string name="any_menu_txt">Cardápio</string>
     <string name="any_depletions_txt">Baixas</string>
     <string name="any_addItem_txt">Adicionar</string>
-    <string name="any_searchField_placeholder">Buscar...</string>
+    <string name="any_searchField_placeholder">Buscar…</string>
 
     <!-- Legendas de imagens -->
     <string name="accessibility_loginWave_img">Onda decorativa</string>
@@ -106,6 +114,16 @@
     <string name="close_icon_desc">Fechar</string>
     <string name="success_icon_desc">Sucesso</string>
     <string name="product_image_desc">Imagem do produto</string>
+
+    <!-- Tela de Destaque -->
+    <string name="destaque_title">Destaque</string>
+    <string name="destaque_brand_label">Marca: </string>
+    <string name="destaque_type_label">Tipo: </string>
+    <string name="destaque_edit_button">Alterar Destaque</string>
+    <string name="destaque_edit_title">Editar Destaque</string>
+    <string name="destaque_search_label">Buscar produto</string>
+    <string name="destaque_text_label">Texto do Destaque</string>
+    <string name="destaque_success_message">Destaque atualizado com sucesso!</string>
 
     <!-- Tela de Estoque -->
     <string name="empty_stock_message">Nenhum item no estoque</string>
