@@ -1,7 +1,6 @@
 package com.example.terabitemobile.ui.screens
 
 import androidx.compose.foundation.Image
-// import androidx.compose.foundation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -10,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-// import androidx.compose.ui.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -189,7 +187,7 @@ fun TelaLogin(navController: NavHostController) {
                     .width(150.dp)
                     .height(50.dp)
             ) {
-                Text("Entrar", color = Color.White, fontSize = 18.sp)
+                Text(stringResource(R.string.login_loginBtn_label), color = Color.White, fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(40.dp))

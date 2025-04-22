@@ -25,7 +25,9 @@ import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
+import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.CardapioItem
 import com.example.terabitemobile.data.models.DestaqueItem
@@ -38,16 +40,16 @@ import com.example.terabitemobile.ui.theme.fundoCinza
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaDestaque(paddingValores: PaddingValues, DestaqueViewModel: DestaqueModel, ProdutosViewModel: CardapioModel) {
+fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel, produtosViewModel: CardapioModel) {
 
-    val destaque by DestaqueViewModel.destaque.observeAsState()
+    val destaque by destaqueViewModel.destaque.observeAsState()
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedDestaque by remember { mutableStateOf<DestaqueItem?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    val produtos by ProdutosViewModel.produtos.observeAsState()
+    val produtos by produtosViewModel.produtos.observeAsState()
 
     Scaffold(
         containerColor = background,
@@ -60,7 +62,7 @@ fun TelaDestaque(paddingValores: PaddingValues, DestaqueViewModel: DestaqueModel
         ) {
             ProfileDestaque()
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Destaque", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(stringResource(R.string.destaque_title), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(16.dp))
             destaque?.let { item ->
                 DestaqueListItem(
@@ -86,7 +88,7 @@ fun TelaDestaque(paddingValores: PaddingValues, DestaqueViewModel: DestaqueModel
                         }
                     },
                     tomVinho = tomVinho,
-                    viewModel = DestaqueViewModel
+                    viewModel = destaqueViewModel
                 )
             }
         }
@@ -103,18 +105,18 @@ private fun ProfileDestaque() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Usuário",
+                contentDescription = stringResource(R.string.accessibility_userProfile_img),
                 tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column {
                 Text(
-                    "Josué",
+                    stringResource(R.string.user_name_placeholder),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -161,13 +163,13 @@ private fun DestaqueListItem(
                     .fillMaxWidth()
                     .background(fundoCinza, RoundedCornerShape(8.dp))
                     .padding(4.dp))
-                { Text(text = destaque.produto.nomeMarca, fontSize = 12.sp) }
+                { Text(text = stringResource(R.string.destaque_brand_label) + destaque.produto.nomeMarca, fontSize = 12.sp) }
                 Spacer(modifier = Modifier.height(6.dp))
                 Row (modifier = Modifier
                     .fillMaxWidth()
                     .background(fundoCinza, RoundedCornerShape(8.dp))
                     .padding(5.dp))
-                { Text(text = destaque.produto.tipo, fontSize = 12.sp) }
+                { Text(text = stringResource(R.string.destaque_type_label) + destaque.produto.tipo, fontSize = 12.sp) }
                 Spacer(modifier = Modifier.height(12.dp))
             }
         }
@@ -190,10 +192,10 @@ private fun DestaqueListItem(
         colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
         modifier = Modifier.fillMaxWidth()
     ) {
-        Text("Alterar Destaque", color = Color.White)
+        Text(stringResource(R.string.destaque_edit_button), color = Color.White)
         Icon(
             imageVector = Icons.Filled.Edit,
-            contentDescription = "Editar",
+            contentDescription = stringResource(R.string.edit_icon_desc),
             tint = Color.White,
             modifier = Modifier
                 .padding(start = 6.dp)
@@ -202,8 +204,6 @@ private fun DestaqueListItem(
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheetContent(
     destaque: DestaqueItem?,
@@ -240,14 +240,14 @@ fun BottomSheetContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Editar Destaque",
+                text = stringResource(R.string.destaque_edit_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Fechar",
+                    contentDescription = stringResource(R.string.close_icon_desc),
                     tint = tomVinho
                 )
             }
@@ -297,7 +297,7 @@ fun BottomSheetContent(
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text("Buscar produto") },
+            label = { Text(stringResource(R.string.destaque_search_label)) },
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
@@ -355,7 +355,7 @@ fun BottomSheetContent(
         OutlinedTextField(
             value = editedText,
             onValueChange = { editedText = it },
-            label = { Text("Texto do Destaque") },
+            label = { Text(stringResource(R.string.destaque_text_label)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
@@ -403,7 +403,7 @@ fun BottomSheetContent(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Salvar Alterações", fontSize = 16.sp)
+                Text(stringResource(R.string.save_changes_button), fontSize = 16.sp)
             }
         }
 
@@ -418,11 +418,11 @@ fun BottomSheetContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Check,
-                    contentDescription = "Sucesso",
+                    contentDescription = stringResource(R.string.success_icon_desc),
                     tint = Color.Green
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Destaque atualizado com sucesso!", color = Color.Green)
+                Text(stringResource(R.string.destaque_success_message), color = Color.Green)
             }
         }
 

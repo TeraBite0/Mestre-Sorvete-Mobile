@@ -8,11 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.terabitemobile.ui.screens.TelaInicio
 import TelaFerramentas
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
@@ -91,7 +86,7 @@ fun AppNavigation(
 
         // Destaque
         composable(route = "destaques") {
-            TelaDestaque(paddingValues, viewModel = destaqueViewModel)
+            TelaDestaque(paddingValues, destaqueViewModel = destaqueViewModel, produtosViewModel = cardapioViewModel)
         }
 
         // Saída estoque
