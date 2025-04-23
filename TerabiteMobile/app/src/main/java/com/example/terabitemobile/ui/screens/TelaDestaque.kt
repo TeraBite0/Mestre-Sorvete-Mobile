@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
@@ -43,6 +44,8 @@ import com.example.terabitemobile.ui.theme.fundoCinza
 fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel, produtosViewModel: CardapioModel) {
 
     val destaque by destaqueViewModel.destaque.observeAsState()
+    val isLoading by destaqueViewModel.isLoading.observeAsState(initial = false)
+    val error by destaqueViewModel.error.observeAsState("")
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedDestaque by remember { mutableStateOf<DestaqueItem?>(null) }
@@ -64,14 +67,48 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
             Spacer(modifier = Modifier.height(16.dp))
             Text(stringResource(R.string.destaque_title), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(16.dp))
-            destaque?.let { item ->
-                DestaqueListItem(
-                    destaque = item,
-                    onEditClick = {
-                        selectedDestaque = item
-                        showBottomSheet = true
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                // Mostra mensagem de erro se houver falha
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.error_loadData_txt),
+                            color = tomVinho,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { destaqueViewModel.carregarDestaque() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(stringResource(R.string.error_tryAgain_label))
+                        }
                     }
-                )
+                }
+            }
+            else {
+                destaque?.let { item ->
+                    DestaqueListItem(
+                        destaque = item,
+                        onEditClick = {
+                            selectedDestaque = item
+                            showBottomSheet = true
+                        }
+                    )
+                }
             }
         }
         if (showBottomSheet) {
@@ -212,6 +249,9 @@ fun BottomSheetContent(
     tomVinho: Color,
     viewModel: DestaqueModel
 ) {
+    val errorTemplate = stringResource(R.string.error_update_recommendation)
+    val defaultError = stringResource(R.string.error_generic)
+
     val coroutineScope = rememberCoroutineScope()
     var isLoading by remember { mutableStateOf(false) }
     var showSuccessMessage by remember { mutableStateOf(false) }
@@ -382,7 +422,9 @@ fun BottomSheetContent(
                             delay(1500)
                             onClose()
                         } catch (e: Exception) {
-                            snackbarHostState.showSnackbar("Erro ao atualizar: ${e.message}")
+                            val errorMsg = e.message ?: defaultError
+                            val fullMessage = errorTemplate.replace("%s", errorMsg)
+                            snackbarHostState.showSnackbar(fullMessage)
                         } finally {
                             isLoading = false
                         }

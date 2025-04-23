@@ -4,15 +4,15 @@ import com.example.terabitemobile.data.models.DestaqueItem
 import retrofit2.Call
 import retrofit2.http.*
 
-data class DestaqueUpdateRequest(
-    val produtoId: Int,
-    val texto: String
-)
 
 interface DestaqueApiService {
+    data class DestaqueUpdateRequest(
+        val produtoId: Int,
+        val texto: String
+    )
     @GET("produtos/destaque")
     fun getDestaque(): Call<DestaqueItem>
 
     @PUT("produtos/destaque")
-    fun putDestaque(@Body body: DestaqueUpdateRequest): Call<DestaqueItem>
+    fun putDestaque(@Body request: DestaqueUpdateRequest): Call<DestaqueItem>
 }
