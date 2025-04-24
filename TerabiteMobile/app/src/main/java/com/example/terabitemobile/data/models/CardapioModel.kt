@@ -29,6 +29,7 @@ data class CardapioItem(
 )
 
 data class CardapioPost (
+    val id: Int,
     val nome: String,
     val nomeSubtipo: String,
     val nomeMarca: String,
@@ -97,17 +98,14 @@ class CardapioModel : ViewModel() {
         })
     }
 
-    fun atualizarProduto(produtoAtualizado: CardapioItem) {
+    fun atualizarProduto(produtoAtualizado: CardapioPost) {
         _isLoading.value = true
         RetrofitClient.cardapioService.atualizarProduto(produtoAtualizado.id, produtoAtualizado)
             .enqueue(object : Callback<CardapioItem> {
                 override fun onResponse(call: Call<CardapioItem>, response: Response<CardapioItem>) {
                     _isLoading.value = false
                     if (response.isSuccessful) {
-                        val listaAtualizada = _produtos.value?.map { item ->
-                            if (item.id == produtoAtualizado.id) produtoAtualizado else item
-                        }
-                        _produtos.value = listaAtualizada
+                        carregarProdutos()
                     } else {
                         _error.value = "Erro ao atualizar: ${response.code()}"
                     }

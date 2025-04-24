@@ -15,6 +15,6 @@ interface CardapioApiService {
     @PUT("produtos/{id}")
     fun atualizarProduto(
         @Path("id") id: Int,
-        @Body produto: CardapioItem
+        @Body produto: CardapioPost
     ): Call<CardapioItem>
 }

@@ -352,6 +352,7 @@ fun EditBottomSheetContent(
     val subtipoViewModel: SubtipoModel = viewModel()
     val marcasViewModel: MarcaModel = viewModel()
 
+    var editedId by remember { mutableStateOf(product?.id) }
     var editedName by remember { mutableStateOf(product?.nome ?: "") }
     var editedMarca by remember { mutableStateOf(product?.nomeMarca ?: "") }
     var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
@@ -710,6 +711,7 @@ fun EditBottomSheetContent(
                     if (product == null) {
                         val newId = (viewModel.produtos.value?.size ?: 0) + 1
                         val newProduct = CardapioPost(
+                            id = 0,
                             nome = editedName,
                             nomeMarca = editedMarca,
                             nomeSubtipo = editedSubtipo,
@@ -719,20 +721,24 @@ fun EditBottomSheetContent(
                             temGluten = editedGluten
                         )
                         viewModel.adicionarProduto(newProduct)
+                        viewModel.carregarProdutos()
                     } else {
-                        val updatedProduct = product.copy(
-                            nome = editedName,
-                            nomeMarca = editedMarca,
-                            tipo = editedTipo,
-                            nomeSubtipo = editedSubtipo,
-                            preco = editedPreco.toDoubleOrNull() ?: 0.0,
-                            qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
-                            qtdPorCaixas = editedQtdPorCaixa.toIntOrNull() ?: 0,
-                            ativo = editedAtivo,
-                            temLactose = editedLactose,
-                            temGluten = editedGluten
-                        )
-                        viewModel.atualizarProduto(updatedProduct)
+                        val updatedProduct = editedId?.let {
+                            CardapioPost(
+                                id = it,
+                                nome = editedName,
+                                nomeMarca = editedMarca,
+                                nomeSubtipo = editedSubtipo,
+                                preco = editedPreco.toDoubleOrNull() ?: 0.0,
+                                qtdPorCaixas = editedQtdPorCaixa.toIntOrNull() ?: 0,
+                                temLactose = editedLactose,
+                                temGluten = editedGluten
+                            )
+                        }
+
+                        if (updatedProduct != null) {
+                            viewModel.atualizarProduto(updatedProduct)
+                        }
                     }
                     onClose()
                 }
