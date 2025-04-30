@@ -15,8 +15,6 @@
 .cxx
 local.properties
 
-**/RetrofitClient.kt
-
 # Cache de dependências do Gradle
 /.gradle/
 /build/

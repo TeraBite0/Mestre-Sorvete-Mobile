@@ -1,14 +1,14 @@
 package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -20,114 +20,140 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Icecream
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.terabitemobile.data.models.BaixaItem
+import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.BaixasModel
+import com.example.terabitemobile.data.models.SaidaEstoque
 import com.example.terabitemobile.ui.theme.background
-import com.example.terabitemobile.ui.theme.tomBege
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.example.terabitemobile.ui.theme.tomMarcas
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaBaixas(paddingValores: PaddingValues, viewModel: BaixasModel) {
+fun TelaBaixas(paddingScaffold: PaddingValues, viewModel: BaixasModel) {
 
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
-    var baixaName by remember { mutableStateOf("") }
-    var qtdLotesText by remember { mutableStateOf("") }
-    // NÃO ALTERAR FORMATAÇÃO!!
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    var dataInicioTexto by remember { mutableStateOf("") }
-    var dataFimTexto by remember { mutableStateOf("") }
-    var dataInicioFiltro by remember { mutableStateOf<LocalDate?>(null) }
-    var dataFimFiltro by remember { mutableStateOf<LocalDate?>(null) }
-    var dataBaixaText by remember { mutableStateOf("") }
-//    var dataBaixa by remember { mutableStateOf(LocalDate.now()) }
-    val baixas by viewModel.baixas.observeAsState()
+    var selectedDate by remember { mutableStateOf("04/12/1999") }
+    var selectedProductId by remember { mutableStateOf(0) }
+    var qtdCaixas by remember { mutableStateOf("") }
 
-    val filteredBaixas = remember(baixas, searchText, dataInicioFiltro, dataFimFiltro) {
-        baixas?.filter { baixa ->
-            val nomeMatch = baixa.nome.contains(searchText, ignoreCase = true)
-            val dataDentroDoIntervalo = baixa.data.let { data ->
-                when {
-                    dataInicioFiltro != null && dataFimFiltro != null -> data >= dataInicioFiltro && data <= dataFimFiltro
-                    dataInicioFiltro != null -> data >= dataInicioFiltro
-                    dataFimFiltro != null -> data <= dataFimFiltro
-                    else -> true
-                }
+    val baixas by viewModel.baixas.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val error by viewModel.error.observeAsState("")
+    val produtos by viewModel.produtos.observeAsState(initial = emptyList())
+
+    val filteredBaixas = remember(baixas, searchText) {
+        baixas?.flatMap { saida ->
+            saida.saidaEstoques.filter {
+                it.produto.nome.contains(searchText, ignoreCase = true)
             }
-            nomeMatch && dataDentroDoIntervalo
         } ?: emptyList()
     }
 
-
     if (showDialog) {
         AlertDialog(
+            containerColor = Color.White,
             onDismissRequest = { showDialog = false },
-            title = { Text("Adicionar Baixa") },
+            title = { Text(stringResource(R.string.add_outflow_dialog_title)) },
             text = {
                 Column {
+                    // Date Picker
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.date_label),
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Button(
+                            onClick = { /* TODO: Show date picker */ },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(selectedDate.toString())
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Product Dropdown
+                    var expanded by remember { mutableStateOf(false) }
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        OutlinedTextField(
+                            value = produtos.find { it.id == selectedProductId }?.nome ?: "",
+                            onValueChange = {},
+                            label = { Text(stringResource(R.string.product_label)) },
+                            modifier = Modifier.fillMaxWidth(),
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(Icons.Default.ArrowDropDown, "")
+                            },
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = tomVinho,
+                                unfocusedBorderColor = Color.Gray
+                            )
+                        )
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            produtos.forEach { produto ->
+                                DropdownMenuItem(
+                                    text = { Text(produto.nome) },
+                                    onClick = {
+                                        selectedProductId = produto.id
+                                        expanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Quantity Input
                     OutlinedTextField(
-                        value = baixaName,
-                        onValueChange = { baixaName = it },
-                        label = { Text("Nome do lote") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        value = qtdLotesText,
-                        onValueChange = { qtdLotesText = it },
-                        label = { Text("Quantidade de lotes") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    OutlinedTextField(
-                        value = dataBaixaText,
-                        onValueChange = { dataBaixaText = it },
-                        label = { Text("Data da baixa (DD/MM/AAAA)") },
-                        modifier = Modifier.fillMaxWidth()
+                        value = qtdCaixas,
+                        onValueChange = { qtdCaixas = it },
+                        label = { Text(stringResource(R.string.boxes_quantity_label)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = tomVinho,
+                            unfocusedBorderColor = Color.Gray
+                        )
                     )
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        if (baixaName.isNotBlank()
-                            && qtdLotesText.isNotBlank()
-                            && dataBaixaText.isNotBlank()
-                        ) {
-                            val qtd = qtdLotesText.toIntOrNull()
-                            val data = runCatching {
-                                LocalDate.parse(
-                                    dataBaixaText,
-                                    formatter
-                                )
-                            }.getOrNull()
-
-                            if (qtd != null && data != null) {
-                                viewModel.addBaixa(baixaName, qtd, data)
-                                baixaName = ""
-                                qtdLotesText = ""
-                                dataBaixaText = ""
-                                showDialog = false
-                            }
+                        if (selectedProductId > 0 && qtdCaixas.isNotBlank()) {
+                            viewModel.addBaixa(
+                                selectedDate,
+                                selectedProductId,
+                                qtdCaixas.toInt()
+                            )
+                            showDialog = false
+                            qtdCaixas = ""
                         }
-
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                 ) {
-                    Text("Confirmar")
+                    Text(stringResource(R.string.confirm_button_label))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDialog = false }
                 ) {
-                    Text("Cancelar", color = tomVinho)
+                    Text(stringResource(R.string.dialog_cancel_button))
                 }
             }
         )
@@ -139,226 +165,78 @@ fun TelaBaixas(paddingValores: PaddingValues, viewModel: BaixasModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(
-                    top = paddingValores.calculateTopPadding() + 16.dp,
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = paddingValores.calculateBottomPadding()
-                )
+                .padding(paddingScaffold)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             ProfileBaixas(onAddClick = { showDialog = true })
             Spacer(modifier = Modifier.height(16.dp))
-            CampoBusca(
-                searchText = searchText,
-                onSearchTextChanged = { searchText = it }
+            Text(
+                stringResource(R.string.outflows_title),
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = dataInicioTexto,
-                    onValueChange = {
-                        dataInicioTexto = it
-                        try {
-                            dataInicioFiltro = LocalDate.parse(it, formatter)
-                        } catch (e: Exception) {
-                            dataInicioFiltro = null
-                        }
-                    },
-                    label = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.CalendarToday,
-                                contentDescription = "Data",
-                                tint = Color.Black,
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data início", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
-                        }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = tomVinho,
-                        unfocusedBorderColor = Color.Gray,
-                        cursorColor = tomVinho,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp)},
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
-                )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = dataFimTexto,
-                    onValueChange = {
-                        dataFimTexto = it
-                        try {
-                            dataFimFiltro = LocalDate.parse(it, formatter)
-                        } catch (e: Exception) {
-                            dataFimFiltro = null
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.error_load_data_failure),
+                            color = tomVinho,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.carregarBaixas() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(stringResource(R.string.error_tryAgain_label))
                         }
-                    },
-                    label = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.CalendarToday,
-                                contentDescription = "Data",
-                                tint = Color.Black,
-                                modifier = Modifier.size(16.dp)
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(5.dp)
+                        .weight(1f)
+                ) {
+                    baixas?.forEach { saida ->
+                        item {
+                            Text(
+                                text = saida.dtSaida,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(vertical = 8.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data fim", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
                         }
-                    },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = tomVinho,
-                        unfocusedBorderColor = Color.Gray,
-                        cursorColor = tomVinho,
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White
-                    ),
-                    placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp) },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true,
-                    shape = RoundedCornerShape(16.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
-            Spacer(modifier = Modifier.height(16.dp))
-//            LazyColumn(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .weight(1f)
-//            ) {
-//                items(filteredBaixas) { baixa ->
-//                    BaixaListItem(
-//                        baixa = baixa
-////                        onDeleteClick = { viewModel.deleteBaixa(baixa.id) }
-//                    )
-//                }
-//            }
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(4.dp)
-            ) {
-                items(filteredBaixas) { baixa ->
-                    BaixaListItem(baixa = baixa)
+
+                        items(saida.saidaEstoques) { baixa ->
+                            BaixaListItem(
+                                baixa = baixa,
+                                onDeleteClick = { /* TODO */ }
+                            )
+                        }
+                    }
                 }
             }
-
         }
     }
 }
-
-//, onDeleteClick: () -> Unit
-@Composable
-private fun BaixaListItem(baixa: BaixaItem) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp),
-//            .height(150.dp),
-        colors = CardDefaults.cardColors(containerColor = tomBege),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier
-//                    .fillMaxWidth()
-                    .background(tomVinho, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarToday,
-                    contentDescription = "Data",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = baixa.data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(tomVinho, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddBox,
-                    contentDescription = "Quantidade",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "${baixa.qtdLotes}",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(tomVinho, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Icecream,
-                    contentDescription = "Produto",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = baixa.nome,
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-            }
-        }
-    }
-}
-
-//            IconButton(onClick = onDeleteClick) {
-//                Icon(
-//                    imageVector = Icons.Filled.Close,
-//                    contentDescription = "Remover",
-//                    tint = Color.White,
-//                    modifier = Modifier
-//                        .size(36.dp)
-//                        .background(tomVinho, shape = RoundedCornerShape(12.dp))
-//                        .padding(6.dp)
-//                )
-//            }
 
 @Composable
 private fun ProfileBaixas(onAddClick: () -> Unit) {
@@ -370,18 +248,18 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Usuário",
+                contentDescription = stringResource(R.string.accessibility_userProfile_img),
                 tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column {
                 Text(
-                    "Josué",
+                    stringResource(R.string.user_name_placeholder),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -395,12 +273,12 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Adicionar",
+                contentDescription = stringResource(R.string.any_addItem_txt),
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                text = "Adicionar",
+                text = stringResource(R.string.any_addItem_txt),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -408,27 +286,48 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
 }
 
 @Composable
-private fun CampoBusca(
-    searchText: String,
-    onSearchTextChanged: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = searchText,
-        onValueChange = onSearchTextChanged,
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+private fun BaixaListItem(baixa: SaidaEstoque, onDeleteClick: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Transparent, RoundedCornerShape(16.dp)),
-        shape = RoundedCornerShape(16.dp),
-        singleLine = true,
-        textStyle = MaterialTheme.typography.bodyMedium,
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = tomVinho,
-            unfocusedBorderColor = Color.Gray,
-            cursorColor = tomVinho,
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White
+            .padding(vertical = 8.dp)
+            .background(Color.White, RoundedCornerShape(8.dp))
+            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+            .height(60.dp)
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(R.drawable.box),
+            contentDescription = stringResource(R.string.box_icon_desc),
+            modifier = Modifier
+                .padding(end = 10.dp)
+                .size(25.dp),
+            colorFilter = ColorFilter.tint(tomMarcas)
         )
-    )
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = baixa.produto.nome,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "${baixa.qtdCaixasSaida} ${stringResource(R.string.boxes_label)}",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+        }
+
+        IconButton(
+            onClick = onDeleteClick,
+            modifier = Modifier.size(40.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = stringResource(R.string.delete_label),
+                tint = tomVinho
+            )
+        }
+    }
 }
+

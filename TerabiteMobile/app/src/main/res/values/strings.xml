@@ -129,4 +129,13 @@
     <string name="empty_stock_message">Nenhum item no estoque</string>
     <string name="no_search_results">Nenhum resultado encontrado</string>
 
+    <!-- Tela de Baixas -->
+    <string name="add_outflow_dialog_title">Adicionar Baixa</string>
+    <string name="outflows_title">Baixas de Estoque</string>
+    <string name="date_label">Data:</string>
+    <string name="product_label">Produto</string>
+    <string name="boxes_quantity_label">Quantidade de Caixas</string>
+    <string name="boxes_label">caixas</string>
+    <string name="box_icon_desc">Ícone de caixa</string>
+
 </resources>

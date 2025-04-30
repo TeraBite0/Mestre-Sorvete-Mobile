@@ -2,8 +2,11 @@ package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.CardapioApiService
 import com.example.terabitemobile.data.api.RetrofitClient
 import com.google.gson.annotations.SerializedName
+import org.koin.compose.koinInject
+import org.koin.compose.rememberKoinInject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,7 +42,7 @@ data class CardapioPost (
     val temGluten: Boolean
 )
 
-class CardapioModel : ViewModel() {
+class CardapioModel(val cardapioService: CardapioApiService) : ViewModel() {
 
     private val _produtos = MutableLiveData<List<CardapioItem>?>()
     val produtos: MutableLiveData<List<CardapioItem>?> = _produtos
@@ -57,7 +60,7 @@ class CardapioModel : ViewModel() {
     fun carregarProdutos() {
         _error.value = ""
         _isLoading.value = true
-        RetrofitClient.cardapioService.getProdutos().enqueue(object : Callback<List<CardapioItem>> {
+        cardapioService.getProdutos().enqueue(object : Callback<List<CardapioItem>> {
             override fun onResponse(call: Call<List<CardapioItem>>, response: Response<List<CardapioItem>>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

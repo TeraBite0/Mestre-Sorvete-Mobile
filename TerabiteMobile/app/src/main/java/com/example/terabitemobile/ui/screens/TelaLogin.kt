@@ -32,6 +32,8 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.terabitemobile.data.models.UsuarioTokenModel
+import org.koin.compose.koinInject
 
 class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
@@ -61,7 +63,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaLogin(navController: NavHostController) {
+fun TelaLogin(navController: NavHostController, usuarioaAtual: UsuarioTokenModel = koinInject()) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
@@ -178,6 +180,15 @@ fun TelaLogin(navController: NavHostController) {
 
             Button(
                 onClick = {
+                    /*
+                    Autenticação de verdade
+                    1. fazer a chamada a API pegando o token
+                    2. alterar os dados do UsuarioTokenModel que está no koin
+                     */
+                    usuarioaAtual.userId = 0
+                    usuarioaAtual.email = "email que veio da api"
+                    usuarioaAtual.token = "token que veio da api"
+
                     navController.popBackStack()
                     navController.navigate("inicio")
                 },
