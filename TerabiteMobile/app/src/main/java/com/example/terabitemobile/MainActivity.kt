@@ -27,14 +27,15 @@ import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val cardapioViewModel: CardapioModel by viewModels()
-    private val marcaViewModel: MarcaModel by viewModels()
-    private val recomendacaoViewModel: RecomendacaoModel by viewModels()
-    private val destaqueViewModel: DestaqueModel by viewModels()
-    private val baixaViewModel: BaixasModel by viewModels()
-    private val estoqueViewModel: EstoqueModel by viewModels()
+    private val cardapioViewModel: CardapioModel by viewModel()
+    private val marcaViewModel: MarcaModel by viewModel()
+    private val recomendacaoViewModel: RecomendacaoModel by viewModel()
+    private val destaqueViewModel: DestaqueModel by viewModel()
+    private val baixaViewModel: BaixasModel by viewModel()
+    private val estoqueViewModel: EstoqueModel by viewModel()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {

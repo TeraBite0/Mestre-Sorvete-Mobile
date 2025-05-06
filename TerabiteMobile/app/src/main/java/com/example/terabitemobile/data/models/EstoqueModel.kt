@@ -2,6 +2,7 @@ package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.EstoqueApiService
 import com.example.terabitemobile.data.api.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,7 +16,7 @@ data class EstoqueItem (
     val qtdPorCaixas: Int
 )
 
-class EstoqueModel : ViewModel() {
+class EstoqueModel(val estoqueService: EstoqueApiService) : ViewModel() {
     private val _estoque = MutableLiveData<List<EstoqueItem>?>()
     val estoque: MutableLiveData<List<EstoqueItem>?> = _estoque
 
@@ -32,7 +33,7 @@ class EstoqueModel : ViewModel() {
     fun carregarEstoque() {
         _error.value = ""
         _isLoading.value = true
-        RetrofitClient.estoqueService.getEstoque().enqueue(object : Callback<List<EstoqueItem>> {
+        estoqueService.getEstoque().enqueue(object : Callback<List<EstoqueItem>> {
             override fun onResponse(call: Call<List<EstoqueItem>>, response: Response<List<EstoqueItem>>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

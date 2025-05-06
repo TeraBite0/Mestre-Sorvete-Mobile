@@ -3,6 +3,7 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.RetrofitClient
+import com.example.terabitemobile.data.api.TiposApiService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,7 +24,7 @@ data class SubtipoPost(
     val nomeTipo: String
 )
 
-class SubtipoModel : ViewModel() {
+class SubtipoModel(val subtipoService: TiposApiService) : ViewModel() {
 
     private val _subtipos = MutableLiveData<List<SubtipoItem>?>()
     val subtipos: MutableLiveData<List<SubtipoItem>?> = _subtipos
@@ -41,7 +42,7 @@ class SubtipoModel : ViewModel() {
     fun carregarSubtipos() {
         _error.value = ""
         _isLoading.value = true
-        RetrofitClient.subtipoService.getSubtipos().enqueue(object : Callback<List<SubtipoItem>> {
+        subtipoService.getSubtipos().enqueue(object : Callback<List<SubtipoItem>> {
             override fun onResponse(call: Call<List<SubtipoItem>>, response: Response<List<SubtipoItem>>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

@@ -147,7 +147,6 @@ fun TelaEstoque(paddingBottom: PaddingValues, viewModel: EstoqueModel) {
                         }
                     }
                 } else {
-                    // Exibe a lista de itens
                     androidx.compose.foundation.lazy.LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
@@ -245,7 +244,7 @@ private fun ItemEstoque(item: EstoqueItem) {
     Column(
         modifier = Modifier
             .shadow(
-                elevation = 9.dp,
+                elevation = 10.dp,
                 shape = RoundedCornerShape(16.dp)
             )
             .background(

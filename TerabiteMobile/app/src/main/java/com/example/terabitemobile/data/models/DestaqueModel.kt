@@ -2,6 +2,7 @@ package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.DestaqueApiService
 import com.example.terabitemobile.data.api.DestaqueApiService.DestaqueUpdateRequest
 import com.example.terabitemobile.data.api.RetrofitClient
 import retrofit2.Call
@@ -14,7 +15,7 @@ data class DestaqueItem(
     val texto: String
 )
 
-class DestaqueModel : ViewModel() {
+class DestaqueModel(val destaqueService: DestaqueApiService) : ViewModel() {
 
     private val _destaque = MutableLiveData<DestaqueItem?>()
     val destaque: MutableLiveData<DestaqueItem?> = _destaque
@@ -33,7 +34,7 @@ class DestaqueModel : ViewModel() {
         _error.value = ""
         _isLoading.value = true
 
-        RetrofitClient.destaqueService.getDestaque().enqueue(object :
+        destaqueService.getDestaque().enqueue(object :
             Callback<DestaqueItem> {
             override fun onResponse(
                 call: Call<DestaqueItem>, response: Response<DestaqueItem>
@@ -59,7 +60,7 @@ class DestaqueModel : ViewModel() {
 
         val request = DestaqueUpdateRequest(produtoId = produtoId, texto = texto)
 
-        RetrofitClient.destaqueService.putDestaque(request).enqueue(object : Callback<DestaqueItem> {
+        destaqueService.putDestaque(request).enqueue(object : Callback<DestaqueItem> {
             override fun onResponse(call: Call<DestaqueItem>, response: Response<DestaqueItem>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

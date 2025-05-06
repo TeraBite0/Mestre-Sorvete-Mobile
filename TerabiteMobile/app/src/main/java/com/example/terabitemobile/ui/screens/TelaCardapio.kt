@@ -45,11 +45,12 @@ import com.example.terabitemobile.data.models.SubtipoModel
 import com.example.terabitemobile.ui.theme.fundoCinza
 import com.example.terabitemobile.ui.theme.tomBege
 import com.example.terabitemobile.R
+import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = viewModel()) {
+fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = koinViewModel()) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var selectedProduct by remember { mutableStateOf<CardapioItem?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)

@@ -79,7 +79,7 @@ class CardapioModel(val cardapioService: CardapioApiService) : ViewModel() {
 
     fun adicionarProduto(novoProduto: CardapioPost) {
         _isLoading.value = true
-        RetrofitClient.cardapioService.adicionarProduto(novoProduto).enqueue(object : Callback<CardapioItem> {
+        cardapioService.adicionarProduto(novoProduto).enqueue(object : Callback<CardapioItem> {
             override fun onResponse(call: Call<CardapioItem>, response: Response<CardapioItem>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
@@ -103,7 +103,7 @@ class CardapioModel(val cardapioService: CardapioApiService) : ViewModel() {
 
     fun atualizarProduto(produtoAtualizado: CardapioPost) {
         _isLoading.value = true
-        RetrofitClient.cardapioService.atualizarProduto(produtoAtualizado.id, produtoAtualizado)
+        cardapioService.atualizarProduto(produtoAtualizado.id, produtoAtualizado)
             .enqueue(object : Callback<CardapioItem> {
                 override fun onResponse(call: Call<CardapioItem>, response: Response<CardapioItem>) {
                     _isLoading.value = false

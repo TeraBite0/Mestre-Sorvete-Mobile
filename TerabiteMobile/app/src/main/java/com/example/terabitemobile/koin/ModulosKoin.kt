@@ -1,19 +1,12 @@
 package com.example.terabitemobile.koin
 
 
-import com.example.terabitemobile.data.api.CardapioApiService
-import com.example.terabitemobile.data.api.RetrofitClient
-import com.example.terabitemobile.data.api.RetrofitClient.BASE_URL
-import com.example.terabitemobile.data.api.RetrofitClient.getRetrofit
-import com.example.terabitemobile.data.api.RetrofitClient.loggingInterceptor
-import com.example.terabitemobile.data.api.TokenInterceptor
-import com.example.terabitemobile.data.models.CardapioModel
-import com.example.terabitemobile.data.models.UsuarioTokenModel
+import com.example.terabitemobile.data.api.*
+import com.example.terabitemobile.data.models.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.dsl.module
-
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -49,6 +42,54 @@ val moduloGeral = module {
 
     viewModel<CardapioModel> {
         CardapioModel(get<CardapioApiService>())
+    }
+
+    factory<EstoqueApiService> {
+        get<Retrofit>().create(EstoqueApiService::class.java)
+    }
+
+    viewModel<EstoqueModel> {
+        EstoqueModel(get<EstoqueApiService>())
+    }
+
+    factory<SaidaEstoqueApiService> {
+        get<Retrofit>().create(SaidaEstoqueApiService::class.java)
+    }
+
+    viewModel<BaixasModel> {
+        BaixasModel(get<SaidaEstoqueApiService>())
+    }
+
+    factory<DestaqueApiService> {
+        get<Retrofit>().create(DestaqueApiService::class.java)
+    }
+
+    viewModel<DestaqueModel> {
+        DestaqueModel(get<DestaqueApiService>())
+    }
+
+    factory<MarcaApiService> {
+        get<Retrofit>().create(MarcaApiService::class.java)
+    }
+
+    viewModel<MarcaModel> {
+        MarcaModel(get<MarcaApiService>())
+    }
+
+    factory<RecomendacaoApiService> {
+        get<Retrofit>().create(RecomendacaoApiService::class.java)
+    }
+
+    viewModel<RecomendacaoModel>{
+        RecomendacaoModel(get<RecomendacaoApiService>())
+    }
+
+    factory<TiposApiService> {
+        get<Retrofit>().create(TiposApiService::class.java)
+    }
+
+    viewModel<SubtipoModel>{
+        SubtipoModel(get<TiposApiService>())
     }
 
 

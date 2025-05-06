@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.models.CardapioItem
 import androidx.lifecycle.LiveData
+import com.example.terabitemobile.data.api.RecomendacaoApiService
 import com.example.terabitemobile.data.api.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,7 +16,7 @@ data class RecomendacaoItem(
     val produto: CardapioItem,
 )
 
-class RecomendacaoModel : ViewModel() {
+class RecomendacaoModel(val recomendacaoService: RecomendacaoApiService) : ViewModel() {
 
     private val _recomendacoes = MutableLiveData<List<RecomendacaoItem>?>()
     val recomendacoes: MutableLiveData<List<RecomendacaoItem>?> = _recomendacoes
@@ -34,7 +35,7 @@ class RecomendacaoModel : ViewModel() {
         _error.value = ""
         _isLoading.value = true
 
-        RetrofitClient.recomendacaoService.getRecomendacoes().enqueue(object : Callback<List<RecomendacaoItem>> {
+        recomendacaoService.getRecomendacoes().enqueue(object : Callback<List<RecomendacaoItem>> {
             override fun onResponse(
                 call: Call<List<RecomendacaoItem>>, response: Response<List<RecomendacaoItem>>
             ) {
@@ -57,7 +58,7 @@ class RecomendacaoModel : ViewModel() {
         _error.value = ""
         _isLoading.value = true
 
-        RetrofitClient.recomendacaoService.adicionarRecomendacao(idRecomendacao, produtoId).enqueue(object : Callback<RecomendacaoItem> {
+        recomendacaoService.adicionarRecomendacao(idRecomendacao, produtoId).enqueue(object : Callback<RecomendacaoItem> {
             override fun onResponse(call: Call<RecomendacaoItem>, response: Response<RecomendacaoItem>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {

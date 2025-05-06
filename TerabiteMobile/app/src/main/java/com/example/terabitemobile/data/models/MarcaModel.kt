@@ -1,8 +1,8 @@
 package com.example.terabitemobile.data.models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.terabitemobile.data.api.MarcaApiService
 import com.example.terabitemobile.data.api.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -13,7 +13,7 @@ data class MarcaItem(
     val nome: String
 )
 
-class MarcaModel : ViewModel() {
+class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
 
     private val _marcas = MutableLiveData<List<MarcaItem>>()
     val marcas: MutableLiveData<List<MarcaItem>> = _marcas
@@ -31,7 +31,7 @@ class MarcaModel : ViewModel() {
     fun carregarMarcas() {
         _error.value = ""
         _isLoading.value = true
-        RetrofitClient.marcaService.getMarcas().enqueue(object : Callback<List<MarcaItem>> {
+        marcaService.getMarcas().enqueue(object : Callback<List<MarcaItem>> {
             override fun onResponse(
                 call: Call<List<MarcaItem>>,
                 response: Response<List<MarcaItem>>
@@ -53,7 +53,7 @@ class MarcaModel : ViewModel() {
 
     fun addMarca(nome: String) {
         _isLoading.value = true
-        RetrofitClient.marcaService.postMarcas(nome).enqueue(object : Callback<MarcaItem> {
+        marcaService.postMarcas(nome).enqueue(object : Callback<MarcaItem> {
             override fun onResponse(call: Call<MarcaItem>, response: Response<MarcaItem>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
