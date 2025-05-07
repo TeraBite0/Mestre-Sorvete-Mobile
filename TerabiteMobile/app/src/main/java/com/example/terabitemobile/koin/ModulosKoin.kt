@@ -1,7 +1,7 @@
 package com.example.terabitemobile.koin
 
-
 import com.example.terabitemobile.data.api.*
+import com.example.terabitemobile.data.classes.LoginResponse
 import com.example.terabitemobile.data.models.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -10,12 +10,17 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+import com.example.terabitemobile.data.models.LoginModel.LoginState
 
 val moduloGeral = module {
-
     // single -> devolve a MESMA instância para todos que pedirem
-    single<UsuarioTokenModel> {
-        UsuarioTokenModel()
+    single<LoginResponse> {
+        LoginResponse()
+    }
+
+    single {
+        val loginResponse: LoginResponse = get()
+        TokenInterceptor { loginResponse.token }
     }
 
     single<Retrofit> {
@@ -24,15 +29,14 @@ val moduloGeral = module {
         }
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(TokenInterceptor(get<UsuarioTokenModel>().token)) // interceptor de token
+            .addInterceptor(get<TokenInterceptor>()) // Modificado aqui
             .build()
 
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(RetrofitClient.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-        retrofit
     }
 
     // factory -> devolve uma NOVA instância para cada que pedir
@@ -44,6 +48,7 @@ val moduloGeral = module {
         CardapioModel(get<CardapioApiService>())
     }
 
+
     factory<EstoqueApiService> {
         get<Retrofit>().create(EstoqueApiService::class.java)
     }
@@ -51,6 +56,7 @@ val moduloGeral = module {
     viewModel<EstoqueModel> {
         EstoqueModel(get<EstoqueApiService>())
     }
+
 
     factory<SaidaEstoqueApiService> {
         get<Retrofit>().create(SaidaEstoqueApiService::class.java)
@@ -60,6 +66,7 @@ val moduloGeral = module {
         BaixasModel(get<SaidaEstoqueApiService>())
     }
 
+
     factory<DestaqueApiService> {
         get<Retrofit>().create(DestaqueApiService::class.java)
     }
@@ -67,6 +74,7 @@ val moduloGeral = module {
     viewModel<DestaqueModel> {
         DestaqueModel(get<DestaqueApiService>())
     }
+
 
     factory<MarcaApiService> {
         get<Retrofit>().create(MarcaApiService::class.java)
@@ -76,6 +84,7 @@ val moduloGeral = module {
         MarcaModel(get<MarcaApiService>())
     }
 
+
     factory<RecomendacaoApiService> {
         get<Retrofit>().create(RecomendacaoApiService::class.java)
     }
@@ -83,6 +92,7 @@ val moduloGeral = module {
     viewModel<RecomendacaoModel>{
         RecomendacaoModel(get<RecomendacaoApiService>())
     }
+
 
     factory<TiposApiService> {
         get<Retrofit>().create(TiposApiService::class.java)
@@ -92,5 +102,13 @@ val moduloGeral = module {
         SubtipoModel(get<TiposApiService>())
     }
 
+
+    factory<LoginApiService> {
+        get<Retrofit>().create(LoginApiService::class.java)
+    }
+
+    viewModel<LoginModel> {
+        LoginModel(get<LoginApiService>(), get<LoginResponse>())
+    }
 
 }

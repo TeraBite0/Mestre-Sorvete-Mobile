@@ -9,17 +9,16 @@ Classe que "intercepta" todas as requisições,
 adicionando o cabeçalho de autorização com o token
 em todas as requisições
  */
-class TokenInterceptor(val token: String?): Interceptor {
-
+class TokenInterceptor(private val tokenProvider: () -> String?) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        val token = tokenProvider()
         Log.i("api", "token para header: $token")
 
-        // Crie uma nova requisição com o cabeçalho adicionado
-        val requisicao = chain.request().newBuilder()
-            .header("Authorization", "Bearer $token") // Adiciona o cabeçalho de autorização
-            .build()
+        val builder = chain.request().newBuilder()
+        token?.let {
+            builder.header("Authorization", "Bearer $it")
+        }
 
-        // Continue a cadeia com a nova requisição modificada
-        return chain.proceed(requisicao)
+        return chain.proceed(builder.build())
     }
 }

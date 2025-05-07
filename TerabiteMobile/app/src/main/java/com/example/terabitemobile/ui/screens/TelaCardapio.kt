@@ -347,11 +347,11 @@ fun EditBottomSheetContent(
     product: CardapioItem?,
     onClose: () -> Unit,
     tomVinho: Color,
-    viewModel: CardapioModel
+    viewModel: CardapioModel = koinViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-    val subtipoViewModel: SubtipoModel = viewModel()
-    val marcasViewModel: MarcaModel = viewModel()
+    val subtipoViewModel: SubtipoModel = koinViewModel()
+    val marcasViewModel: MarcaModel = koinViewModel()
 
     var editedId by remember { mutableStateOf(product?.id) }
     var editedName by remember { mutableStateOf(product?.nome ?: "") }

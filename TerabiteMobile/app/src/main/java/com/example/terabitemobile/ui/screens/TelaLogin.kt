@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,7 +33,9 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
-import com.example.terabitemobile.data.models.UsuarioTokenModel
+import com.example.terabitemobile.data.classes.LoginResponse
+import com.example.terabitemobile.data.models.LoginModel
+import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
@@ -63,11 +66,24 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaLogin(navController: NavHostController, usuarioaAtual: UsuarioTokenModel = koinInject()) {
+fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = koinInject()) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
+
+    val loginModel: LoginModel = koinViewModel()
+    val loginState by loginModel.loginState.observeAsState()
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is LoginModel.LoginState.Success -> {
+                navController.popBackStack()
+                navController.navigate("inicio")
+            }
+            else -> {}
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -180,17 +196,8 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: UsuarioTokenModel
 
             Button(
                 onClick = {
-                    /*
-                    Autenticação de verdade
-                    1. fazer a chamada a API pegando o token
-                    2. alterar os dados do UsuarioTokenModel que está no koin
-                     */
-                    usuarioaAtual.userId = 0
-                    usuarioaAtual.email = "email que veio da api"
-                    usuarioaAtual.token = "token que veio da api"
-
-                    navController.popBackStack()
-                    navController.navigate("inicio")
+                    focusManager.clearFocus()
+                    loginModel.fazerLogin(usuario, senha)
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD07E0E)),
                 shape = RoundedCornerShape(30.dp),
@@ -198,7 +205,18 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: UsuarioTokenModel
                     .width(150.dp)
                     .height(50.dp)
             ) {
-                Text(stringResource(R.string.login_loginBtn_label), color = Color.White, fontSize = 18.sp)
+                if (loginState is LoginModel.LoginState.Loading) {
+                    CircularProgressIndicator(color = Color.White)
+                } else {
+                    Text(stringResource(R.string.login_loginBtn_label), color = Color.White, fontSize = 18.sp)
+                }
+            }
+            if (loginState is LoginModel.LoginState.Error) {
+                Text(
+                    text = (loginState as LoginModel.LoginState.Error).message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
