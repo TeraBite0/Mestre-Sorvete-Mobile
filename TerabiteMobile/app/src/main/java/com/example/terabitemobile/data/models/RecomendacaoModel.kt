@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.models.CardapioItem
 import androidx.lifecycle.LiveData
 import com.example.terabitemobile.data.api.RecomendacaoApiService
-import com.example.terabitemobile.data.api.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

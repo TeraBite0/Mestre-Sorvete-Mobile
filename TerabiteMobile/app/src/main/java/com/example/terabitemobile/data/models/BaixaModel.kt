@@ -3,7 +3,6 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.terabitemobile.data.api.RetrofitClient
 import com.example.terabitemobile.data.api.SaidaEstoqueApiService
 import com.example.terabitemobile.data.models.CardapioModel
 import retrofit2.Call

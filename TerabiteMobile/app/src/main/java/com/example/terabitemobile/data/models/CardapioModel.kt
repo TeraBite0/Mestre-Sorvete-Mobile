@@ -3,7 +3,6 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.CardapioApiService
-import com.example.terabitemobile.data.api.RetrofitClient
 import com.google.gson.annotations.SerializedName
 import org.koin.compose.koinInject
 import org.koin.compose.rememberKoinInject
