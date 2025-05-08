@@ -3,11 +3,13 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.EstoqueApiService
+import com.example.terabitemobile.data.classes.LotePost
+import com.example.terabitemobile.data.classes.LoteProdutosPostResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-data class EstoqueItem (
+data class EstoqueItem(
     val id: Int,
     val nome: String,
     val marca: String,
@@ -43,6 +45,26 @@ class EstoqueModel(val estoqueService: EstoqueApiService) : ViewModel() {
             }
 
             override fun onFailure(call: Call<List<EstoqueItem>>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha na conexão: ${t.message}"
+            }
+        })
+    }
+
+    fun adicionarLote(novoLote: LotePost) {
+        _error.value = ""
+        _isLoading.value = true
+        estoqueService.postLote(novoLote).enqueue(object : Callback<LoteProdutosPostResponse> {
+            override fun onResponse(call: Call<LoteProdutosPostResponse>, response: Response<LoteProdutosPostResponse>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    carregarEstoque()
+                } else {
+                    _error.value = "Erro ${response.code()}: ${response.message()}"
+                }
+            }
+
+            override fun onFailure(call: Call<LoteProdutosPostResponse>, t: Throwable) {
                 _isLoading.value = false
                 _error.value = "Falha na conexão: ${t.message}"
             }

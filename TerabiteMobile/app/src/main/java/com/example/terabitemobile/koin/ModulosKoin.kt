@@ -1,6 +1,7 @@
 package com.example.terabitemobile.koin
 
 import com.example.terabitemobile.data.api.*
+import com.example.terabitemobile.data.classes.FornecedorRequest
 import com.example.terabitemobile.data.classes.LoginResponse
 import com.example.terabitemobile.data.models.*
 import okhttp3.OkHttpClient
@@ -14,10 +15,8 @@ import com.example.terabitemobile.data.models.LoginModel.LoginState
 
 // Se estiver desenvolvendo localmente, use o endereço IP do
 // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
-// private const val BASE_URL = "http://192.168.1.100:8080"
-//    private const val BASE_URL = "http://192.168.15.11:8080/"
-//private const val BASE_URL = "http://10.18.8.41:8080/"
-private const val BASE_URL = "http://10.18.33.24/"
+
+private const val BASE_URL = "http://44.192.125.22/api/"
 
 val moduloGeral = module {
     // single -> devolve a MESMA instância para todos que pedirem
@@ -116,6 +115,14 @@ val moduloGeral = module {
 
     viewModel<LoginModel> {
         LoginModel(get<LoginApiService>(), get<LoginResponse>())
+    }
+
+    factory<FornecedorApiService> {
+        get<Retrofit>().create(FornecedorApiService::class.java)
+    }
+
+    viewModel<FornecedorModel>  {
+        FornecedorModel(get<FornecedorApiService>())
     }
 
 }

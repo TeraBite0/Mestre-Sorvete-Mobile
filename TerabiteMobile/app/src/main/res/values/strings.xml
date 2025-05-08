@@ -1,5 +1,4 @@
 <resources>
-
     <string name="app_name" translatable="false">Mestre Sorvete</string>
     <string name="user_name_placeholder" translatable="false">Josué</string>
 
@@ -30,50 +29,50 @@
     <string name="menu_noItems_txt">Nenhum produto cadastrado</string>
     <string name="menu_itemsNotFound_txt">Nenhum produto encontrado para \"%1$s\"</string>
     <string name="menu_editBtn_label">Editar</string>
+
     <!-- Bottom sheet de edição/adição -->
+    <!-- Títulos -->
+    <string name="edit_product_title">Editar %1$s</string>
+    <string name="add_new_product_title">Adicionar Novo Produto</string>
 
-        <!-- Títulos -->
-        <string name="edit_product_title">Editar %1$s</string>
-        <string name="add_new_product_title">Adicionar Novo Produto</string>
+    <!-- Subtítulos das seções -->
+    <string name="basic_info_section">Informações Básicas</string>
+    <string name="categorization_section">Categorização</string>
+    <string name="stock_price_section">Estoque e Preço</string>
+    <string name="status_restrictions_section">Status e Restrições</string>
 
-        <!-- Subtítulos das seções -->
-        <string name="basic_info_section">Informações Básicas</string>
-        <string name="categorization_section">Categorização</string>
-        <string name="stock_price_section">Estoque e Preço</string>
-        <string name="status_restrictions_section">Status e Restrições</string>
+    <!-- Labels dos campos -->
+    <string name="name_label">Nome*</string>
+    <string name="brand_label">Marca*</string>
+    <string name="type_label">Tipo</string>
+    <string name="subtype_label">Subtipo*</string>
+    <string name="units_per_box_label">Unid./Caixa*</string>
+    <string name="price_label">Preço*</string>
 
-        <!-- Labels dos campos -->
-        <string name="name_label">Nome*</string>
-        <string name="brand_label">Marca*</string>
-        <string name="type_label">Tipo</string>
-        <string name="subtype_label">Subtipo*</string>
-        <string name="units_per_box_label">Unid./Caixa*</string>
-        <string name="price_label">Preço*</string>
+    <!-- Mensagens de erro -->
+    <string name="name_required_error">Nome é obrigatório</string>
+    <string name="brand_required_error">Marca é obrigatória</string>
+    <string name="subtype_required_error">Subtipo é obrigatório</string>
+    <string name="units_per_box_error">Quantidade por caixa é obrigatória e deve ser maior que zero</string>
+    <string name="price_error">Preço é obrigatório e deve ser maior que zero</string>
 
-        <!-- Mensagens de erro -->
-        <string name="name_required_error">Nome é obrigatório</string>
-        <string name="brand_required_error">Marca é obrigatória</string>
-        <string name="subtype_required_error">Subtipo é obrigatório</string>
-        <string name="units_per_box_error">Quantidade por caixa é obrigatória e deve ser maior que zero</string>
-        <string name="price_error">Preço é obrigatório e deve ser maior que zero</string>
+    <!-- Textos dos switches -->
+    <string name="contains_lactose">Contém lactose</string>
+    <string name="contains_gluten">Contém glúten</string>
 
-        <!-- Textos dos switches -->
-        <string name="contains_lactose">Contém lactose</string>
-        <string name="contains_gluten">Contém glúten</string>
+    <!-- Texto indicando campos obrigatórios -->
+    <string name="required_fields_note">* Campos obrigatórios</string>
 
-        <!-- Texto indicando campos obrigatórios -->
-        <string name="required_fields_note">* Campos obrigatórios</string>
+    <!-- Labels dos botões -->
+    <string name="save_changes_button">Salvar Alterações</string>
+    <string name="cancel_button">Cancelar</string>
 
-        <!-- Labels dos botões -->
-        <string name="save_changes_button">Salvar Alterações</string>
-        <string name="cancel_button">Cancelar</string>
+    <!-- Títulos dos diálogos -->
+    <string name="select_brand_dialog_title">Selecionar Marca</string>
+    <string name="select_subtype_dialog_title">Selecionar Subtipo</string>
 
-        <!-- Títulos dos diálogos -->
-        <string name="select_brand_dialog_title">Selecionar Marca</string>
-        <string name="select_subtype_dialog_title">Selecionar Subtipo</string>
-
-        <!-- Botão de cancelar no diálogo -->
-        <string name="dialog_cancel_button">Cancelar</string>
+    <!-- Botão de cancelar no diálogo -->
+    <string name="dialog_cancel_button">Cancelar</string>
 
     <!-- Presentes em mais de uma página -->
     <string name="any_role_txt">Administrador</string>
@@ -137,5 +136,4 @@
     <string name="boxes_quantity_label">Quantidade de Caixas</string>
     <string name="boxes_label">caixas</string>
     <string name="box_icon_desc">Ícone de caixa</string>
-
 </resources>
