@@ -1,245 +1,219 @@
 package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
+import androidx.compose.runtime.livedata.observeAsState
+import com.example.terabitemobile.data.models.BaixaModel
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddBox
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Icecream
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontWeight
-import com.example.terabitemobile.ui.theme.tomVinho
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import com.example.terabitemobile.data.models.BaixaItem
+import androidx.compose.ui.text.style.TextOverflow
 import com.example.terabitemobile.R
-import com.example.terabitemobile.data.models.BaixasModel
-import com.example.terabitemobile.data.models.SaidaEstoque
 import com.example.terabitemobile.ui.theme.background
-import com.example.terabitemobile.ui.theme.tomMarcas
+import com.example.terabitemobile.ui.theme.tomBege
+import com.example.terabitemobile.ui.theme.tomVinho
 
-@Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaBaixas(paddingScaffold: PaddingValues, viewModel: BaixasModel) {
-//
-//    var searchText by remember { mutableStateOf("") }
-//    var showDialog by remember { mutableStateOf(false) }
-//    var selectedDate by remember { mutableStateOf("04/12/1999") }
-//    var selectedProductId by remember { mutableStateOf(0) }
-//    var qtdCaixas by remember { mutableStateOf("") }
-//
-//    val baixas by viewModel.baixas.observeAsState()
-//    val isLoading by viewModel.isLoading.observeAsState(initial = false)
-//    val error by viewModel.error.observeAsState("")
-//    val produtos by viewModel.produtos.observeAsState(initial = emptyList())
-//
-//    val filteredBaixas = remember(baixas, searchText) {
-//        baixas?.flatMap { saida ->
-//            saida.saidaEstoques.filter {
-//                it.produto.nome.contains(searchText, ignoreCase = true)
+@Composable
+fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel) {
+    val baixas by viewModel.baixas.observeAsState(emptyList())
+    val isLoading by viewModel.isLoading.observeAsState(false)
+    val error by viewModel.error.observeAsState("")
+
+    var dataInicio by remember { mutableStateOf("") }
+    var dataFim by remember { mutableStateOf("") }
+
+    val formatoApi = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val formatoInput = DateTimeFormatter.ofPattern("dd/MM")
+
+    // Filtragem
+    val baixasFiltradas = (baixas ?: emptyList()).filter {
+        try {
+            val data = LocalDate.parse(it.dtSaida, formatoApi)
+            val inicio =
+                dataInicio.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it, formatoInput) }
+            val fim = dataFim.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it, formatoInput) }
+
+            (inicio == null || data >= inicio) && (fim == null || data <= fim)
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    Scaffold(
+        containerColor = background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingBottom)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+        ) {
+            ProfileBaixas { }
+            Spacer(modifier = Modifier.height(16.dp))
+//            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+//                OutlinedTextField(
+//                    value = dataInicio,
+//                    onValueChange = { dataInicio = it },
+//                    label = { Text("De (DD/MM)") },
+//                    modifier = Modifier.weight(1f)
+//                )
+//                OutlinedTextField(
+//                    value = dataFim,
+//                    onValueChange = { dataFim = it },
+//                    label = { Text("Até (DD/MM)") },
+//                    modifier = Modifier.weight(1f)
+//                )
 //            }
-//        } ?: emptyList()
-//    }
-//
-//    if (showDialog) {
-//        AlertDialog(
-//            containerColor = Color.White,
-//            onDismissRequest = { showDialog = false },
-//            title = { Text(stringResource(R.string.add_outflow_dialog_title)) },
-//            text = {
-//                Column {
-//                    // Date Picker
-//                    Row(verticalAlignment = Alignment.CenterVertically) {
-//                        Text(
-//                            text = stringResource(R.string.date_label),
-//                            modifier = Modifier.padding(end = 8.dp)
-//                        )
-//                        Button(
-//                            onClick = { /* TODO: Show date picker */ },
-//                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
-//                        ) {
-//                            Text(selectedDate.toString())
-//                        }
-//                    }
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    // Product Dropdown
-//                    var expanded by remember { mutableStateOf(false) }
-//                    Box(modifier = Modifier.fillMaxWidth()) {
-//                        OutlinedTextField(
-//                            value = produtos.find { it.id == selectedProductId }?.nome ?: "",
-//                            onValueChange = {},
-//                            label = { Text(stringResource(R.string.product_label)) },
-//                            modifier = Modifier.fillMaxWidth(),
-//                            readOnly = true,
-//                            trailingIcon = {
-//                                Icon(Icons.Default.ArrowDropDown, "")
-//                            },
-//                            colors = OutlinedTextFieldDefaults.colors(
-//                                focusedBorderColor = tomVinho,
-//                                unfocusedBorderColor = Color.Gray
-//                            )
-//                        )
-//                        DropdownMenu(
-//                            expanded = expanded,
-//                            onDismissRequest = { expanded = false }
-//                        ) {
-//                            produtos.forEach { produto ->
-//                                DropdownMenuItem(
-//                                    text = { Text(produto.nome) },
-//                                    onClick = {
-//                                        selectedProductId = produto.id
-//                                        expanded = false
-//                                    }
-//                                )
-//                            }
-//                        }
-//                    }
-//
-//                    Spacer(modifier = Modifier.height(16.dp))
-//
-//                    // Quantity Input
-//                    OutlinedTextField(
-//                        value = qtdCaixas,
-//                        onValueChange = { qtdCaixas = it },
-//                        label = { Text(stringResource(R.string.boxes_quantity_label)) },
-//                        modifier = Modifier.fillMaxWidth(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-//                        colors = OutlinedTextFieldDefaults.colors(
-//                            focusedBorderColor = tomVinho,
-//                            unfocusedBorderColor = Color.Gray
-//                        )
-//                    )
-//                }
-//            },
-//            confirmButton = {
-//                Button(
-//                    onClick = {
-//                        if (selectedProductId > 0 && qtdCaixas.isNotBlank()) {
-//                            viewModel.addBaixa(
-//                                selectedDate,
-//                                selectedProductId,
-//                                qtdCaixas.toInt()
-//                            )
-//                            showDialog = false
-//                            qtdCaixas = ""
-//                        }
-//                    },
-//                    colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
-//                ) {
-//                    Text(stringResource(R.string.confirm_button_label))
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(
-//                    onClick = { showDialog = false }
-//                ) {
-//                    Text(stringResource(R.string.dialog_cancel_button))
-//                }
-//            }
-//        )
-//    }
-//
-//    Scaffold(
-//        containerColor = background,
-//    ) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingScaffold)
-//                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-//        ) {
-//            ProfileBaixas(onAddClick = { showDialog = true })
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Text(
-//                stringResource(R.string.outflows_title),
-//                fontWeight = FontWeight.Bold,
-//                fontSize = 22.sp
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//
-//            if (isLoading) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    CircularProgressIndicator(color = tomVinho)
-//                }
-//            } else if (error.isNotEmpty()) {
-//                Box(
-//                    modifier = Modifier.fillMaxSize(),
-//                    contentAlignment = Alignment.Center
-//                ) {
-//                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                        Text(
-//                            stringResource(R.string.error_load_data_failure),
-//                            color = tomVinho,
-//                            fontSize = 18.sp,
-//                            fontWeight = FontWeight.Medium
-//                        )
-//                        Spacer(modifier = Modifier.height(8.dp))
-//                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
-//                        Spacer(modifier = Modifier.height(16.dp))
-//                        Button(
-//                            onClick = { viewModel.carregarBaixas() },
-//                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
-//                        ) {
-//                            Text(stringResource(R.string.error_tryAgain_label))
-//                        }
-//                    }
-//                }
-//            } else {
-//                LazyColumn(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .height(5.dp)
-//                        .weight(1f)
-//                ) {
-//                    baixas?.forEach { saida ->
-//                        item {
-//                            Text(
-//                                text = saida.dtSaida,
-//                                style = MaterialTheme.typography.titleMedium.copy(
-//                                    fontWeight = FontWeight.Bold
-//                                ),
-//                                modifier = Modifier.padding(vertical = 8.dp)
-//                            )
-//                        }
-//
-//                        items(saida.saidaEstoques) { baixa ->
-//                            BaixaListItem(
-//                                baixa = baixa,
-//                                onDeleteClick = { /* TODO */ }
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = dataInicio,
+                    onValueChange = {
+                        dataInicio = it
+                    },
+            label = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "Data",
+                        tint = Color.Black,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text("Data início", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = tomVinho,
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White
+            ),
+            placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp)},
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp)
+            )
+
+            OutlinedTextField(
+                value = dataFim,
+                onValueChange = {
+                    dataFim = it
+                },
+                label = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = "Data",
+                            tint = Color.Black,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Data fim", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
+                    }
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = tomVinho,
+                    unfocusedBorderColor = Color.Gray,
+                    cursorColor = tomVinho,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                ),
+                placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp) },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                shape = RoundedCornerShape(16.dp)
+            )
+        }
+            Spacer(modifier = Modifier.height(14.dp))
+            Text(text = "Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Spacer(modifier = Modifier.height(14.dp))
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                // Mostra mensagem de erro se houver falha
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.error_loadData_txt),
+                            color = tomVinho,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.carregarBaixas() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(stringResource(R.string.error_tryAgain_label))
+                        }
+                    }
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+//                    contentPadding = PaddingValues(8.dp),
+//                    verticalArrangement = Arrangement.spacedBy(12.dp),
+//                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(4.dp)
+                ) {
+                    items(baixasFiltradas) { baixa ->
+                        BaixaCard(baixa)
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
-private fun ProfileBaixas(onAddClick: () -> Unit) {
+private fun ProfileBaixas(
+    onAddClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -248,11 +222,11 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = stringResource(R.string.accessibility_userProfile_img),
-                tint = tomVinho,
+                contentDescription = "Usuário",
+                tint = Color(0xFF8C3829),
                 modifier = Modifier.size(60.dp)
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(
                     stringResource(R.string.user_name_placeholder),
@@ -269,7 +243,9 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
         Button(
             onClick = onAddClick,
             colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
-            modifier = Modifier.width(145.dp)
+            modifier = Modifier
+                .width(145.dp)
+
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
@@ -277,6 +253,7 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
+
             Text(
                 text = stringResource(R.string.any_addItem_txt),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
@@ -285,49 +262,77 @@ private fun ProfileBaixas(onAddClick: () -> Unit) {
     }
 }
 
-@Composable
-private fun BaixaListItem(baixa: SaidaEstoque, onDeleteClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .background(Color.White, RoundedCornerShape(8.dp))
-            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-            .height(60.dp)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(R.drawable.box),
-            contentDescription = stringResource(R.string.box_icon_desc),
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .size(25.dp),
-            colorFilter = ColorFilter.tint(tomMarcas)
-        )
 
-        Column(modifier = Modifier.weight(1f)) {
+@Composable
+fun BaixaCard(item: BaixaItem) {
+    val backgroundColor = tomBege
+    val cardColor = tomVinho
+    val textoBranco = Color.White
+
+    Column(
+        modifier = Modifier
+            .background(backgroundColor, shape = RoundedCornerShape(12.dp))
+            .padding(12.dp)
+            .fillMaxWidth()
+            .height(135.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(cardColor, shape = RoundedCornerShape(6.dp))
+                .padding(vertical = 4.dp, horizontal = 8.dp)
+                .align(Alignment.CenterHorizontally)
+        ) {
             Text(
-                text = baixa.produto.nome,
-                fontSize = 16.sp
-            )
-            Text(
-                text = "${baixa.qtdCaixasSaida} ${stringResource(R.string.boxes_label)}",
-                fontSize = 14.sp,
-                color = Color.Gray
+                text = LocalDate.parse(item.dtSaida, DateTimeFormatter.ISO_DATE)
+                    .format(DateTimeFormatter.ofPattern("dd/MM")),
+                color = textoBranco,
+                fontWeight = FontWeight.Bold
             )
         }
 
-        IconButton(
-            onClick = onDeleteClick,
-            modifier = Modifier.size(40.dp)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(
+            modifier = Modifier
+                .background(cardColor, shape = RoundedCornerShape(6.dp))
+                .padding(6.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart
+//            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Filled.Delete,
-                contentDescription = stringResource(R.string.delete_label),
-                tint = tomVinho
-            )
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.horizontalScroll(rememberScrollState())
+            ) {
+                Icon(Icons.Default.AddBox, contentDescription = null, tint = textoBranco)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text("${item.qtdCaixasSaida}", color = textoBranco)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Box(
+            modifier = Modifier
+                .background(cardColor, shape = RoundedCornerShape(6.dp))
+                .padding(6.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.horizontalScroll(rememberScrollState())
+            ) {
+                Icon(Icons.Default.Icecream, contentDescription = null, tint = textoBranco)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = item.produto.nome,
+                    color = textoBranco,
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip
+                )
+            }
         }
     }
 }
+
 

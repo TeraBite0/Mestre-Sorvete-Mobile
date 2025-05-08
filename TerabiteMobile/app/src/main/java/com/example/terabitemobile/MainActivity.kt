@@ -22,7 +22,7 @@ import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
-import com.example.terabitemobile.data.models.BaixasModel
+import com.example.terabitemobile.data.models.BaixaModel
 import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
     private val marcaViewModel: MarcaModel by viewModel()
     private val recomendacaoViewModel: RecomendacaoModel by viewModel()
     private val destaqueViewModel: DestaqueModel by viewModel()
-    private val baixaViewModel: BaixasModel by viewModel()
+    private val baixaViewModel: BaixaModel by viewModel()
     private val estoqueViewModel: EstoqueModel by viewModel()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

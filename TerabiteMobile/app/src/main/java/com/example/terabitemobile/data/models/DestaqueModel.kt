@@ -14,7 +14,7 @@ data class DestaqueItem(
     val texto: String
 )
 
-class DestaqueModel(val destaqueService: DestaqueApiService) : ViewModel() {
+class DestaqueModel(private val destaqueService: DestaqueApiService) : ViewModel() {
 
     private val _destaque = MutableLiveData<DestaqueItem?>()
     val destaque: MutableLiveData<DestaqueItem?> = _destaque

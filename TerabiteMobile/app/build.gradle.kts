@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.room.common)
     implementation(libs.places)
+    implementation(libs.androidx.core.i18n)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -16,7 +16,8 @@ import com.example.terabitemobile.data.models.LoginModel.LoginState
 // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
 // private const val BASE_URL = "http://192.168.1.100:8080"
 //    private const val BASE_URL = "http://192.168.15.11:8080/"
-private const val BASE_URL = "http://10.18.8.41:8080/"
+//private const val BASE_URL = "http://10.18.8.41:8080/"
+private const val BASE_URL = "http://10.18.33.24/"
 
 val moduloGeral = module {
     // single -> devolve a MESMA instância para todos que pedirem
@@ -68,8 +69,8 @@ val moduloGeral = module {
         get<Retrofit>().create(SaidaEstoqueApiService::class.java)
     }
 
-    viewModel<BaixasModel> {
-        BaixasModel(get<SaidaEstoqueApiService>())
+    viewModel<BaixaModel> {
+        BaixaModel(get<SaidaEstoqueApiService>())
     }
 
 
