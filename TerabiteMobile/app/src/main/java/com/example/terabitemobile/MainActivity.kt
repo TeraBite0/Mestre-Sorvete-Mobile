@@ -18,17 +18,24 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.terabitemobile.ui.models.CardapioModel
-import com.example.terabitemobile.ui.models.MarcaModel
-import com.example.terabitemobile.ui.models.RecomendacaoModel
+import com.example.terabitemobile.data.models.CardapioModel
+import com.example.terabitemobile.data.models.DestaqueModel
+import com.example.terabitemobile.data.models.MarcaModel
+import com.example.terabitemobile.data.models.RecomendacaoModel
+import com.example.terabitemobile.data.models.BaixaModel
+import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.ui.screens.BottomNavigationBar
 import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
-    private val cardapioViewModel: CardapioModel by viewModels()
-    private val marcaViewModel: MarcaModel by viewModels()
-    private val recomendacaoViewModel: RecomendacaoModel by viewModels()
+    private val cardapioViewModel: CardapioModel by viewModel()
+    private val marcaViewModel: MarcaModel by viewModel()
+    private val recomendacaoViewModel: RecomendacaoModel by viewModel()
+    private val destaqueViewModel: DestaqueModel by viewModel()
+    private val baixaViewModel: BaixaModel by viewModel()
+    private val estoqueViewModel: EstoqueModel by viewModel()
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,15 +45,18 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val focusManager = LocalFocusManager.current
 
-
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
             MaterialTheme {
                 Scaffold(containerColor = background, bottomBar = {
-                    if (currentRoute != "login" && currentRoute != "ferramentas") BottomNavigationBar(
-                        navController
-                    )
+                    if (currentRoute != "login" &&
+                        currentRoute != "ferramentas" &&
+                        currentRoute != "esqueceu senha"
+                        ) BottomNavigationBar(navController)
+                    if (currentRoute == "inicio") {
+
+                    }
                 }, modifier = Modifier.pointerInput(Unit) {
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
@@ -58,6 +68,9 @@ class MainActivity : ComponentActivity() {
                         cardapioViewModel = cardapioViewModel,
                         marcaViewModel = marcaViewModel,
                         recomendacaoViewModel = recomendacaoViewModel,
+                        destaqueViewModel = destaqueViewModel,
+                        baixaViewModel = baixaViewModel,
+                        estoqueViewModel = estoqueViewModel
                     )
                 }
             }

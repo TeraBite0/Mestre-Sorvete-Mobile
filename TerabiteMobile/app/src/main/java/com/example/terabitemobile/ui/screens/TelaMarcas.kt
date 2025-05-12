@@ -1,7 +1,7 @@
 package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -22,21 +22,28 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.room.Delete
-import com.example.terabitemobile.ui.models.MarcaItem
-import com.example.terabitemobile.ui.models.MarcaModel
+import com.example.terabitemobile.R
+import com.example.terabitemobile.data.models.MarcaItem
+import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.theme.background
+import com.example.terabitemobile.ui.theme.tomMarcas
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
+fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
 
     var searchText by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var marcaName by remember { mutableStateOf("") }
+
     val marcas by viewModel.marcas.observeAsState()
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val error by viewModel.error.observeAsState("")
 
     val filteredMarcas = remember(marcas, searchText) {
         marcas?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
@@ -44,15 +51,30 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
 
     if (showDialog) {
         AlertDialog(
+            containerColor = Color.White,
             onDismissRequest = { showDialog = false },
-            title = { Text("Adicionar Marca") },
+            title = { Text(stringResource(R.string.add_brand_dialog_title)) }, // Alterado
             text = {
                 Column {
                     OutlinedTextField(
                         value = marcaName,
                         onValueChange = { marcaName = it },
-                        label = { Text("Nome da marca") },
-                        modifier = Modifier.fillMaxWidth()
+                        label = { Text(stringResource(R.string.brand_name_label)) }, // Alterado
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Transparent, RoundedCornerShape(16.dp)),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        textStyle = MaterialTheme.typography.bodyMedium,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = tomVinho,
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = tomVinho,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedLabelColor = tomVinho,
+                            focusedSuffixColor = tomVinho
+                        )
                     )
                 }
             },
@@ -67,14 +89,14 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                 ) {
-                    Text("Confirmar")
+                    Text(stringResource(R.string.confirm_button_label)) // Alterado
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDialog = false }
                 ) {
-                    Text("Cancelar", color = tomVinho)
+                    Text(stringResource(R.string.dialog_cancel_button)) // Existente
                 }
             }
         )
@@ -82,11 +104,11 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
 
     Scaffold(
         containerColor = background,
-    ) { paddingValues ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValores)
+                .padding(paddingScaffold)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             ProfileMarcas(onAddClick = { showDialog = true })
@@ -96,19 +118,56 @@ fun TelaMarcas(paddingValores: PaddingValues, viewModel: MarcaModel) {
                 onSearchTextChanged = { searchText = it }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Marcas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(
+                stringResource(R.string.brands_title), // Alterado
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .height(5.dp)
-                    .weight(1f)
-            ) {
-                items(filteredMarcas) { marca ->
-                    MarcaListItem(
-                        marca = marca,
-                        onDeleteClick = { viewModel.deleteMarca(marca.id) }
-                    )
+
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = tomVinho)
+                }
+            } else if (error.isNotEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(R.string.error_load_data_failure), // Alterado
+                            color = tomVinho,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { viewModel.carregarMarcas() },
+                            colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                        ) {
+                            Text(stringResource(R.string.error_tryAgain_label)) // Existente
+                        }
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(5.dp)
+                        .weight(1f)
+                ) {
+                    items(filteredMarcas) { marca ->
+                        MarcaListItem(
+                            marca = marca,
+                            onDeleteClick = { TODO() }
+                        )
+                    }
                 }
             }
         }
@@ -125,18 +184,18 @@ private fun ProfileMarcas(onAddClick: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Usuário",
+                contentDescription = stringResource(R.string.accessibility_userProfile_img), // Existente
                 tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column {
                 Text(
-                    "Josué",
+                    stringResource(R.string.user_name_placeholder), // Novo
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    stringResource(R.string.any_role_txt), // Existente
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -150,12 +209,12 @@ private fun ProfileMarcas(onAddClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Adicionar",
+                contentDescription = stringResource(R.string.any_addItem_txt), // Existente
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                text = "Adicionar",
+                text = stringResource(R.string.any_addItem_txt), // Existente
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -170,8 +229,13 @@ private fun CampoBusca(
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChanged,
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+        placeholder = { Text(stringResource(R.string.any_searchField_placeholder)) }, // Existente
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = stringResource(R.string.search_icon_desc) // Novo
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Transparent, RoundedCornerShape(16.dp)),
@@ -188,7 +252,6 @@ private fun CampoBusca(
     )
 }
 
-
 @Composable
 private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
     Row(
@@ -201,6 +264,15 @@ private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Image(
+            painter = painterResource(R.drawable.tag),
+            contentDescription = stringResource(R.string.tag_icon_desc), // Novo
+            modifier = Modifier
+                .padding(end = 10.dp)
+                .size(25.dp),
+            colorFilter = ColorFilter.tint(tomMarcas)
+        )
+
         Text(
             text = marca.nome,
             modifier = Modifier.weight(1f),
@@ -212,7 +284,7 @@ private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Delete,
-                contentDescription = "Excluir",
+                contentDescription = stringResource(R.string.delete_label), // Novo
                 tint = tomVinho
             )
         }

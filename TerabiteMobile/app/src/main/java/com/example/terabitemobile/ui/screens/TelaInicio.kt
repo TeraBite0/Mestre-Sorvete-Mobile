@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,41 +18,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.terabitemobile.R
@@ -99,7 +85,7 @@ private fun ProfileHeader() {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = "Usuário",
+                contentDescription = stringResource(R.string.accessibility_userProfile_img),
                 tint = Color(0xFF8C3829),
                 modifier = Modifier.size(60.dp)
             )
@@ -137,12 +123,12 @@ private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostControll
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Gerenciar",
+                    text = stringResource(R.string.home_manage_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.DarkGray,
                 )
                 Text(
-                    text = "Estoque",
+                    text = stringResource(R.string.any_stock_txt),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -156,7 +142,7 @@ private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostControll
                     modifier = Modifier.width(120.dp)
                 ) {
                     Text(
-                        "Acessar",
+                        stringResource(R.string.home_accessBtn_label),
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
@@ -164,7 +150,7 @@ private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostControll
 
             Image(
                 painter = painterResource(R.drawable.box),
-                contentDescription = "ícone de caixa",
+                contentDescription = stringResource(R.string.accessibility_box_img),
                 modifier = Modifier
                     .padding(16.dp)
                     .size(65.dp),
@@ -177,7 +163,7 @@ private fun EstoqueCard(colors: TelaInicioColors, navController: NavHostControll
 @Composable
 private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostController) {
     Text(
-        text = "Ferramentas",
+        text = stringResource(R.string.any_tools_txt),
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Medium,
         modifier = Modifier.padding(bottom = 20.dp)
@@ -188,7 +174,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         FerramentaItem(
-            titulo = "Estoque",
+            titulo = stringResource(R.string.any_stock_txt),
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.box,
@@ -196,7 +182,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
         )
 
         FerramentaItem(
-            titulo = "Cardápio",
+            titulo = stringResource(R.string.any_menu_txt),
             corFundo = colors.cardBege,
             corTexto = Color(0xFF343434),
             iconRes = R.drawable.scroll,
@@ -204,7 +190,7 @@ private fun FerramentasSection(colors: TelaInicioColors, navController: NavHostC
         )
 
         FerramentaItem(
-            titulo = "Baixas",
+            titulo = stringResource(R.string.any_depletions_txt),
             corFundo = colors.primary,
             corTexto = Color.White,
             iconRes = R.drawable.store,
@@ -225,7 +211,7 @@ private fun VerMaisButton(colors: TelaInicioColors, navController: NavHostContro
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Ver mais",
+            text = stringResource(R.string.home_viewMore_label),
             color = Color.DarkGray,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -241,7 +227,7 @@ private fun VerMaisButton(colors: TelaInicioColors, navController: NavHostContro
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
-                contentDescription = "Ver mais",
+                contentDescription = stringResource(R.string.home_viewMore_label),
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
             )
@@ -249,7 +235,6 @@ private fun VerMaisButton(colors: TelaInicioColors, navController: NavHostContro
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FerramentaItem(
     titulo: String,

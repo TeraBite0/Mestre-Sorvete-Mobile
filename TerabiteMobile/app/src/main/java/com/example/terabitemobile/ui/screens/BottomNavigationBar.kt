@@ -48,20 +48,21 @@ fun BottomNavigationBar(navController: NavHostController) {
         NavItem("Início", painterResource(R.drawable.house), "inicio"),
         NavItem("Cardápio", painterResource(R.drawable.scroll), "cardapio"),
         NavItem("Estoque", painterResource(R.drawable.box), "estoque"),
-        NavItem("Conta", painterResource(R.drawable.user), "destaques")
+        NavItem("Destaque", painterResource(R.drawable.star), "destaques")
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     var currentRoute = navBackStackEntry?.destination?.route
 
     Box {
-        if (currentRoute == "inicio") {
+        if (currentRoute == "inicio" ||
+            currentRoute == "destaques") {
             Image(
                 painter = painterResource(id = R.drawable.onda),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
+                    .height(240.dp),
                 contentScale = ContentScale.FillBounds
             )
         }

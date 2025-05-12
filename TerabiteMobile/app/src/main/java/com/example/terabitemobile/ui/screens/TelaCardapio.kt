@@ -1,74 +1,63 @@
 package com.example.terabitemobile.ui.screens
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.zIndex
-import androidx.navigation.NavHostController
-import com.example.terabitemobile.R
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.terabitemobile.ui.models.CardapioModel
-import com.example.terabitemobile.ui.models.cardapioItem
+import com.example.terabitemobile.data.models.*
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
+import com.example.terabitemobile.data.models.CardapioItem
+import com.example.terabitemobile.data.models.MarcaModel
+import com.example.terabitemobile.data.models.SubtipoModel
+import com.example.terabitemobile.ui.theme.fundoCinza
+import com.example.terabitemobile.ui.theme.tomBege
+import com.example.terabitemobile.R
+import org.koin.androidx.compose.koinViewModel
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
-    val fundoCinza = Color(0xFFD1D1D1)
-    val tomVinho = Color(0xFF8C3829)
-    val tomBege = Color(0xFFE9DEB0)
-
+fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = koinViewModel()) {
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedProduct by remember { mutableStateOf<cardapioItem?>(null) }
+    var selectedProduct by remember { mutableStateOf<CardapioItem?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
     var searchText by remember { mutableStateOf("") }
 
-    // Observa os estados do ViewModel
     val produtos by viewModel.produtos.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val error by viewModel.error.observeAsState("")
@@ -79,16 +68,13 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
     }
 
     Scaffold(
-        bottomBar = {
-            BottomNavigationBarCardapio()
-        },
         containerColor = background
-    ) { paddingValues ->
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(paddingBottom)
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         ) {
             ProfileCardapio(
                 onAddClick = {
@@ -102,7 +88,7 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
                 onSearchTextChanged = { searchText = it }
             )
             Spacer(modifier = Modifier.height(14.dp))
-            Text("Cardápio", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(stringResource(R.string.any_menu_txt), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
 
             // Mostra indicador de carregamento quando estiver buscando dados
@@ -121,19 +107,19 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "Falha ao carregar dados",
-                            color = Color.Red,
+                            stringResource(R.string.error_loadData_txt),
+                            color = tomVinho,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(error, color = Color.Gray)
+                        Text(error, color = Color.Gray, textAlign = TextAlign.Center)
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = { viewModel.carregarProdutos() },
                             colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                         ) {
-                            Text("Tentar novamente")
+                            Text(stringResource(R.string.error_tryAgain_label))
                         }
                     }
                 }
@@ -145,7 +131,6 @@ fun TelaCardapio(viewModel: CardapioModel = viewModel()) {
                         fundoCinza = fundoCinza,
                         searchText = searchText,
                         produtos = it,
-                        viewModel = viewModel,
                         onEditClick = { produto ->
                             selectedProduct = produto
                             showBottomSheet = true
@@ -198,7 +183,7 @@ private fun ProfileCardapio(
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    "Administrador",
+                    stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -214,13 +199,13 @@ private fun ProfileCardapio(
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Favorite",
+                contentDescription = stringResource(R.string.any_addItem_txt),
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
 
             Text(
-                text = "Adicionar",
+                text = stringResource(R.string.any_addItem_txt),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -235,7 +220,7 @@ private fun CampoBusca(
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChanged,
-        placeholder = { Text("Buscar...", style = MaterialTheme.typography.bodyMedium) },
+        placeholder = { Text(stringResource(R.string.any_searchField_placeholder), style = MaterialTheme.typography.bodyMedium) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
         modifier = Modifier
             .fillMaxWidth()
@@ -253,22 +238,15 @@ private fun CampoBusca(
     )
 }
 
-data class Produto(
-    val id: Int,
-    val nome: String,
-    val preco: String,
-    val ativo: Boolean
-)
-
+@SuppressLint("DefaultLocale")
 @Composable
 fun ListaProdutosCardapio(
     tomBege: Color,
     tomVinho: Color,
     fundoCinza: Color,
     searchText: String,
-    produtos: List<cardapioItem>,
-    viewModel: CardapioModel,
-    onEditClick: (cardapioItem) -> Unit
+    produtos: List<CardapioItem>,
+    onEditClick: (CardapioItem) -> Unit
 ) {
 
     val produtosFiltrados = produtos.filter {
@@ -288,9 +266,9 @@ fun ListaProdutosCardapio(
                 ) {
                     Text(
                         text = if (searchText.isEmpty()) {
-                            "Nenhum produto cadastrado"
+                            stringResource(R.string.menu_noItems_txt)
                         } else {
-                            "Nenhum produto encontrado para \"$searchText\""
+                            stringResource(R.string.menu_itemsNotFound_txt, searchText)
                         },
                         color = Color.Gray,
                         fontSize = 16.sp,
@@ -321,8 +299,9 @@ fun ListaProdutosCardapio(
                                 .background(fundoCinza, shape = RoundedCornerShape(8.dp))
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier
-                            .weight(2f)
+                        Column(
+                            modifier = Modifier
+                                .weight(2f)
                         ) {
                             Text(
                                 text = produto.nome,
@@ -334,7 +313,11 @@ fun ListaProdutosCardapio(
                                 modifier = Modifier.fillMaxWidth(),
                             )
                             Spacer(modifier = Modifier.height(2.dp))
-                            Text(text = "R$" + produto.preco, color = Color.White, fontSize = 15.sp)
+                            Text(
+                                text = "R$" + String.format("%.2f", produto.preco),
+                                color = Color.White,
+                                fontSize = 15.sp
+                            )
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Button(
@@ -344,7 +327,7 @@ fun ListaProdutosCardapio(
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp)
                             ) {
-                                Text("Editar", color = tomVinho, softWrap = false)
+                                Text(stringResource(R.string.menu_editBtn_label), color = tomVinho, softWrap = false)
                             }
                         }
                     }
@@ -358,52 +341,65 @@ fun ListaProdutosCardapio(
     }
 }
 
-@Composable
-fun BottomNavigationBarCardapio() {
-    var itemSelecionado by remember { mutableIntStateOf(0) }
-    val items = listOf(
-        "Início" to Icons.Filled.Home,
-        "Cardápio" to Icons.AutoMirrored.Filled.List,
-        "Estoque" to Icons.Filled.ShoppingCart,
-        "Conta" to Icons.Filled.Person
-    )
-
-    NavigationBar(containerColor = Color.White) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = itemSelecionado == index,
-                onClick = { itemSelecionado = index },
-                icon = { Icon(item.second, contentDescription = item.first) },
-                label = { Text(item.first) }
-            )
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBottomSheetContent(
-    product: cardapioItem?,
+    product: CardapioItem?,
     onClose: () -> Unit,
     tomVinho: Color,
-    viewModel: CardapioModel
+    viewModel: CardapioModel = koinViewModel()
 ) {
     val focusManager = LocalFocusManager.current
+    val subtipoViewModel: SubtipoModel = koinViewModel()
+    val marcasViewModel: MarcaModel = koinViewModel()
 
-    // Estados para todos os campos editáveis
+    var editedId by remember { mutableStateOf(product?.id) }
     var editedName by remember { mutableStateOf(product?.nome ?: "") }
-    var editedMarca by remember { mutableStateOf(product?.marca ?: "") }
+    var editedMarca by remember { mutableStateOf(product?.nomeMarca ?: "") }
     var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
-    var editedSubtipo by remember { mutableStateOf(product?.subtipo ?: "") }
-    var editedPreco by remember { mutableStateOf(product?.preco ?: 0.0) }
-    var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa.toString() ?: "") }
-    var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixa.toString() ?: "") }
-    var editedAtivo by remember { mutableStateOf(product?.ativo ?: true) }
-    var editedLactose by remember { mutableStateOf(product?.temLactose ?: false) }
-    var editedGluten by remember { mutableStateOf(product?.temGluten ?: false) }
+    var editedSubtipo by remember { mutableStateOf(product?.nomeSubtipo ?: "") }
+    var editedPreco by remember { mutableStateOf(product?.preco?.toString() ?: "") }
+    var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa?.toString() ?: "") }
+    var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixas?.toString() ?: "") }
+    var editedAtivo by remember { mutableStateOf(product?.ativo != false) }
+    var editedLactose by remember { mutableStateOf(product?.temLactose == true) }
+    var editedGluten by remember { mutableStateOf(product?.temGluten == true) }
 
-    val tipos = listOf("Sorvete", "Picolé", "Açaí", "Bebida", "Sobremesa")
-    val subtipos = listOf("Cremoso", "Frutas", "Natural", "Torta", "Sundae")
+    var showValidationErrors by remember { mutableStateOf(false) }
+
+    val nameError = editedName.isEmpty() && showValidationErrors
+    val marcaError = editedMarca.isEmpty() && showValidationErrors
+    val subtipoError = editedSubtipo.isEmpty() && showValidationErrors
+    val precoError =
+        (editedPreco.isEmpty() || editedPreco.toDoubleOrNull() == null || editedPreco.toDoubleOrNull()!! <= 0) && showValidationErrors
+    val qtdPorCaixaError =
+        (editedQtdPorCaixa.isEmpty() || editedQtdPorCaixa.toIntOrNull() == null || editedQtdPorCaixa.toIntOrNull()!! <= 0) && showValidationErrors
+
+    val isFormValid = editedName.isNotEmpty() &&
+            editedMarca.isNotEmpty() &&
+            editedSubtipo.isNotEmpty() &&
+            editedPreco.isNotEmpty() && editedPreco.toDoubleOrNull() != null && editedPreco.toDoubleOrNull()!! > 0 &&
+            editedQtdPorCaixa.isNotEmpty() && editedQtdPorCaixa.toIntOrNull() != null && editedQtdPorCaixa.toIntOrNull()!! > 0
+
+    var showSubtipoSelector by remember { mutableStateOf(false) }
+    var showMarcasSelector by remember { mutableStateOf(false) }
+
+    val subtipos by subtipoViewModel.subtipos.observeAsState()
+
+    val marcas by marcasViewModel.marcas.observeAsState()
+
+    LaunchedEffect(key1 = Unit) {
+        subtipoViewModel.carregarSubtipos()
+        marcasViewModel.carregarMarcas()
+    }
+
+    val subtiposList = remember(subtipos) {
+        subtipos?.sortedBy { it.nome } ?: emptyList()
+    }
+
+    val marcasList = remember(marcas) {
+        marcas?.sortedBy { it.nome } ?: emptyList()
+    }
 
     Column(
         modifier = Modifier
@@ -423,190 +419,267 @@ fun EditBottomSheetContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                if (product != null) "Editar ${product.nome}" else "Adicionar Novo Produto",
+                if (product != null) stringResource(R.string.edit_product_title, product.nome) else stringResource(R.string.add_new_product_title),
                 style = MaterialTheme.typography.headlineSmall,
                 color = tomVinho,
                 textAlign = TextAlign.Center,
             )
         }
 
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-        Text("Informações Básicas", style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(stringResource(R.string.basic_info_section), style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(10.dp))
+
         OutlinedTextField(
             value = editedName,
             onValueChange = { editedName = it },
-            label = { Text("Nome") },
-            modifier = Modifier
-                .fillMaxWidth(),
+            label = { Text(stringResource(R.string.name_label)) },
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium,
+            isError = nameError,
+            supportingText = {
+                if (nameError) {
+                    Text(stringResource(R.string.name_required_error), color = MaterialTheme.colorScheme.error)
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray,
-                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                cursorColor = tomVinho,
                 focusedLabelColor = tomVinho,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorLabelColor = MaterialTheme.colorScheme.error
             )
         )
 
         OutlinedTextField(
             value = editedMarca,
-            onValueChange = { editedMarca = it },
-            label = { Text("Marca") },
-            modifier = Modifier
-                .fillMaxWidth(),
+            onValueChange = { /* No direct input, read-only */ },
+            label = { Text(stringResource(R.string.brand_label)) },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showMarcasSelector = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Selecionar Marca")
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            singleLine = true,
-            textStyle = MaterialTheme.typography.bodyMedium,
+            isError = marcaError,
+            supportingText = {
+                if (marcaError) {
+                    Text(stringResource(R.string.brand_required_error), color = MaterialTheme.colorScheme.error)
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray,
-                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
-                focusedLabelColor = tomVinho
+                cursorColor = tomVinho,
+                focusedLabelColor = tomVinho,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorLabelColor = MaterialTheme.colorScheme.error
             )
         )
 
-        // Seção de Tipo e Subtipo
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Categorização", style = MaterialTheme.typography.titleMedium)
-        ExposedDropdownMenuBox(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Transparent, RoundedCornerShape(16.dp)),
-            expanded = false,
-            onExpandedChange = {}
-        ) {
-            OutlinedTextField(
-                shape = RoundedCornerShape(16.dp),
-                value = editedTipo,
-                onValueChange = {},
-                label = { Text("Tipo") },
-                modifier = Modifier
-                    .menuAnchor(),
-                readOnly = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
-                    unfocusedBorderColor = Color.Gray,
-                    cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
-                    focusedLabelColor = tomVinho
-                )
-            )
-            ExposedDropdownMenu(
-                expanded = false,
-                onDismissRequest = {}
-            ) {
-                tipos.forEach { tipo ->
-                    DropdownMenuItem(
-                        text = { Text(tipo) },
-                        onClick = { editedTipo = tipo }
-                    )
+        if (showMarcasSelector) {
+            AlertDialog(
+                containerColor = Color.White,
+                onDismissRequest = { showMarcasSelector = false },
+                title = { Text(stringResource(R.string.select_brand_dialog_title)) },
+                text = {
+                    LazyColumn(
+                        modifier = Modifier.height(350.dp)
+                    ) {
+                        items(marcasList) { marca ->
+                            TextButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.textButtonColors(
+                                    containerColor = tomBege,
+                                    contentColor = Color(0xFF343434)
+                                ),
+                                onClick = {
+                                    editedMarca = marca.nome
+                                    showMarcasSelector = false
+                                }) {
+                                Text(marca.nome)
+                            }
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = tomVinho,
+                            contentColor = Color.White
+                        ),
+                        onClick = { showMarcasSelector = false }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.dialog_cancel_button),
+                            modifier = Modifier.padding(horizontal = 10.dp)
+                        )
+                    }
                 }
-            }
+            )
         }
 
-        ExposedDropdownMenuBox(
-            modifier = Modifier.fillMaxWidth(),
-            expanded = false,
-            onExpandedChange = {}
-        ) {
-            OutlinedTextField(
-                shape = RoundedCornerShape(16.dp),
-                value = editedSubtipo,
-                onValueChange = {},
-                label = { Text("Subtipo") },
-                modifier = Modifier.menuAnchor(),
-                readOnly = false,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
-                    unfocusedBorderColor = Color.Gray,
-                    cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
-                    focusedTrailingIconColor = tomVinho,
-                    focusedLabelColor = tomVinho
-                )
-            )
-            ExposedDropdownMenu(
-                expanded = false,
-                onDismissRequest = {}
-            ) {
-                subtipos.forEach { subtipo ->
-                    DropdownMenuItem(
-                        text = { Text(subtipo) },
-                        onClick = { editedSubtipo = subtipo }
-                    )
-                }
-            }
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(stringResource(R.string.categorization_section), style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Seção de Estoque e Preço
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Estoque e Preço", style = MaterialTheme.typography.titleMedium)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            NumberTextField(
-                value = editedQtdCaixa,
-                onValueChange = { editedQtdCaixa = it },
-                label = "Caixas",
-                modifier = Modifier.weight(1f)
-            )
-            NumberTextField(
-                value = editedQtdPorCaixa,
-                onValueChange = { editedQtdPorCaixa = it },
-                label = "Unid./Caixa",
-                modifier = Modifier.weight(1f)
-            )
-        }
         OutlinedTextField(
-            value = editedPreco.toString(),
-            onValueChange = { editedPreco = it.toString().toDoubleOrNull() ?: 0.0 },
-            label = { Text("Preço") },
+            shape = RoundedCornerShape(16.dp),
+            value = editedTipo,
+            onValueChange = { /* Não modificável */ },
+            label = { Text(stringResource(R.string.type_label)) },
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = tomVinho,
+                focusedLabelColor = tomVinho,
+                disabledBorderColor = Color.LightGray,
+                disabledTextColor = Color.DarkGray
+            ),
+            enabled = false
+        )
+
+        OutlinedTextField(
+            value = editedSubtipo,
+            onValueChange = { /* No direct input, read-only */ },
+            label = { Text(stringResource(R.string.subtype_label)) },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showSubtipoSelector = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Selecionar Subtipo")
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            isError = subtipoError,
+            supportingText = {
+                if (subtipoError) {
+                    Text(stringResource(R.string.subtype_required_error), color = MaterialTheme.colorScheme.error)
+                }
+            },
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = tomVinho,
+                unfocusedBorderColor = Color.Gray,
+                cursorColor = tomVinho,
+                focusedLabelColor = tomVinho,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorLabelColor = MaterialTheme.colorScheme.error
+            )
+        )
+
+        if (showSubtipoSelector) {
+            AlertDialog(
+                containerColor = Color.White,
+                onDismissRequest = { showSubtipoSelector = false },
+                title = { Text(stringResource(R.string.select_subtype_dialog_title)) },
+                text = {
+                    LazyColumn(
+                        modifier = Modifier.height(350.dp)
+                    ) {
+                        items(subtiposList) { subtipo ->
+                            TextButton(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.textButtonColors(
+                                    containerColor = tomBege,
+                                    contentColor = Color(0xFF343434)
+                                ),
+                                onClick = {
+                                    editedSubtipo = subtipo.nome
+                                    editedTipo = subtipo.tipo.nome
+                                    showSubtipoSelector = false
+                                }) {
+                                Text(subtipo.nome)
+                            }
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(
+                        colors = ButtonDefaults.textButtonColors(
+                            containerColor = tomVinho,
+                            contentColor = Color.White
+                        ),
+                        onClick = { showSubtipoSelector = false }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.dialog_cancel_button),
+                            Modifier.padding(horizontal = 10.dp)
+                        )
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(stringResource(R.string.stock_price_section), style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(10.dp))
+
+        NumberTextField(
+            value = editedQtdPorCaixa,
+            onValueChange = { editedQtdPorCaixa = it },
+            label = stringResource(R.string.units_per_box_label),
+            modifier = Modifier.fillMaxWidth(),
+            isError = qtdPorCaixaError,
+            errorMessage = if (qtdPorCaixaError) stringResource(R.string.units_per_box_error) else null
+        )
+
+        OutlinedTextField(
+            value = editedPreco,
+            onValueChange = { editedPreco = it },
+            label = { Text(stringResource(R.string.price_label)) },
             prefix = { Text("R$") },
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
             textStyle = MaterialTheme.typography.bodyMedium,
+            isError = precoError,
+            supportingText = {
+                if (precoError) {
+                    Text(
+                        stringResource(R.string.price_error),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+                focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray,
-                cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+                cursorColor = tomVinho,
                 focusedLabelColor = tomVinho,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorLabelColor = MaterialTheme.colorScheme.error
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number
+                keyboardType = KeyboardType.Decimal
             )
         )
 
-        // Seção de Status e Restrições
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Status e Restrições", style = MaterialTheme.typography.titleMedium)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Switch(
-                checked = editedAtivo,
-                onCheckedChange = { editedAtivo = it },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color.White,
-                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
-                    uncheckedThumbColor = Color.White,
-                    uncheckedTrackColor = Color.Gray
-                )
-            )
-            Spacer(modifier = Modifier.width(10.dp))
-            Text("Disponível no cardápio")
-        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(stringResource(R.string.status_restrictions_section), style = MaterialTheme.typography.titleMedium)
+        Spacer(modifier = Modifier.height(10.dp))
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
                 checked = editedLactose,
                 onCheckedChange = { editedLactose = it },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
-                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    checkedTrackColor = tomVinho,
                     uncheckedThumbColor = Color.White,
                     uncheckedTrackColor = Color.Gray
                 )
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text("Contém lactose")
+            Text(stringResource(R.string.contains_lactose))
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Switch(
@@ -614,65 +687,74 @@ fun EditBottomSheetContent(
                 onCheckedChange = { editedGluten = it },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White,
-                    checkedTrackColor = com.example.terabitemobile.ui.theme.tomVinho,
+                    checkedTrackColor = tomVinho,
                     uncheckedThumbColor = Color.White,
                     uncheckedTrackColor = Color.Gray
                 )
             )
             Spacer(modifier = Modifier.width(10.dp))
-            Text("Contém glúten")
+            Text(stringResource(R.string.contains_gluten))
         }
 
-        // Botões de Ação
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            stringResource(R.string.required_fields_note),
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
+
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                if (product == null) {
-                    // Add new product
-                    val newId = (viewModel.produtos.value?.size ?: 0) + 1
-                    val newProduct = cardapioItem(
-                        id = newId,
-                        nome = editedName,
-                        marca = editedMarca,
-                        tipo = editedTipo,
-                        subtipo = editedSubtipo,
-                        preco = editedPreco,
-                        qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
-                        qtdPorCaixa = editedQtdPorCaixa.toIntOrNull() ?: 0,
-                        ativo = editedAtivo,
-                        temLactose = editedLactose,
-                        temGluten = editedGluten
-                    )
-                    viewModel.adicionarProduto(newProduct)
-                } else {
-                    // Update existing product
-                    val updatedProduct = product.copy(
-                        nome = editedName,
-                        marca = editedMarca,
-                        tipo = editedTipo,
-                        subtipo = editedSubtipo,
-                        preco = editedPreco,
-                        qtdCaixa = editedQtdCaixa.toIntOrNull() ?: 0,
-                        qtdPorCaixa = editedQtdPorCaixa.toIntOrNull() ?: 0,
-                        ativo = editedAtivo,
-                        temLactose = editedLactose,
-                        temGluten = editedGluten
-                    )
-                    viewModel.atualizarProduto(updatedProduct)
+                showValidationErrors = true
+
+                if (isFormValid) {
+                    if (product == null) {
+                        val newId = (viewModel.produtos.value?.size ?: 0) + 1
+                        val newProduct = CardapioPost(
+                            id = 0,
+                            nome = editedName,
+                            nomeMarca = editedMarca,
+                            nomeSubtipo = editedSubtipo,
+                            preco = editedPreco.toDoubleOrNull() ?: 0.0,
+                            qtdPorCaixas = editedQtdPorCaixa.toIntOrNull() ?: 0,
+                            temLactose = editedLactose,
+                            temGluten = editedGluten
+                        )
+                        viewModel.adicionarProduto(newProduct)
+                        viewModel.carregarProdutos()
+                    } else {
+                        val updatedProduct = editedId?.let {
+                            CardapioPost(
+                                id = it,
+                                nome = editedName,
+                                nomeMarca = editedMarca,
+                                nomeSubtipo = editedSubtipo,
+                                preco = editedPreco.toDoubleOrNull() ?: 0.0,
+                                qtdPorCaixas = editedQtdPorCaixa.toIntOrNull() ?: 0,
+                                temLactose = editedLactose,
+                                temGluten = editedGluten
+                            )
+                        }
+
+                        if (updatedProduct != null) {
+                            viewModel.atualizarProduto(updatedProduct)
+                        }
+                    }
+                    onClose()
                 }
-                onClose()
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
         ) {
-            Text("Salvar Alterações", color = Color.White)
+            Text(stringResource(R.string.save_changes_button), color = Color.White)
         }
 
         TextButton(
             onClick = onClose,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Cancelar", color = Color.Gray)
+            Text(stringResource(R.string.cancel_button), color = Color.Gray)
         }
     }
 }
@@ -682,27 +764,37 @@ fun NumberTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     OutlinedTextField(
         shape = RoundedCornerShape(16.dp),
         value = value,
         onValueChange = { newValue ->
-            if (newValue.all { it.isDigit() }) {
+            if (newValue.isEmpty() || newValue.all { it.isDigit() }) {
                 onValueChange(newValue)
             }
         },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = com.example.terabitemobile.ui.theme.tomVinho,
+            focusedBorderColor = tomVinho,
             unfocusedBorderColor = Color.Gray,
-            cursorColor = com.example.terabitemobile.ui.theme.tomVinho,
+            cursorColor = tomVinho,
             focusedLabelColor = tomVinho,
+            errorBorderColor = MaterialTheme.colorScheme.error,
+            errorLabelColor = MaterialTheme.colorScheme.error
         ),
         label = { Text(label) },
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = KeyboardType.Number
         ),
-        modifier = modifier
+        modifier = modifier,
+        isError = isError,
+        supportingText = {
+            if (isError && errorMessage != null) {
+                Text(errorMessage, color = MaterialTheme.colorScheme.error)
+            }
+        }
     )
 }
 
