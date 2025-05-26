@@ -9,15 +9,17 @@ import androidx.navigation.compose.composable
 import com.example.terabitemobile.ui.screens.TelaInicio
 import TelaFerramentas
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.BaixaModel
+import com.example.terabitemobile.data.models.CardapioItem
 import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
 import com.example.terabitemobile.ui.screens.TelaDestaque
-import com.example.terabitemobile.ui.screens.TelaEsqueceuSenha
 import com.example.terabitemobile.ui.screens.TelaEstoque
 import com.example.terabitemobile.ui.screens.TelaGenerica
 import com.example.terabitemobile.ui.screens.TelaLogin
@@ -49,11 +51,6 @@ fun AppNavigation(
         // Login
         composable(route = "login") {
             TelaLogin(navController)
-        }
-
-        // Esqueceu senha
-        composable(route = "esqueceu senha") {
-            TelaEsqueceuSenha(navController)
         }
 
         // Inicio
@@ -91,7 +88,8 @@ fun AppNavigation(
 
         // Saída estoque
         composable(route = "baixas") {
-            TelaBaixas(paddingValues, viewModel = baixaViewModel)
+            val produtos by cardapioViewModel.produtos.observeAsState(emptyList())
+            TelaBaixas(paddingValues, viewModel = baixaViewModel, produtos = produtos)
         }
 
         // Estoque

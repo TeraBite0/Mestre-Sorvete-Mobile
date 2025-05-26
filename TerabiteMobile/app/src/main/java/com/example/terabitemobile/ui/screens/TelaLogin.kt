@@ -176,22 +176,6 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = k
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.login_resetPassw_label),
-                color = Color.White,
-                fontSize = 14.sp,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 12.dp)
-                    .clickable {
-                        //context.startActivity
-                        navController.navigate("esqueceu senha")
-                    }
-            )
-
             Spacer(modifier = Modifier.height(48.dp))
 
             Button(

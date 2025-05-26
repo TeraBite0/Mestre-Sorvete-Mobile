@@ -20,6 +20,16 @@ data class BaixaItem(
     val dtSaida: String
 )
 
+data class BaixaRequest(
+    val dtSaida: String,
+    val saidaEstoques: List<BaixaItemRequest>
+)
+
+data class BaixaItemRequest(
+    val produtoId: Int,
+    val qtdCaixasSaida: Int
+)
+
 
 class BaixaModel(private val baixaService: SaidaEstoqueApiService) : ViewModel() {
 
@@ -60,6 +70,32 @@ class BaixaModel(private val baixaService: SaidaEstoqueApiService) : ViewModel()
             }
 
             override fun onFailure(call: Call<List<BaixaResponse>>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha na conexão: ${t.message}"
+            }
+        })
+    }
+
+    fun adicionarBaixa(baixaRequest: BaixaRequest) {
+        _isLoading.value = true
+        _error.value = ""
+
+        baixaService.postBaixa(baixaRequest).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    carregarBaixas() // Recarrega a lista após adicionar
+                } else {
+                    try {
+                        val errorBody = response.errorBody()?.string()
+                        _error.value = "Erro ${response.code()}: $errorBody"
+                    } catch (e: Exception) {
+                        _error.value = "Erro ${response.code()}: ${response.message()}"
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 _isLoading.value = false
                 _error.value = "Falha na conexão: ${t.message}"
             }

@@ -51,8 +51,7 @@ class MainActivity : ComponentActivity() {
             MaterialTheme {
                 Scaffold(containerColor = background, bottomBar = {
                     if (currentRoute != "login" &&
-                        currentRoute != "ferramentas" &&
-                        currentRoute != "esqueceu senha"
+                        currentRoute != "ferramentas"
                         ) BottomNavigationBar(navController)
                     if (currentRoute == "inicio") {
 
