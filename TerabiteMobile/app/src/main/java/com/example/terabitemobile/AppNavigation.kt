@@ -11,11 +11,12 @@ import TelaFerramentas
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import com.example.terabitemobile.data.classes.LoginResponse
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.BaixaModel
-import com.example.terabitemobile.data.models.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioItem
 import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.screens.TelaCardapio
@@ -34,6 +35,19 @@ fun NavController.navigateIfDifferent(route: String) {
     }
 }
 
+fun getStartRoute(): String {
+    lateinit var startRoute: String
+    var loginResponse = LoginResponse()
+
+    if (loginResponse.token == "") {
+        startRoute = "login"
+    } else {
+        startRoute = "inicio"
+    }
+
+    return startRoute
+}
+
 @Composable
 fun AppNavigation(
     paddingValues: PaddingValues,
@@ -46,7 +60,7 @@ fun AppNavigation(
     estoqueViewModel: EstoqueModel
 ) {
     NavHost(
-        navController = navController, startDestination = "login", modifier = Modifier
+        navController = navController, startDestination = getStartRoute(), modifier = Modifier
     ) {
         // Login
         composable(route = "login") {
@@ -62,9 +76,6 @@ fun AppNavigation(
         composable(route = "ferramentas") {
             TelaFerramentas(navController)
         }
-
-        // Telas abaixo PRECISAM do parâmetro padding value, já que o scaffold no Main
-        // irá aplicar o padding correto para a bottom bar.
 
         // Cardapio
         composable(route = "cardapio") {
@@ -83,7 +94,11 @@ fun AppNavigation(
 
         // Destaque
         composable(route = "destaques") {
-            TelaDestaque(paddingValues, destaqueViewModel = destaqueViewModel, produtosViewModel = cardapioViewModel)
+            TelaDestaque(
+                paddingValues,
+                destaqueViewModel = destaqueViewModel,
+                produtosViewModel = cardapioViewModel
+            )
         }
 
         // Saída estoque
@@ -97,7 +112,6 @@ fun AppNavigation(
             TelaEstoque(paddingValues, viewModel = estoqueViewModel)
         }
 
-        // Essa aqui não precisa do parâmetro, ela já está configurada
         // Genérico (SEMPRE DEIXE ESTA ROTA NO FINAL)
         composable(route = "generica") {
             TelaGenerica(navController)

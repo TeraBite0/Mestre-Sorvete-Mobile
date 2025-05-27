@@ -1,35 +1,15 @@
 package com.example.terabitemobile.data.models
 
+import BaixaResponse
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.SaidaEstoqueApiService
+import com.example.terabitemobile.data.classes.BaixaItem
+import com.example.terabitemobile.data.classes.BaixaRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class BaixaResponse(
-    val dtSaida: String,
-    val saidaEstoques: List<BaixaItem>
-)
-
-data class BaixaItem(
-    val id: Int,
-    val qtdCaixasSaida: Int,
-    val produto: CardapioItem,
-    val dtSaida: String
-)
-
-data class BaixaRequest(
-    val dtSaida: String,
-    val saidaEstoques: List<BaixaItemRequest>
-)
-
-data class BaixaItemRequest(
-    val produtoId: Int,
-    val qtdCaixasSaida: Int
-)
-
 
 class BaixaModel(private val baixaService: SaidaEstoqueApiService) : ViewModel() {
 

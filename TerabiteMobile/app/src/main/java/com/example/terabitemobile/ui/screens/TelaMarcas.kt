@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.terabitemobile.R
-import com.example.terabitemobile.data.models.MarcaItem
+import com.example.terabitemobile.data.classes.MarcaItem
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomMarcas

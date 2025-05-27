@@ -29,6 +29,8 @@ import com.example.terabitemobile.ui.screens.TelaLogin
 import com.example.terabitemobile.ui.theme.background
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+lateinit var startRoute: String
+
 class MainActivity : ComponentActivity() {
     private val cardapioViewModel: CardapioModel by viewModel()
     private val marcaViewModel: MarcaModel by viewModel()

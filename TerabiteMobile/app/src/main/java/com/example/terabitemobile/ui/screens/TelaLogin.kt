@@ -1,5 +1,7 @@
 package com.example.terabitemobile.ui.screens
 
+import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -42,15 +44,13 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         if (text.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
 
-        val passwordChar = '\u2022' // Bullet character
+        val passwordChar = '\u2022' //
         val lastChar = text.text.last()
 
         val transformedText = buildString {
-            // Replace all characters except the last one with bullets
             repeat(text.length - 1) {
                 append(passwordChar)
             }
-            // Show the last character as is
             append(lastChar)
         }
 
@@ -196,11 +196,8 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = k
                 }
             }
             if (loginState is LoginModel.LoginState.Error) {
-                Text(
-                    text = (loginState as LoginModel.LoginState.Error).message,
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                makeText(navController.context, (loginState as LoginModel.LoginState.Error).message, Toast.LENGTH_SHORT).show()
+                loginModel.limparErro()
             }
 
             Spacer(modifier = Modifier.height(40.dp))

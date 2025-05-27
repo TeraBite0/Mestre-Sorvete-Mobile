@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import com.example.terabitemobile.data.models.BaixaItem
-import com.example.terabitemobile.data.models.BaixaRequest
-import com.example.terabitemobile.data.models.BaixaItemRequest
+import com.example.terabitemobile.data.classes.BaixaItem
+import com.example.terabitemobile.data.classes.BaixaRequest
+import com.example.terabitemobile.data.classes.BaixaItemRequest
 import androidx.compose.ui.text.style.TextOverflow
 import com.example.terabitemobile.R
-import com.example.terabitemobile.data.models.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioItem
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomBege
 import com.example.terabitemobile.ui.theme.tomVinho

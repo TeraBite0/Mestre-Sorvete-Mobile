@@ -27,6 +27,11 @@ class LoginModel(
     private val _loginState = MutableLiveData<LoginState>(LoginState.Idle)
     val loginState: LiveData<LoginState> = _loginState
 
+    public fun limparErro() {
+        _loginState.value = LoginState.Idle
+        Log.i("api", "Erro limpo")
+    }
+
     fun fazerLogin(email: String, senha: String) {
         // Validações iniciais
         val validationError = validateCredentials(email, senha)

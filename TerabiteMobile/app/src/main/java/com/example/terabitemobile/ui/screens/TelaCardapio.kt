@@ -1,50 +1,89 @@
 package com.example.terabitemobile.ui.screens
 
+import android.R.attr.shape
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.terabitemobile.ui.theme.background
-import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.terabitemobile.data.models.*
-import kotlinx.coroutines.launch
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.example.terabitemobile.data.models.CardapioItem
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.terabitemobile.R
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioPost
+import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.models.MarcaModel
 import com.example.terabitemobile.data.models.SubtipoModel
+import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.fundoCinza
 import com.example.terabitemobile.ui.theme.tomBege
-import com.example.terabitemobile.R
+import com.example.terabitemobile.ui.theme.tomVinho
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -254,7 +293,8 @@ fun ListaProdutosCardapio(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(vertical = 5.dp)
     ) {
         if (produtosFiltrados.isEmpty()) {
             item {
@@ -295,9 +335,40 @@ fun ListaProdutosCardapio(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(50.dp)
-                                .background(fundoCinza, shape = RoundedCornerShape(8.dp))
-                        )
+                                .size(55.dp)
+                                .background(Color.White, shape = RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (produto.urlImagem != null) {
+                                AsyncImage(
+                                    model = "https://www.pudim.com.br/pudim.jpg",
+                                    contentDescription = "foto do produto",
+                                    contentScale = ContentScale.FillBounds,
+                                    modifier = Modifier
+                                        .size(70.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                )
+                            } else {
+                                Image(
+                                    painter = painterResource(R.drawable.scroll),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(35.dp)
+                                )
+                            }
+
+//                            if (produto.urlImagem != null) {
+//                                val imageView = ImageView(LocalContext.current)
+//                                imageView.load("https://imgs.search.brave.com/ki4EkSSjnmgSP-htfMLwy0S6SaHvZHgGnaIFoXEnmZ4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZnJlZWltYWdl/cy5jb20vaW1hZ2Vz/L2hvbWUvYmx1cmJz/L3Zpc3VhbHMud2Vi/cA")
+////                            } else {
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.star),
+//                                    contentDescription = null,
+//                                    modifier = Modifier
+//                                        .fillMaxSize()
+//                                )
+//                            }
+                        }
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(
                             modifier = Modifier
@@ -359,9 +430,7 @@ fun EditBottomSheetContent(
     var editedTipo by remember { mutableStateOf(product?.tipo ?: "") }
     var editedSubtipo by remember { mutableStateOf(product?.nomeSubtipo ?: "") }
     var editedPreco by remember { mutableStateOf(product?.preco?.toString() ?: "") }
-    var editedQtdCaixa by remember { mutableStateOf(product?.qtdCaixa?.toString() ?: "") }
     var editedQtdPorCaixa by remember { mutableStateOf(product?.qtdPorCaixas?.toString() ?: "") }
-    var editedAtivo by remember { mutableStateOf(product?.ativo != false) }
     var editedLactose by remember { mutableStateOf(product?.temLactose == true) }
     var editedGluten by remember { mutableStateOf(product?.temGluten == true) }
 
@@ -456,7 +525,7 @@ fun EditBottomSheetContent(
 
         OutlinedTextField(
             value = editedMarca,
-            onValueChange = { /* No direct input, read-only */ },
+            onValueChange = {},
             label = { Text(stringResource(R.string.brand_label)) },
             readOnly = true,
             trailingIcon = {
@@ -710,7 +779,6 @@ fun EditBottomSheetContent(
 
                 if (isFormValid) {
                     if (product == null) {
-                        val newId = (viewModel.produtos.value?.size ?: 0) + 1
                         val newProduct = CardapioPost(
                             id = 0,
                             nome = editedName,

@@ -1,7 +1,7 @@
 package com.example.terabitemobile.data.api
 
-import com.example.terabitemobile.data.models.CardapioItem
-import com.example.terabitemobile.data.models.CardapioPost
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioPost
 import retrofit2.Call
 import retrofit2.http.*
 

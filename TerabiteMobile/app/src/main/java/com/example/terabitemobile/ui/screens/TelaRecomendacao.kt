@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
-import com.example.terabitemobile.data.models.CardapioItem
-import com.example.terabitemobile.data.models.RecomendacaoItem
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.RecomendacaoItem
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.theme.background
 import kotlinx.coroutines.delay
@@ -45,9 +45,9 @@ fun TelaRecomendacao(
     produtosViewModel: CardapioModel
 ) {
     var searchText by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var recomendacaoName by remember { mutableStateOf("") }
-    var marcaName by remember { mutableStateOf("") }
+//    var showDialog by remember { mutableStateOf(false) }
+//    var recomendacaoName by remember { mutableStateOf("") }
+//    var marcaName by remember { mutableStateOf("") }
 
     val recomendacoes by recomendacaoViewModel.recomendacoes.observeAsState()
     val isLoading by recomendacaoViewModel.isLoading.observeAsState(initial = false)

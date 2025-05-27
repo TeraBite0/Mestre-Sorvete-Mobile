@@ -2,18 +2,11 @@ package com.example.terabitemobile.data.models
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.terabitemobile.data.models.CardapioItem
-import androidx.lifecycle.LiveData
 import com.example.terabitemobile.data.api.RecomendacaoApiService
+import com.example.terabitemobile.data.classes.RecomendacaoItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.Date
-
-data class RecomendacaoItem(
-    val id: Int,
-    val produto: CardapioItem,
-)
 
 class RecomendacaoModel(val recomendacaoService: RecomendacaoApiService) : ViewModel() {
 

@@ -1,6 +1,7 @@
 package com.example.terabitemobile.data.api
 
-import com.example.terabitemobile.data.models.*
+import BaixaResponse
+import com.example.terabitemobile.data.classes.BaixaRequest
 import retrofit2.Call
 import retrofit2.http.*
 

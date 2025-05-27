@@ -118,6 +118,8 @@
     <!-- Tela de Estoque -->
     <string name="empty_stock_message">Nenhum item no estoque</string>
     <string name="no_search_results">Nenhum resultado encontrado</string>
+    <string name="error_product_required">Selecione um produto</string>
+    <string name="error_text_required">Digite uma descrição</string>
 
     <!-- Tela de Baixas -->
     <string name="add_outflow_dialog_title">Adicionar Baixa</string>

@@ -3,14 +3,10 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.MarcaApiService
+import com.example.terabitemobile.data.classes.MarcaItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class MarcaItem(
-    val id: Int,
-    val nome: String
-)
 
 class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
 

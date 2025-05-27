@@ -3,25 +3,10 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.TiposApiService
+import com.example.terabitemobile.data.classes.SubtipoItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class TipoItem(
-    val id: Int,
-    val nome: String
-)
-
-data class SubtipoItem(
-    val id: Int,
-    val tipo: TipoItem,
-    val nome: String
-)
-
-data class SubtipoPost(
-    val nome: String,
-    val nomeTipo: String
-)
 
 class SubtipoModel(val subtipoService: TiposApiService) : ViewModel() {
 
@@ -56,9 +41,5 @@ class SubtipoModel(val subtipoService: TiposApiService) : ViewModel() {
                 _error.value = "Falha na conexão: ${t.message}"
             }
         })
-    }
-
-    fun getSubtiposByTipo(tipoNome: String): List<SubtipoItem> {
-        return _subtipos.value?.filter { it.tipo.nome == tipoNome } ?: emptyList()
     }
 }

@@ -1,7 +1,7 @@
 package com.example.terabitemobile.data.api
 
-import com.example.terabitemobile.data.models.SubtipoItem
-import com.example.terabitemobile.data.models.SubtipoPost
+import com.example.terabitemobile.data.classes.SubtipoItem
+import com.example.terabitemobile.data.classes.SubtipoPost
 import com.example.terabitemobile.data.models.*
 import retrofit2.Call
 import retrofit2.http.*
