@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.livedata.observeAsState
 import com.example.terabitemobile.data.models.BaixaModel
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,26 +17,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Icecream
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import com.example.terabitemobile.data.classes.BaixaItem
@@ -219,7 +212,11 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     contentPadding = PaddingValues(4.dp)
                 ) {
                     items(baixasFiltradas) { baixa ->
-                        BaixaCard(baixa)
+                        BaixaCard(
+                            item = baixa,
+                            viewModel = viewModel,
+                            produtos = produtos
+                        )
                     }
                 }
             }
@@ -510,18 +507,33 @@ fun BottomSheetAddBaixa(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BaixaCard(item: BaixaItem) {
+fun BaixaCard(
+    item: BaixaItem,
+    viewModel: BaixaModel,
+    produtos: List<CardapioItem>?
+) {
     val backgroundColor = tomBege
     val cardColor = tomVinho
     val textoBranco = Color.White
+
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    // Estado para edição
+    var selectedProduto by remember { mutableStateOf<CardapioItem?>(item.produto) }
+    var qtdCaixas by remember { mutableStateOf(item.qtdCaixasSaida.toString()) }
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .background(backgroundColor, shape = RoundedCornerShape(12.dp))
             .padding(12.dp)
             .fillMaxWidth()
-            .height(135.dp)
+            .height(160.dp)
+            //.height(135.dp)
     ) {
         Box(
             modifier = Modifier
@@ -579,5 +591,180 @@ fun BaixaCard(item: BaixaItem) {
                 )
             }
         }
+        // Adicionando os botões de ação
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(
+                onClick = { showEditDialog = true },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar",
+                    tint = cardColor
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            IconButton(
+                onClick = { showDeleteDialog = true },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Excluir",
+                    tint = cardColor
+                )
+            }
+        }
+    }
+
+    // Modal de Edição
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Editar Saída", fontWeight = FontWeight.Bold) },
+            text = {
+                Column {
+                    // Data (somente leitura)
+                    OutlinedTextField(
+                        value = LocalDate.parse(item.dtSaida, DateTimeFormatter.ISO_DATE)
+                            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                        onValueChange = {},
+                        label = { Text("Data") },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = Color.Black,
+                            disabledBorderColor = Color.Gray,
+                            disabledLabelColor = Color.Gray
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Seletor de Produto
+                    ExposedDropdownMenuBox(
+                        expanded = isDropdownExpanded,
+                        onExpandedChange = { isDropdownExpanded = it }
+                    ) {
+                        OutlinedTextField(
+                            value = selectedProduto?.nome ?: searchQuery,
+                            onValueChange = {
+                                searchQuery = it
+                                if (it.isNotEmpty()) isDropdownExpanded = true
+                            },
+                            label = { Text("Produto") },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .menuAnchor(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = tomVinho,
+                                unfocusedBorderColor = Color.Gray
+                            )
+                        )
+
+                        ExposedDropdownMenu(
+                            expanded = isDropdownExpanded,
+                            onDismissRequest = { isDropdownExpanded = false }
+                        ) {
+                            produtos?.filter {
+                                it.nome.contains(searchQuery, ignoreCase = true)
+                            }?.forEach { produto ->
+                                DropdownMenuItem(
+                                    text = { Text(produto.nome) },
+                                    onClick = {
+                                        selectedProduto = produto
+                                        isDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Quantidade de Caixas
+                    OutlinedTextField(
+                        value = qtdCaixas,
+                        onValueChange = {
+                            if (it.isEmpty() || it.toIntOrNull() != null) {
+                                qtdCaixas = it
+                            }
+                        },
+                        label = { Text("Quantidade de Caixas") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = tomVinho,
+                            unfocusedBorderColor = Color.Gray
+                        )
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (selectedProduto != null && qtdCaixas.isNotEmpty()) {
+                            viewModel.editarBaixa(
+                                id = item.id,
+                                produtoId = selectedProduto!!.id,
+                                qtdCaixasSaida = qtdCaixas.toInt()
+                            )
+                            showEditDialog = false
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                ) {
+                    Text("Confirmar")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showEditDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                ) {
+                    Text("Cancelar", color = Color.Black)
+                }
+            },
+            containerColor = Color.White
+        )
+    }
+
+    // Modal de Confirmação de Exclusão
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Confirmar Exclusão") },
+            text = { Text("Tem certeza que deseja excluir esta saída?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        viewModel.deletarBaixa(item.dtSaida, item)
+                        showDeleteDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
+                ) {
+                    Text("Sim")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showDeleteDialog = false },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
+                ) {
+                    Text("Não", color = Color.Black)
+                }
+            },
+            containerColor = Color.White
+        )
     }
 }
