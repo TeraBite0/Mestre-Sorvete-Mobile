@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.runtime.livedata.observeAsState
 import com.example.terabitemobile.data.models.BaixaModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -44,6 +45,9 @@ import com.example.terabitemobile.data.classes.CardapioItem
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomBege
 import com.example.terabitemobile.ui.theme.tomVinho
+import java.time.Instant
+import java.time.ZoneId
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -54,23 +58,31 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
     val error by viewModel.error.observeAsState("")
 
     var showAddDialog by remember { mutableStateOf(false) }
-    var dataInicio by remember { mutableStateOf("") }
-    var dataFim by remember { mutableStateOf("") }
+    var selectedDateInicio by remember { mutableStateOf<LocalDate?>(null) }
+    var selectedDateFim by remember { mutableStateOf<LocalDate?>(null) }
+    var showDatePickerInicio by remember { mutableStateOf(false) }
+    var showDatePickerFim by remember { mutableStateOf(false) }
+
+    val limparFiltro = {
+        selectedDateInicio = null
+        selectedDateFim = null
+    }
 
     val formatoApi = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val formatoInput = DateTimeFormatter.ofPattern("dd/MM")
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-    // Filtragem
-    val baixasFiltradas = (baixas ?: emptyList()).filter {
-        try {
-            val data = LocalDate.parse(it.dtSaida, formatoApi)
-            val inicio =
-                dataInicio.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it, formatoInput) }
-            val fim = dataFim.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it, formatoInput) }
-
-            (inicio == null || data >= inicio) && (fim == null || data <= fim)
-        } catch (e: Exception) {
-            true
+    val baixasFiltradas = remember(baixas, selectedDateInicio, selectedDateFim) {
+        if (selectedDateInicio == null || selectedDateFim == null) {
+            baixas ?: emptyList()
+        } else {
+            (baixas ?: emptyList()).filter { baixa ->
+                try {
+                    val dataBaixa = LocalDate.parse(baixa.dtSaida, formatoApi)
+                    dataBaixa >= selectedDateInicio!! && dataBaixa <= selectedDateFim!!
+                } catch (e: Exception) {
+                    false
+                }
+            }
         }
     }
 
@@ -85,87 +97,153 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
         ) {
             ProfileBaixas ( onAddClick = { showAddDialog = true } )
             Spacer(modifier = Modifier.height(16.dp))
-//            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-//                OutlinedTextField(
-//                    value = dataInicio,
-//                    onValueChange = { dataInicio = it },
-//                    label = { Text("De (DD/MM)") },
-//                    modifier = Modifier.weight(1f)
-//                )
-//                OutlinedTextField(
-//                    value = dataFim,
-//                    onValueChange = { dataFim = it },
-//                    label = { Text("Até (DD/MM)") },
-//                    modifier = Modifier.weight(1f)
-//                )
-//            }
+            // Filtro de datas
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
+                // Campo Data Início
                 OutlinedTextField(
-                    value = dataInicio,
-                    onValueChange = {
-                        dataInicio = it
+                    value = selectedDateInicio?.format(formatter) ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.weight(1f),
+                    label = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "Data início",
+                                tint = Color.Black,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Data início", style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black)
+                        }
                     },
-            label = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.CalendarToday,
-                        contentDescription = "Data",
-                        tint = Color.Black,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Data início", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
-                }
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = tomVinho,
-                unfocusedBorderColor = Color.Gray,
-                cursorColor = tomVinho,
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White
-            ),
-            placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp)},
-            modifier = Modifier.weight(1f),
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp)
-            )
-
-            OutlinedTextField(
-                value = dataFim,
-                onValueChange = {
-                    dataFim = it
-                },
-                label = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    trailingIcon = {
                         Icon(
                             imageVector = Icons.Default.CalendarToday,
-                            contentDescription = "Data",
-                            tint = Color.Black,
-                            modifier = Modifier.size(16.dp)
+                            contentDescription = "Selecionar data início",
+                            modifier = Modifier.clickable { showDatePickerInicio = true }
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Data fim", style = MaterialTheme.typography.bodyMedium, color = Color.Black)
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = tomVinho,
-                    unfocusedBorderColor = Color.Gray,
-                    cursorColor = tomVinho,
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
-                ),
-                placeholder = { Text("DD/MM/AAAA", fontSize = 14.sp) },
-                modifier = Modifier.weight(1f),
-                singleLine = true,
-                shape = RoundedCornerShape(16.dp)
-            )
-        }
+                    },
+                    placeholder = { Text("DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true
+                )
+
+                // Campo Data Fim
+                OutlinedTextField(
+                    value = selectedDateFim?.format(formatter) ?: "",
+                    onValueChange = {},
+                    readOnly = true,
+                    modifier = Modifier.weight(1f),
+                    label = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "Data fim",
+                                tint = Color.Black,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Data fim", style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Black)
+                        }
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.CalendarToday,
+                            contentDescription = "Selecionar data fim",
+                            modifier = Modifier.clickable { showDatePickerFim = true }
+                        )
+                    },
+                    placeholder = { Text("DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium) },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    singleLine = true
+                )
+            }
+
+            // DatePicker para Data Início
+            if (showDatePickerInicio) {
+                DatePickerDialog(
+                    onDateSelected = { date ->
+                        selectedDateInicio = date
+                        showDatePickerInicio = false
+                        // Se data fim é anterior à data início, limpa data fim
+                        if (date != null) {
+                            if (selectedDateFim != null && date > selectedDateFim!!) {
+                                selectedDateFim = null
+                            }
+                        }
+                    },
+                    onDismiss = { showDatePickerInicio = false }
+                )
+            }
+
+            if (showDatePickerFim) {
+                DatePickerDialog(
+                    onDateSelected = { date ->
+                        // Só permite selecionar data fim se for maior ou igual à data início
+                        if (date != null) {
+                            if (selectedDateInicio == null || date >= selectedDateInicio!!) {
+                                selectedDateFim = date
+                                showDatePickerFim = false
+                            }
+                        }
+                    },
+                    onDismiss = { showDatePickerFim = false }
+                )
+            }
+
             Spacer(modifier = Modifier.height(14.dp))
             Text(text = "Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
+
+            // Mostrar mensagem quando o filtro está ativo
+            if (selectedDateInicio != null && selectedDateFim != null) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "Mostrando baixas de ${selectedDateInicio!!.format(formatter)} a ${
+                            selectedDateFim!!.format(
+                                formatter
+                            )
+                        }",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    TextButton(
+                        onClick = limparFiltro,
+                        modifier = Modifier.wrapContentWidth()
+                    ) {
+                        Text(
+                            text = "Limpar filtro",
+                            color = tomVinho,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
 
             if (isLoading) {
                 Box(
@@ -201,9 +279,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-//                    contentPadding = PaddingValues(8.dp),
-//                    verticalArrangement = Arrangement.spacedBy(12.dp),
-//                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1f),
@@ -220,6 +295,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     }
                 }
             }
+
             if (showAddDialog) {
                 ModalBottomSheet(
                     onDismissRequest = { showAddDialog = false },
@@ -235,6 +311,53 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerDialog(
+    onDateSelected: (LocalDate) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = calendar.timeInMillis
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val selectedDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                        onDateSelected(selectedDate)
+                    }
+                }
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        },
+        title = { Text("Selecione a data") },
+        text = {
+            DatePicker(
+                state = datePickerState,
+                title = null,
+                headline = null
+            )
+        }
+    )
 }
 
 @Composable
@@ -533,7 +656,6 @@ fun BaixaCard(
             .padding(12.dp)
             .fillMaxWidth()
             .height(160.dp)
-            //.height(135.dp)
     ) {
         Box(
             modifier = Modifier
@@ -543,7 +665,7 @@ fun BaixaCard(
         ) {
             Text(
                 text = LocalDate.parse(item.dtSaida, DateTimeFormatter.ISO_DATE)
-                    .format(DateTimeFormatter.ofPattern("dd/MM")),
+                    .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 color = textoBranco,
                 fontWeight = FontWeight.Bold
             )
