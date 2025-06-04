@@ -165,7 +165,7 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
                     items(filteredMarcas) { marca ->
                         MarcaListItem(
                             marca = marca,
-                            onDeleteClick = { TODO() }
+                            onDeleteClick = { viewModel.deleteMarca(marca.id) }
                         )
                     }
                 }

@@ -350,24 +350,12 @@ fun ListaProdutosCardapio(
                                 )
                             } else {
                                 Image(
-                                    painter = painterResource(R.drawable.scroll),
+                                    painter = painterResource(R.drawable.ice_cream),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(35.dp)
                                 )
                             }
-
-//                            if (produto.urlImagem != null) {
-//                                val imageView = ImageView(LocalContext.current)
-//                                imageView.load("https://imgs.search.brave.com/ki4EkSSjnmgSP-htfMLwy0S6SaHvZHgGnaIFoXEnmZ4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZnJlZWltYWdl/cy5jb20vaW1hZ2Vz/L2hvbWUvYmx1cmJz/L3Zpc3VhbHMud2Vi/cA")
-////                            } else {
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.star),
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .fillMaxSize()
-//                                )
-//                            }
                         }
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(

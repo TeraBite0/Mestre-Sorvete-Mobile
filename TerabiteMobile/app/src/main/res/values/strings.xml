@@ -23,7 +23,7 @@
 
     <!-- Bottom sheet de edição/adição -->
     <!-- Títulos -->
-    <string name="edit_product_title">Editar %1$s</string>
+    <string name="edit_product_title">Editando %1$s</string>
     <string name="add_new_product_title">Adicionar Novo Produto</string>
 
     <!-- Subtítulos das seções -->
@@ -96,7 +96,7 @@
 
     <!-- Tela de Recomendações -->
     <string name="recommendations_title">Recomendados</string>
-    <string name="edit_recommendation_title">Editar Recomendação</string>
+    <string name="edit_recommendation_title">Editando Recomendação</string>
     <string name="search_product_label">Buscar produto</string>
     <string name="success_update_recommendation">Recomendação atualizada com sucesso!</string>
     <string name="error_update_recommendation">Erro ao atualizar: %s</string>
