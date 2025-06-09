@@ -130,7 +130,6 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = koinVi
             Text(stringResource(R.string.any_menu_txt), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Mostra indicador de carregamento quando estiver buscando dados
             if (isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -139,7 +138,6 @@ fun TelaCardapio(paddingBottom: PaddingValues, viewModel: CardapioModel = koinVi
                     CircularProgressIndicator(color = tomVinho)
                 }
             } else if (error.isNotEmpty()) {
-                // Mostra mensagem de erro se houver falha
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center

@@ -67,7 +67,7 @@ class BaixaModel(private val baixaService: SaidaEstoqueApiService) : ViewModel()
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 _isLoading.value = false
                 if (response.isSuccessful) {
-                    carregarBaixas() // Recarrega a lista após adicionar
+                    carregarBaixas()
                 } else {
                     try {
                         val errorBody = response.errorBody()?.string()
