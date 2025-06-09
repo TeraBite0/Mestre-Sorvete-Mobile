@@ -18,8 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -45,11 +43,7 @@ import com.example.terabitemobile.data.classes.CardapioItem
 import com.example.terabitemobile.ui.theme.background
 import com.example.terabitemobile.ui.theme.tomBege
 import com.example.terabitemobile.ui.theme.tomVinho
-import java.time.Instant
-import java.time.ZoneId
-import java.util.Calendar
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: List<CardapioItem>?) {
@@ -101,12 +95,10 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
         ) {
             ProfileBaixas ( onAddClick = { showAddDialog = true } )
             Spacer(modifier = Modifier.height(16.dp))
-            // Filtro de datas
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Campo Data Início
                 OutlinedTextField(
                     value = selectedDateInicio?.format(formatter) ?: "",
                     onValueChange = {},
@@ -114,12 +106,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     modifier = Modifier.weight(1f),
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "Data início",
-                                tint = Color.Black,
-                                modifier = Modifier.size(16.dp)
-                            )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Data início", style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black)
@@ -127,8 +113,9 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     },
                     trailingIcon = {
                         Icon(
-                            imageVector = Icons.Default.CalendarToday,
+                            imageVector = Icons.Default.DateRange,
                             contentDescription = "Selecionar data início",
+                            tint = Color.Black,
                             modifier = Modifier.clickable { showDatePickerInicio = true }
                         )
                     },
@@ -144,7 +131,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     singleLine = true
                 )
 
-                // Campo Data Fim
                 OutlinedTextField(
                     value = selectedDateFim?.format(formatter) ?: "",
                     onValueChange = {},
@@ -152,12 +138,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     modifier = Modifier.weight(1f),
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Default.DateRange,
-                                contentDescription = "Data fim",
-                                tint = Color.Black,
-                                modifier = Modifier.size(16.dp)
-                            )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Data fim", style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black)
@@ -165,8 +145,9 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     },
                     trailingIcon = {
                         Icon(
-                            imageVector = Icons.Default.CalendarToday,
+                            imageVector = Icons.Default.DateRange,
                             contentDescription = "Selecionar data fim",
+                            tint = Color.Black,
                             modifier = Modifier.clickable { showDatePickerFim = true }
                         )
                     },
@@ -183,27 +164,25 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                 )
             }
 
-            // DatePicker para Data Início
             if (showDatePickerInicio) {
                 DatePickerDialog(
                     onDateSelected = { date ->
                         selectedDateInicio = date
                         showDatePickerInicio = false
-                        // Se data fim é anterior à data início, limpa data fim
                         if (date != null) {
                             if (selectedDateFim != null && date > selectedDateFim!!) {
                                 selectedDateFim = null
                             }
                         }
                     },
-                    onDismiss = { showDatePickerInicio = false }
+                    onDismiss = { showDatePickerInicio = false },
+                    tomVinho = tomVinho
                 )
             }
 
             if (showDatePickerFim) {
                 DatePickerDialog(
                     onDateSelected = { date ->
-                        // Só permite selecionar data fim se for maior ou igual à data início
                         if (date != null) {
                             if (selectedDateInicio == null || date >= selectedDateInicio!!) {
                                 selectedDateFim = date
@@ -211,7 +190,8 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             }
                         }
                     },
-                    onDismiss = { showDatePickerFim = false }
+                    onDismiss = { showDatePickerFim = false },
+                    tomVinho = tomVinho
                 )
             }
 
@@ -219,7 +199,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
             Text(text = "Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Mostrar mensagem quando o filtro está ativo
             if (selectedDateInicio != null && selectedDateFim != null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -231,18 +210,20 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                                 formatter
                             )
                         }",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontSize = 12.sp
+                        ),
+                        color = Color.Gray
                     )
                     TextButton(
-                        onClick = limparFiltro,
-                        modifier = Modifier.wrapContentWidth()
+                        onClick = limparFiltro
                     ) {
                         Text(
                             text = "Limpar filtro",
                             color = tomVinho,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontSize = 12.sp
+                            ),
                             fontWeight = FontWeight.Bold
                         )
                     }
@@ -257,7 +238,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     CircularProgressIndicator(color = tomVinho)
                 }
             } else if (error.isNotEmpty()) {
-                // Mostra mensagem de erro se houver falha
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -281,30 +261,52 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     }
                 }
             } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(4.dp)
-                ) {
-                    items(baixasFiltradas) { baixa ->
-                        BaixaCard(
-                            item = baixa,
-                            viewModel = viewModel,
-                            produtos = produtos
-                        )
+                if (baixasFiltradas.isEmpty() && selectedDateInicio == null && selectedDateFim == null) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Nenhuma baixa cadastrada.",
+                                fontSize = 18.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Clique no botão \"Adicionar\" para cadastrar sua primeira baixa!",
+                                fontSize = 16.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                } else {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(4.dp)
+                    ) {
+                        items(baixasFiltradas) { baixa ->
+                            BaixaCard(
+                                item = baixa,
+                                viewModel = viewModel,
+                                produtos = produtos
+                            )
+                        }
                     }
                 }
             }
 
             if (showAddDialog) {
-                ModalBottomSheet(
-                    onDismissRequest = { showAddDialog = false },
-                    containerColor = Color.White
-                ) {
                     BottomSheetAddBaixa(
                         produtos = produtos ?: emptyList(),
                         onClose = { showAddDialog = false },
@@ -315,54 +317,6 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerDialog(
-    onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = calendar.timeInMillis
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        val selectedDate = Instant.ofEpochMilli(millis)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                        onDateSelected(selectedDate)
-                    }
-                }
-            ) {
-                Text("OK")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        },
-        title = { Text("Selecione a data") },
-        text = {
-            DatePicker(
-                state = datePickerState,
-                title = null,
-                headline = null
-            )
-        }
-    )
-}
 
 @Composable
 private fun ProfileBaixas(
@@ -431,6 +385,7 @@ fun BottomSheetAddBaixa(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isDropdownExpanded by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     val filteredProdutos = if (searchQuery.isBlank()) {
         produtos
@@ -440,151 +395,149 @@ fun BottomSheetAddBaixa(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDateSelected = { date ->
+                if (date != null) {
+                    dataSaida = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                }
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false },
+            tomVinho = tomVinho
+        )
+    }
+
+    AlertDialog(
+        onDismissRequest = onClose,
+        title = {
             Text(
                 text = "Adicionar Baixa",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            IconButton(onClick = onClose) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Fechar",
-                    tint = tomVinho
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Data de Saída
-        OutlinedTextField(
-            value = dataSaida,
-            onValueChange = { dataSaida = it },
-            label = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Data de Saída (DD/MM/AAAA)")
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = tomVinho,
-                unfocusedBorderColor = Color.Gray
-            ),
-            placeholder = { Text("Ex: 08/05/2025") },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Seletor de Produto
-        ExposedDropdownMenuBox(
-            expanded = isDropdownExpanded,
-            onExpandedChange = { isDropdownExpanded = it }
-        ) {
-            OutlinedTextField(
-                value = selectedProduto?.nome ?: searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    if (it.isNotEmpty()) isDropdownExpanded = true
-                },
-                label = { Text("Buscar Produto") },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = tomVinho,
-                    unfocusedBorderColor = Color.Gray
-                ),
-                placeholder = { Text("Digite para buscar") }
-            )
-
-            ExposedDropdownMenu(
-                expanded = isDropdownExpanded,
-                onDismissRequest = { isDropdownExpanded = false }
-            ) {
-                if (filteredProdutos.isEmpty()) {
-                    DropdownMenuItem(
-                        text = { Text("Nenhum produto encontrado") },
-                        onClick = { }
-                    )
-                } else {
-                    filteredProdutos.forEach { produto ->
-                        DropdownMenuItem(
-                            text = { Text(produto.nome) },
-                            onClick = {
-                                selectedProduto = produto
-                                searchQuery = produto.nome
-                                isDropdownExpanded = false
-                            }
+        },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = dataSaida,
+                    onValueChange = { dataSaida = it },
+                    label = {
+                        Text("Data de Saída", color = Color.Black)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    readOnly = true,
+                    placeholder = { Text("DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = "Selecionar data",
+                            tint = tomVinho,
+                            modifier = Modifier.clickable { showDatePicker = true }
                         )
+                    },
+                    shape = RoundedCornerShape(16.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                ExposedDropdownMenuBox(
+                    expanded = isDropdownExpanded,
+                    onExpandedChange = { isDropdownExpanded = it }
+                ) {
+                    OutlinedTextField(
+                        value = selectedProduto?.nome ?: searchQuery,
+                        onValueChange = {
+                            searchQuery = it
+                            if (it.isNotEmpty()) isDropdownExpanded = true
+                        },
+                        label = { Text("Buscar Produto", color = Color.Black) },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = tomVinho,
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = tomVinho,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        placeholder = { Text("Selecione um produto") },
+                        shape = RoundedCornerShape(16.dp)
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = isDropdownExpanded,
+                        onDismissRequest = { isDropdownExpanded = false },
+                        modifier = Modifier
+                            .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                            .height(200.dp)
+                    ) {
+                        if (filteredProdutos.isEmpty()) {
+                            DropdownMenuItem(
+                                text = { Text("Nenhum produto encontrado") },
+                                onClick = { },
+                                modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                            )
+                        } else {
+                            filteredProdutos.forEach { produto ->
+                                DropdownMenuItem(
+                                    text = { Text(produto.nome) },
+                                    onClick = {
+                                        selectedProduto = produto
+                                        searchQuery = produto.nome
+                                        isDropdownExpanded = false
+                                    },
+                                    modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                                )
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-        // Quantidade de Caixas
-        OutlinedTextField(
-            value = qtdCaixas,
-            onValueChange = {
-                if (it.isEmpty() || it.toIntOrNull() != null) {
-                    qtdCaixas = it
+                OutlinedTextField(
+                    value = qtdCaixas,
+                    onValueChange = {
+                        if (it.isEmpty() || it.toIntOrNull() != null) {
+                            qtdCaixas = it
+                        }
+                    },
+                    label = { Text("Quantidade de Caixas", color = Color.Black) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = tomVinho,
+                        unfocusedBorderColor = Color.Gray,
+                        cursorColor = tomVinho,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(16.dp)
+                )
+
+                errorMessage?.let {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = it,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            },
-            label = { Text("Quantidade de Caixas") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = tomVinho,
-                unfocusedBorderColor = Color.Gray
-            )
-        )
-
-        errorMessage?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = it,
-                color = Color.Red,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Botão Cancelar
-            Button(
-                onClick = onClose,
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.LightGray,
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Cancelar")
             }
-
-            // Botão Salvar
+        },
+        confirmButton = {
             Button(
                 onClick = {
                     if (dataSaida.isEmpty() || selectedProduto == null || qtdCaixas.isEmpty()) {
@@ -615,7 +568,7 @@ fun BottomSheetAddBaixa(
                         isLoading = false
                     }
                 },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
                 shape = RoundedCornerShape(12.dp),
                 enabled = !isLoading
@@ -630,8 +583,22 @@ fun BottomSheetAddBaixa(
                     Text("Salvar")
                 }
             }
-        }
-    }
+        },
+        dismissButton = {
+            Button(
+                onClick = onClose,
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.LightGray,
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("Cancelar")
+            }
+        },
+        containerColor = Color.White
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -647,8 +614,6 @@ fun BaixaCard(
 
     var showEditDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
-
-    // Estado para edição
     var selectedProduto by remember { mutableStateOf<CardapioItem?>(item.produto) }
     var qtdCaixas by remember { mutableStateOf(item.qtdCaixasSaida.toString()) }
     var isDropdownExpanded by remember { mutableStateOf(false) }
@@ -683,7 +648,6 @@ fun BaixaCard(
                 .padding(6.dp)
                 .fillMaxWidth(),
             contentAlignment = Alignment.CenterStart
-//            contentAlignment = Alignment.Center
         ) {
             Row(verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.horizontalScroll(rememberScrollState())
@@ -717,7 +681,6 @@ fun BaixaCard(
                 )
             }
         }
-        // Adicionando os botões de ação
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -750,31 +713,30 @@ fun BaixaCard(
         }
     }
 
-    // Modal de Edição
     if (showEditDialog) {
         AlertDialog(
             onDismissRequest = { showEditDialog = false },
             title = { Text("Editar Saída", fontWeight = FontWeight.Bold) },
             text = {
                 Column {
-                    // Data (somente leitura)
                     OutlinedTextField(
                         value = LocalDate.parse(item.dtSaida, DateTimeFormatter.ISO_DATE)
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         onValueChange = {},
-                        label = { Text("Data") },
+                        label = { Text("Data", color = Color.Black) },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = false,
+                        shape = RoundedCornerShape(16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             disabledTextColor = Color.Black,
                             disabledBorderColor = Color.Gray,
-                            disabledLabelColor = Color.Gray
+                            disabledLabelColor = Color.Gray,
+                            disabledContainerColor = Color.White
                         )
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Seletor de Produto
                     ExposedDropdownMenuBox(
                         expanded = isDropdownExpanded,
                         onExpandedChange = { isDropdownExpanded = it }
@@ -785,22 +747,28 @@ fun BaixaCard(
                                 searchQuery = it
                                 if (it.isNotEmpty()) isDropdownExpanded = true
                             },
-                            label = { Text("Produto") },
+                            label = { Text("Buscar Produto", color = Color.Black) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .menuAnchor(),
+                            shape = RoundedCornerShape(16.dp),
                             colors = OutlinedTextFieldDefaults.colors(
                                 focusedBorderColor = tomVinho,
-                                unfocusedBorderColor = Color.Gray
+                                unfocusedBorderColor = Color.Gray,
+                                cursorColor = tomVinho,
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White
                             )
                         )
-
                         ExposedDropdownMenu(
                             expanded = isDropdownExpanded,
-                            onDismissRequest = { isDropdownExpanded = false }
+                            onDismissRequest = { isDropdownExpanded = false },
+                            modifier = Modifier
+                                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                                .height(200.dp)
                         ) {
                             produtos?.filter {
                                 it.nome.contains(searchQuery, ignoreCase = true)
@@ -810,7 +778,9 @@ fun BaixaCard(
                                     onClick = {
                                         selectedProduto = produto
                                         isDropdownExpanded = false
-                                    }
+                                    },
+                                    modifier = Modifier.background(color = Color.White,
+                                        shape = RoundedCornerShape(16.dp))
                                 )
                             }
                         }
@@ -818,7 +788,6 @@ fun BaixaCard(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Quantidade de Caixas
                     OutlinedTextField(
                         value = qtdCaixas,
                         onValueChange = {
@@ -826,12 +795,16 @@ fun BaixaCard(
                                 qtdCaixas = it
                             }
                         },
-                        label = { Text("Quantidade de Caixas") },
+                        label = { Text("Quantidade de Caixas", color = Color.Black) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = tomVinho,
-                            unfocusedBorderColor = Color.Gray
+                            unfocusedBorderColor = Color.Gray,
+                            cursorColor = tomVinho,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
                         )
                     )
                 }
@@ -865,7 +838,6 @@ fun BaixaCard(
         )
     }
 
-    // Modal de Confirmação de Exclusão
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },

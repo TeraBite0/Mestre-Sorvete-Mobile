@@ -80,7 +80,6 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
                     CircularProgressIndicator(color = tomVinho)
                 }
             } else if (error.isNotEmpty()) {
-                // Mostra mensagem de erro se houver falha
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -265,7 +264,7 @@ fun BottomSheetContent(
     var selectedProduct by remember(destaque?.id) {
         mutableStateOf(destaque?.produto)
     }
-//    var searchQuery by remember { mutableStateOf(destaque?.produto?.nome ?: "") }
+
     var searchQuery by remember { mutableStateOf("") }
     var editedText by remember { mutableStateOf(destaque?.texto ?: "") }
 
@@ -278,7 +277,6 @@ fun BottomSheetContent(
             .fillMaxWidth()
             .padding(20.dp)
     ) {
-        // Cabeçalho
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -300,7 +298,6 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Produto selecionado
         selectedProduct?.let { product ->
             Row(
                 modifier = Modifier
@@ -338,12 +335,13 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de busca
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text(stringResource(R.string.destaque_search_label)) },
+            label = { Text(stringResource(R.string.destaque_search_label), color = Color.Black, fontSize = 14.sp)},
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray
@@ -352,7 +350,6 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Lista de produtos com scroll
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -396,15 +393,15 @@ fun BottomSheetContent(
             }
         }
 
-        // CAMPO DE TEXTO LIVRE
         OutlinedTextField(
             value = editedText,
             onValueChange = { editedText = it },
-            label = { Text(stringResource(R.string.destaque_text_label)) },
+            label = { Text(stringResource(R.string.destaque_text_label), color = tomVinho, fontWeight = FontWeight.Bold) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
                 .padding(bottom = 12.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 6,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
@@ -412,7 +409,6 @@ fun BottomSheetContent(
             )
         )
 
-        // BOTÃO DE SALVAR
         Button(
             onClick = {
                 if (selectedProduct != null) {
@@ -454,7 +450,6 @@ fun BottomSheetContent(
             }
         }
 
-        // MENSAGEM DE SUCESSO
         AnimatedVisibility(visible = showSuccessMessage) {
             Row(
                 modifier = Modifier
@@ -473,7 +468,6 @@ fun BottomSheetContent(
             }
         }
 
-        // SNACKBAR DE ERRO
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.padding(16.dp)

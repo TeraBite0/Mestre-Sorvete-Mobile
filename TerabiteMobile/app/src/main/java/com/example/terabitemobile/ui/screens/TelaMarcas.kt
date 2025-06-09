@@ -57,13 +57,13 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
         AlertDialog(
             containerColor = Color.White,
             onDismissRequest = { showDialog = false },
-            title = { Text(stringResource(R.string.add_brand_dialog_title)) }, // Alterado
+            title = { Text(stringResource(R.string.add_brand_dialog_title)) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = marcaName,
                         onValueChange = { marcaName = it },
-                        label = { Text(stringResource(R.string.brand_name_label)) }, // Alterado
+                        label = { Text(stringResource(R.string.brand_name_label)) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.Transparent, RoundedCornerShape(16.dp)),
@@ -93,14 +93,14 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                 ) {
-                    Text(stringResource(R.string.confirm_button_label)) // Alterado
+                    Text(stringResource(R.string.confirm_button_label))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDialog = false }
                 ) {
-                    Text(stringResource(R.string.dialog_cancel_button)) // Existente
+                    Text(stringResource(R.string.dialog_cancel_button))
                 }
             }
         )
@@ -123,7 +123,7 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                stringResource(R.string.brands_title), // Alterado
+                stringResource(R.string.brands_title),
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp
             )
@@ -143,7 +143,7 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            stringResource(R.string.error_load_data_failure), // Alterado
+                            stringResource(R.string.error_load_data_failure),
                             color = tomVinho,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium
@@ -155,7 +155,7 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
                             onClick = { viewModel.carregarMarcas() },
                             colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                         ) {
-                            Text(stringResource(R.string.error_tryAgain_label)) // Existente
+                            Text(stringResource(R.string.error_tryAgain_label))
                         }
                     }
                 }
@@ -188,18 +188,18 @@ private fun ProfileMarcas(onAddClick: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.AccountCircle,
-                contentDescription = stringResource(R.string.accessibility_userProfile_img), // Existente
+                contentDescription = stringResource(R.string.accessibility_userProfile_img),
                 tint = tomVinho,
                 modifier = Modifier.size(60.dp)
             )
             Spacer(Modifier.width(8.dp))
             Column {
                 Text(
-                    stringResource(R.string.user_name_placeholder), // Novo
+                    stringResource(R.string.user_name_placeholder),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                 )
                 Text(
-                    stringResource(R.string.any_role_txt), // Existente
+                    stringResource(R.string.any_role_txt),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -213,12 +213,12 @@ private fun ProfileMarcas(onAddClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = stringResource(R.string.any_addItem_txt), // Existente
+                contentDescription = stringResource(R.string.any_addItem_txt),
                 tint = Color.White,
                 modifier = Modifier.padding(end = 8.dp)
             )
             Text(
-                text = stringResource(R.string.any_addItem_txt), // Existente
+                text = stringResource(R.string.any_addItem_txt),
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
             )
         }
@@ -233,11 +233,11 @@ private fun CampoBusca(
     OutlinedTextField(
         value = searchText,
         onValueChange = onSearchTextChanged,
-        placeholder = { Text(stringResource(R.string.any_searchField_placeholder)) }, // Existente
+        placeholder = { Text(stringResource(R.string.any_searchField_placeholder)) },
         leadingIcon = {
             Icon(
                 Icons.Default.Search,
-                contentDescription = stringResource(R.string.search_icon_desc) // Novo
+                contentDescription = stringResource(R.string.search_icon_desc)
             )
         },
         modifier = Modifier
@@ -270,7 +270,7 @@ private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
     ) {
         Image(
             painter = painterResource(R.drawable.tag),
-            contentDescription = stringResource(R.string.tag_icon_desc), // Novo
+            contentDescription = stringResource(R.string.tag_icon_desc),
             modifier = Modifier
                 .padding(end = 10.dp)
                 .size(25.dp),
@@ -288,7 +288,7 @@ private fun MarcaListItem(marca: MarcaItem, onDeleteClick: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Delete,
-                contentDescription = stringResource(R.string.delete_label), // Novo
+                contentDescription = stringResource(R.string.delete_label),
                 tint = tomVinho
             )
         }
