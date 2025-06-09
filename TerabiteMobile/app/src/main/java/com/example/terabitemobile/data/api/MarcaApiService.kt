@@ -12,6 +12,6 @@ interface MarcaApiService {
     @POST("marcas")
     fun postMarcas(@Body marca: String): Call<MarcaItem>
 
-    @DELETE("marcas")
+    @DELETE("marcas/{id}")
     fun deleteMarcas(@Path("id") id: Int): Call<MarcaDelete>
 }

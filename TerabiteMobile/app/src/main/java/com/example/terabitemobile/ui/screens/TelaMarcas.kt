@@ -49,6 +49,10 @@ fun TelaMarcas(paddingScaffold: PaddingValues, viewModel: MarcaModel) {
         marcas?.filter { it.nome.contains(searchText, ignoreCase = true) } ?: emptyList()
     }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.carregarMarcas()
+    }
+
     if (showDialog) {
         AlertDialog(
             containerColor = Color.White,

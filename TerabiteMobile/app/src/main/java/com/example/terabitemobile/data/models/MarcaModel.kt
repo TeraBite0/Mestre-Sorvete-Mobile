@@ -8,6 +8,7 @@ import com.example.terabitemobile.data.classes.MarcaItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.util.Log
 
 class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
 
@@ -80,7 +81,13 @@ class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
                     currentList.removeAll { it.id == id }
                     _marcas.value = currentList
                 } else {
+                    if (response.code() == 409) {
+                        _error.value = "Erro ao deletar: Não é possível deletar uma marca que possui produtos!"
+                        return
+                    }
+
                     _error.value = "Erro ao deletar: ${response.message()}"
+                    Log.i("api", "Erro ao deletar: ${response.code()}")
                 }
             }
 

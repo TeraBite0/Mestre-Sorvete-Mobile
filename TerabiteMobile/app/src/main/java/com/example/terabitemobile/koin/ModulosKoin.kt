@@ -17,7 +17,7 @@ import com.example.terabitemobile.data.models.LoginModel.LoginState
 // Se estiver desenvolvendo localmente, use o endereço IP do
 // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
 
-private const val BASE_URL = "http://192.168.72.42:8080/"
+private const val BASE_URL = "http://192.168.234.42:8080/"
 
 val moduloGeral = module {
     // single -> devolve a MESMA instância para todos que pedirem

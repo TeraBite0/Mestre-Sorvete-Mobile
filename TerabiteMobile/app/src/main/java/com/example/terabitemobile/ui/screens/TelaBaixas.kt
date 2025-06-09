@@ -86,6 +86,10 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
         }
     }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.carregarBaixas();
+    }
+
     Scaffold(
         containerColor = background
     ) {

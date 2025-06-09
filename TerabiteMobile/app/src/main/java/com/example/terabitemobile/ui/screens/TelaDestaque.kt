@@ -54,6 +54,11 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
 
     val produtos by produtosViewModel.produtos.observeAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        destaqueViewModel.carregarDestaque()
+        produtosViewModel.carregarProdutos()
+    }
+
     Scaffold(
         containerColor = background,
     ) {
