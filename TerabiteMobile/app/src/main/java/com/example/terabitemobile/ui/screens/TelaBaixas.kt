@@ -107,7 +107,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data início", style = MaterialTheme.typography.bodyMedium,
+                            Text(stringResource(R.string.data_inicio_label), style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black)
                         }
                     },
@@ -119,7 +119,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             modifier = Modifier.clickable { showDatePickerInicio = true }
                         )
                     },
-                    placeholder = { Text("DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium) },
+                    placeholder = { Text(stringResource(R.string.date_placeholder), style = MaterialTheme.typography.bodyMedium) },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = tomVinho,
                         unfocusedBorderColor = Color.Gray,
@@ -139,7 +139,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     label = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Data fim", style = MaterialTheme.typography.bodyMedium,
+                            Text(stringResource(R.string.data_fim_label), style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black)
                         }
                     },
@@ -151,7 +151,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             modifier = Modifier.clickable { showDatePickerFim = true }
                         )
                     },
-                    placeholder = { Text("DD/MM/AAAA", style = MaterialTheme.typography.bodyMedium) },
+                    placeholder = { Text(stringResource(R.string.date_placeholder), style = MaterialTheme.typography.bodyMedium) },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = tomVinho,
                         unfocusedBorderColor = Color.Gray,
@@ -175,8 +175,7 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             }
                         }
                     },
-                    onDismiss = { showDatePickerInicio = false },
-                    tomVinho = tomVinho
+                    onDismiss = { showDatePickerInicio = false }
                 )
             }
 
@@ -190,13 +189,12 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             }
                         }
                     },
-                    onDismiss = { showDatePickerFim = false },
-                    tomVinho = tomVinho
+                    onDismiss = { showDatePickerFim = false }
                 )
             }
 
             Spacer(modifier = Modifier.height(14.dp))
-            Text(text = "Baixas", fontWeight = FontWeight.Bold, fontSize = 22.sp)
+            Text(stringResource(R.string.baixas_title), fontWeight = FontWeight.Bold, fontSize = 22.sp)
             Spacer(modifier = Modifier.height(14.dp))
 
             if (selectedDateInicio != null && selectedDateFim != null) {
@@ -205,21 +203,17 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                     modifier = Modifier.padding(bottom = 8.dp)
                 ) {
                     Text(
-                        text = "Mostrando baixas de ${selectedDateInicio!!.format(formatter)} a ${
-                            selectedDateFim!!.format(
-                                formatter
-                            )
-                        }",
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 12.sp
-                        ),
+                        text = stringResource(R.string.mostrando_baixas_format,
+                            selectedDateInicio!!.format(formatter),
+                            selectedDateFim!!.format(formatter)),
+                        style = androidx.compose.ui.text.TextStyle(fontSize = 12.sp),
                         color = Color.Gray
                     )
                     TextButton(
                         onClick = limparFiltro
                     ) {
                         Text(
-                            text = "Limpar filtro",
+                            stringResource(R.string.limpar_filtro_label),
                             color = tomVinho,
                             style = androidx.compose.ui.text.TextStyle(
                                 fontSize = 12.sp
@@ -271,14 +265,14 @@ fun TelaBaixas(paddingBottom: PaddingValues, viewModel: BaixaModel, produtos: Li
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "Nenhuma baixa cadastrada.",
+                                text = stringResource(R.string.nenhuma_baixa_msg),
                                 fontSize = 18.sp,
                                 color = Color.Gray,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Clique no botão \"Adicionar\" para cadastrar sua primeira baixa!",
+                                text = stringResource(R.string.instrucao_baixa_msg),
                                 fontSize = 16.sp,
                                 color = Color.Gray,
                                 textAlign = TextAlign.Center
@@ -403,8 +397,7 @@ fun BottomSheetAddBaixa(
                 }
                 showDatePicker = false
             },
-            onDismiss = { showDatePicker = false },
-            tomVinho = tomVinho
+            onDismiss = { showDatePicker = false }
         )
     }
 
@@ -412,7 +405,7 @@ fun BottomSheetAddBaixa(
         onDismissRequest = onClose,
         title = {
             Text(
-                text = "Adicionar Baixa",
+                stringResource(R.string.adicionar_baixa_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -423,7 +416,7 @@ fun BottomSheetAddBaixa(
                     value = dataSaida,
                     onValueChange = { dataSaida = it },
                     label = {
-                        Text("Data de Saída", color = Color.Black)
+                        Text(stringResource(R.string.data_saida_label), color = Color.Black)
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -458,7 +451,7 @@ fun BottomSheetAddBaixa(
                             searchQuery = it
                             if (it.isNotEmpty()) isDropdownExpanded = true
                         },
-                        label = { Text("Buscar Produto", color = Color.Black) },
+                        label = { Text(stringResource(R.string.buscar_produto_label), color = Color.Black) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
                         },
@@ -472,7 +465,7 @@ fun BottomSheetAddBaixa(
                             focusedContainerColor = Color.White,
                             unfocusedContainerColor = Color.White
                         ),
-                        placeholder = { Text("Selecione um produto") },
+                        placeholder = { Text(stringResource(R.string.selecione_produto_placeholder))},
                         shape = RoundedCornerShape(16.dp)
                     )
 
@@ -485,7 +478,7 @@ fun BottomSheetAddBaixa(
                     ) {
                         if (filteredProdutos.isEmpty()) {
                             DropdownMenuItem(
-                                text = { Text("Nenhum produto encontrado") },
+                                text = { stringResource(R.string.product_notfound_txt) },
                                 onClick = { },
                                 modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(16.dp))
                             )
@@ -514,7 +507,7 @@ fun BottomSheetAddBaixa(
                             qtdCaixas = it
                         }
                     },
-                    label = { Text("Quantidade de Caixas", color = Color.Black) },
+                    label = { Text(stringResource(R.string.quantidade_caixas_label), color = Color.Black) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -542,6 +535,7 @@ fun BottomSheetAddBaixa(
                 onClick = {
                     if (dataSaida.isEmpty() || selectedProduto == null || qtdCaixas.isEmpty()) {
                         errorMessage = "Preencha todos os campos"
+
                         return@Button
                     }
 
@@ -580,7 +574,7 @@ fun BottomSheetAddBaixa(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Salvar")
+                    Text(stringResource(R.string.salvar_label))
                 }
             }
         },
@@ -594,7 +588,7 @@ fun BottomSheetAddBaixa(
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar_label))
             }
         },
         containerColor = Color.White
@@ -716,14 +710,14 @@ fun BaixaCard(
     if (showEditDialog) {
         AlertDialog(
             onDismissRequest = { showEditDialog = false },
-            title = { Text("Editar Saída", fontWeight = FontWeight.Bold) },
+            title = { Text(stringResource(R.string.editar_saida_title), fontWeight = FontWeight.Bold) },
             text = {
                 Column {
                     OutlinedTextField(
                         value = LocalDate.parse(item.dtSaida, DateTimeFormatter.ISO_DATE)
                             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         onValueChange = {},
-                        label = { Text("Data", color = Color.Black) },
+                        label = { Text(stringResource(R.string.data_label), color = Color.Black) },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = false,
                         shape = RoundedCornerShape(16.dp),
@@ -747,7 +741,7 @@ fun BaixaCard(
                                 searchQuery = it
                                 if (it.isNotEmpty()) isDropdownExpanded = true
                             },
-                            label = { Text("Buscar Produto", color = Color.Black) },
+                            label = { Text(stringResource(R.string.buscar_produto_label), color = Color.Black) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
                             },
@@ -795,7 +789,7 @@ fun BaixaCard(
                                 qtdCaixas = it
                             }
                         },
-                        label = { Text("Quantidade de Caixas", color = Color.Black) },
+                        label = { Text(stringResource(R.string.quantidade_caixas_label), color = Color.Black) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -823,7 +817,7 @@ fun BaixaCard(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                 ) {
-                    Text("Confirmar")
+                    Text(stringResource(R.string.confirmar_label))
                 }
             },
             dismissButton = {
@@ -831,7 +825,7 @@ fun BaixaCard(
                     onClick = { showEditDialog = false },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
                 ) {
-                    Text("Cancelar", color = Color.Black)
+                    Text(stringResource(R.string.cancelar_label), color = Color.Black)
                 }
             },
             containerColor = Color.White
@@ -841,8 +835,8 @@ fun BaixaCard(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Confirmar Exclusão") },
-            text = { Text("Tem certeza que deseja excluir esta saída?") },
+            title = { Text(stringResource(R.string.confirmar_exclusao_title)) },
+            text = { Text(stringResource(R.string.confirmar_exclusao_msg)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -851,7 +845,7 @@ fun BaixaCard(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = tomVinho)
                 ) {
-                    Text("Sim")
+                    Text(stringResource(R.string.sim_label))
                 }
             },
             dismissButton = {
@@ -859,7 +853,7 @@ fun BaixaCard(
                     onClick = { showDeleteDialog = false },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
                 ) {
-                    Text("Não", color = Color.Black)
+                    Text(stringResource(R.string.nao_label), color = Color.Black)
                 }
             },
             containerColor = Color.White

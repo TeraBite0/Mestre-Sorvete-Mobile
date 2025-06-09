@@ -245,6 +245,12 @@ private fun DestaqueListItem(
     }
 }
 
+private fun hasChanges(originalDestaque: DestaqueItem?, selectedProduct: CardapioItem?, editedText: String): Boolean {
+    return originalDestaque?.let {
+        selectedProduct?.id != it.produto.id || editedText != it.texto
+    } ?: false
+}
+
 @Composable
 fun BottomSheetContent(
     destaque: DestaqueItem?,
@@ -408,6 +414,14 @@ fun BottomSheetContent(
                 unfocusedBorderColor = Color.Gray
             )
         )
+        if (!hasChanges(destaque, selectedProduct, editedText)) {
+            Text(
+                text = stringResource(R.string.destaque_no_changes_message),
+                color = Color.Gray,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
         Button(
             onClick = {
@@ -435,9 +449,11 @@ fun BottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho,
+                disabledContainerColor = tomVinho.copy(alpha = 0.5f)),
             shape = RoundedCornerShape(12.dp),
-            enabled = selectedProduct != null && !isLoading
+            enabled = selectedProduct != null && !isLoading &&
+                    hasChanges(destaque, selectedProduct, editedText)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(

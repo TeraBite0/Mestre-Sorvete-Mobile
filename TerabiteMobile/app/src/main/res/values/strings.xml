@@ -10,6 +10,8 @@
     <string name="login_passw_txt">Senha</string>
     <string name="login_passw_placeholder">Digite a sua senha…</string>
     <string name="login_loginBtn_label">Entrar</string>
+    <string name="show_password">Mostrar senha</string>
+    <string name="hide_password">Ocultar senha</string>
 
     <!-- Início -->
     <string name="home_manage_txt">Gerenciar</string>
@@ -114,6 +116,7 @@
     <string name="destaque_search_label">Buscar produto</string>
     <string name="destaque_text_label">Texto do Destaque</string>
     <string name="destaque_success_message">Destaque atualizado com sucesso!</string>
+    <string name="destaque_no_changes_message">Nenhuma alteração feita</string>
 
     <!-- Tela de Estoque -->
     <string name="empty_stock_message">Nenhum item no estoque</string>
@@ -129,4 +132,28 @@
     <string name="boxes_quantity_label">Quantidade de Caixas</string>
     <string name="boxes_label">caixas</string>
     <string name="box_icon_desc">Ícone de caixa</string>
+    <string name="baixas_title">Baixas</string>
+    <string name="data_inicio_label">Data início</string>
+    <string name="data_fim_label">Data fim</string>
+    <string name="date_placeholder">DD/MM/AAAA</string>
+    <string name="mostrando_baixas_format">Mostrando baixas de %1$s a %2$s</string>
+    <string name="product_notfound_txt">Nenhum produto encontrado</string>
+    <string name="limpar_filtro_label">Limpar filtro</string>
+    <string name="nenhuma_baixa_msg">Nenhuma baixa cadastrada.</string>
+    <string name="instrucao_baixa_msg">Clique no botão \"Adicionar\" para cadastrar sua primeira baixa!</string>
+    <string name="adicionar_baixa_title">Adicionar Baixa</string>
+    <string name="data_saida_label">Data de Saída</string>
+    <string name="buscar_produto_label">Buscar Produto</string>
+    <string name="selecione_produto_placeholder">Selecione um produto</string>
+    <string name="quantidade_caixas_label">Quantidade de Caixas</string>
+    <string name="salvar_label">Salvar</string>
+    <string name="cancelar_label">Cancelar</string>
+    <string name="editar_saida_title">Editar Saída</string>
+    <string name="data_label">Data</string>
+    <string name="confirmar_label">Confirmar</string>
+    <string name="confirmar_exclusao_title">Confirmar Exclusão</string>
+    <string name="confirmar_exclusao_msg">Tem certeza que deseja excluir esta saída?</string>
+    <string name="sim_label">Sim</string>
+    <string name="nao_label">Não</string>
+
 </resources>

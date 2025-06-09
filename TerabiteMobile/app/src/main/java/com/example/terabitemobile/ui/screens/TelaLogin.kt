@@ -4,11 +4,13 @@ import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -19,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +45,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         if (text.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
 
-        val passwordChar = '\u2022' //
+        val passwordChar = '\u2022'
         val lastChar = text.text.last()
 
         val transformedText = buildString {
@@ -69,6 +70,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = koinInject()) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
 
@@ -171,8 +173,28 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = k
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (senha.isEmpty()) PasswordVisualTransformation() else PasswordVisualTransformationWithLastCharVisible(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    visualTransformation = if (passwordVisible) VisualTransformation.None
+                     else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (passwordVisible) {
+                            Icons.Filled.Visibility
+                        } else {
+                            Icons.Filled.VisibilityOff
+                        }
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = image,
+                                contentDescription = if (passwordVisible) {
+                                    stringResource(R.string.hide_password)
+                                } else {
+                                    stringResource(R.string.show_password)
+                                },
+                                tint = Color(0xFF482C21)
+                            )
+                        }
+                    }
                 )
             }
 
