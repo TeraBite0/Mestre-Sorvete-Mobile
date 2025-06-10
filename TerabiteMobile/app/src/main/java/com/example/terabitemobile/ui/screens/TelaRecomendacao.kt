@@ -2,6 +2,7 @@ package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,13 +25,16 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
-import com.example.terabitemobile.data.models.CardapioItem
-import com.example.terabitemobile.data.models.RecomendacaoItem
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.RecomendacaoItem
 import com.example.terabitemobile.data.models.RecomendacaoModel
 import com.example.terabitemobile.ui.theme.background
 import kotlinx.coroutines.delay
@@ -45,9 +49,6 @@ fun TelaRecomendacao(
     produtosViewModel: CardapioModel
 ) {
     var searchText by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
-    var recomendacaoName by remember { mutableStateOf("") }
-    var marcaName by remember { mutableStateOf("") }
 
     val recomendacoes by recomendacaoViewModel.recomendacoes.observeAsState()
     val isLoading by recomendacaoViewModel.isLoading.observeAsState(initial = false)
@@ -142,7 +143,8 @@ fun TelaRecomendacao(
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                containerColor = Color.White
             ) {
                 BottomSheetContent(
                     recomendacao = selectedRecomendacao,
@@ -243,12 +245,28 @@ private fun RecomendacaoListItem(
             Box(
                 modifier = Modifier
                     .size(60.dp)
-                    .background(Color.LightGray, RoundedCornerShape(12.dp))
-                    .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
+                    .background(Color.White, RoundedCornerShape(12.dp))
+                    .border(2.dp, tomVinho, RoundedCornerShape(8.dp))
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                // Espaço reservado para imagem
+                if (recomendacao.produto.imagemUrl != null) {
+                    AsyncImage(
+                        model = recomendacao.produto.imagemUrl,
+                        contentDescription = "foto do produto",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(R.drawable.ice_cream),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(35.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -344,12 +362,28 @@ fun BottomSheetContent(
                 Box(
                     modifier = Modifier
                         .size(60.dp)
-                        .background(Color.LightGray, RoundedCornerShape(12.dp))
+                        .background(Color.White, RoundedCornerShape(12.dp))
                         .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    // Espaço reservado para imagem
+                    if (selectedProduct!!.imagemUrl != null) {
+                        AsyncImage(
+                            model = selectedProduct!!.imagemUrl,
+                            contentDescription = "foto do produto",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ice_cream),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -376,6 +410,7 @@ fun BottomSheetContent(
             onValueChange = { searchQuery = it },
             label = { Text(stringResource(R.string.search_product_label)) },
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray
@@ -385,7 +420,11 @@ fun BottomSheetContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Box(modifier = Modifier.weight(1f)) {
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(vertical = 8.dp)
+            ) {
                 items(filteredProducts) { product ->
                     Card(
                         onClick = { selectedProduct = product },
@@ -419,6 +458,8 @@ fun BottomSheetContent(
                 }
             }
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = {

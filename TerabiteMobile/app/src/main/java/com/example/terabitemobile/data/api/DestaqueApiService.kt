@@ -1,6 +1,7 @@
 package com.example.terabitemobile.data.api
 
-import com.example.terabitemobile.data.models.DestaqueItem
+
+import com.example.terabitemobile.data.classes.DestaqueItem
 import retrofit2.Call
 import retrofit2.http.*
 

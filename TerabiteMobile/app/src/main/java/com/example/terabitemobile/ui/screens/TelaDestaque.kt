@@ -2,6 +2,7 @@ package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,13 +26,16 @@ import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
-import com.example.terabitemobile.data.models.CardapioItem
-import com.example.terabitemobile.data.models.DestaqueItem
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.DestaqueItem
 import com.example.terabitemobile.data.models.DestaqueModel
 import com.example.terabitemobile.ui.theme.background
 import kotlinx.coroutines.delay
@@ -54,6 +58,11 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
 
     val produtos by produtosViewModel.produtos.observeAsState()
 
+    LaunchedEffect(key1 = Unit) {
+        destaqueViewModel.carregarDestaque()
+        produtosViewModel.carregarProdutos()
+    }
+
     Scaffold(
         containerColor = background,
     ) {
@@ -75,7 +84,6 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
                     CircularProgressIndicator(color = tomVinho)
                 }
             } else if (error.isNotEmpty()) {
-                // Mostra mensagem de erro se houver falha
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -114,7 +122,8 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                containerColor = Color.White
             ) {
                 BottomSheetContent(
                     destaque = selectedDestaque,
@@ -176,40 +185,56 @@ private fun DestaqueListItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column (modifier = Modifier.padding(12.dp)){
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(90.dp)
-                    .background(Color.LightGray, RoundedCornerShape(12.dp))
-                    .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
+                Box(
+                    modifier = Modifier
+                        .size(90.dp)
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (destaque.produto.imagemUrl != null) {
+                        AsyncImage(
+                            model = destaque.produto.imagemUrl,
+                            contentDescription = "foto do produto",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ice_cream),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                Column(modifier = Modifier.weight(2f)) {
+
+                    Row { Text(text = destaque.produto.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp) }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row (modifier = Modifier
+                        .fillMaxWidth()
+                        .background(fundoCinza, RoundedCornerShape(8.dp))
+                        .padding(4.dp))
+                    { Text(text = stringResource(R.string.destaque_brand_label) + " " + destaque.produto.nomeMarca, fontSize = 12.sp) }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Row (modifier = Modifier
+                        .fillMaxWidth()
+                        .background(fundoCinza, RoundedCornerShape(8.dp))
+                        .padding(5.dp))
+                    { Text(text = stringResource(R.string.destaque_type_label) + " " + destaque.produto.tipo, fontSize = 12.sp) }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(2f)) {
-
-                Row { Text(text = destaque.produto.nome, fontWeight = FontWeight.Bold, fontSize = 16.sp) }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row (modifier = Modifier
-                    .fillMaxWidth()
-                    .background(fundoCinza, RoundedCornerShape(8.dp))
-                    .padding(4.dp))
-                { Text(text = stringResource(R.string.destaque_brand_label) + destaque.produto.nomeMarca, fontSize = 12.sp) }
-                Spacer(modifier = Modifier.height(6.dp))
-                Row (modifier = Modifier
-                    .fillMaxWidth()
-                    .background(fundoCinza, RoundedCornerShape(8.dp))
-                    .padding(5.dp))
-                { Text(text = stringResource(R.string.destaque_type_label) + destaque.produto.tipo, fontSize = 12.sp) }
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-        }
             Spacer(modifier = Modifier.height(6.dp))
             Row(
                 modifier = Modifier
@@ -241,6 +266,12 @@ private fun DestaqueListItem(
     }
 }
 
+private fun hasChanges(originalDestaque: DestaqueItem?, selectedProduct: CardapioItem?, editedText: String): Boolean {
+    return originalDestaque?.let {
+        selectedProduct?.id != it.produto.id || editedText != it.texto
+    } ?: false
+}
+
 @Composable
 fun BottomSheetContent(
     destaque: DestaqueItem?,
@@ -260,7 +291,7 @@ fun BottomSheetContent(
     var selectedProduct by remember(destaque?.id) {
         mutableStateOf(destaque?.produto)
     }
-//    var searchQuery by remember { mutableStateOf(destaque?.produto?.nome ?: "") }
+
     var searchQuery by remember { mutableStateOf("") }
     var editedText by remember { mutableStateOf(destaque?.texto ?: "") }
 
@@ -273,7 +304,6 @@ fun BottomSheetContent(
             .fillMaxWidth()
             .padding(20.dp)
     ) {
-        // Cabeçalho
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -295,7 +325,6 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Produto selecionado
         selectedProduct?.let { product ->
             Row(
                 modifier = Modifier
@@ -333,12 +362,13 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campo de busca
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            label = { Text(stringResource(R.string.destaque_search_label)) },
+            label = { Text(stringResource(R.string.destaque_search_label), color = Color.Black, fontSize = 14.sp)},
             modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray
@@ -347,7 +377,6 @@ fun BottomSheetContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Lista de produtos com scroll
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -391,23 +420,30 @@ fun BottomSheetContent(
             }
         }
 
-        // CAMPO DE TEXTO LIVRE
         OutlinedTextField(
             value = editedText,
             onValueChange = { editedText = it },
-            label = { Text(stringResource(R.string.destaque_text_label)) },
+            label = { Text(stringResource(R.string.destaque_text_label), color = tomVinho, fontWeight = FontWeight.Bold) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
                 .padding(bottom = 12.dp),
+            shape = RoundedCornerShape(16.dp),
             maxLines = 6,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = tomVinho,
                 unfocusedBorderColor = Color.Gray
             )
         )
+        if (!hasChanges(destaque, selectedProduct, editedText)) {
+            Text(
+                text = stringResource(R.string.destaque_no_changes_message),
+                color = Color.Gray,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
-        // BOTÃO DE SALVAR
         Button(
             onClick = {
                 if (selectedProduct != null) {
@@ -434,9 +470,11 @@ fun BottomSheetContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = tomVinho),
+            colors = ButtonDefaults.buttonColors(containerColor = tomVinho,
+                disabledContainerColor = tomVinho.copy(alpha = 0.5f)),
             shape = RoundedCornerShape(12.dp),
-            enabled = selectedProduct != null && !isLoading
+            enabled = selectedProduct != null && !isLoading &&
+                    hasChanges(destaque, selectedProduct, editedText)
         ) {
             if (isLoading) {
                 CircularProgressIndicator(
@@ -449,7 +487,6 @@ fun BottomSheetContent(
             }
         }
 
-        // MENSAGEM DE SUCESSO
         AnimatedVisibility(visible = showSuccessMessage) {
             Row(
                 modifier = Modifier
@@ -468,7 +505,6 @@ fun BottomSheetContent(
             }
         }
 
-        // SNACKBAR DE ERRO
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier.padding(16.dp)

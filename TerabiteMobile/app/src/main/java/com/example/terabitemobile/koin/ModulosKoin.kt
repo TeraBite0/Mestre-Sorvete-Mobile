@@ -13,10 +13,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 import com.example.terabitemobile.data.models.LoginModel.LoginState
 
+
 // Se estiver desenvolvendo localmente, use o endereço IP do
 // seu computador (por exemplo, 192.168.1.100), a URL ficaria assim:
 
-private const val BASE_URL = "http://44.192.125.22/api/"
+private const val BASE_URL = "http://54.80.52.5/api/"
 
 val moduloGeral = module {
     // single -> devolve a MESMA instância para todos que pedirem

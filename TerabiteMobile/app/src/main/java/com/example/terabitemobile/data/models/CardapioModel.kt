@@ -3,43 +3,11 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.CardapioApiService
-import com.google.gson.annotations.SerializedName
-import org.koin.compose.koinInject
-import org.koin.compose.rememberKoinInject
+import com.example.terabitemobile.data.classes.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioPost
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class CardapioItem(
-    val id: Int,
-    val nome: String,
-
-    @SerializedName("marca")
-    val nomeMarca: String,
-
-    val tipo: String,
-
-    @SerializedName("subtipo")
-    val nomeSubtipo: String,
-
-    val preco: Double,
-    val qtdCaixa: Int,
-    val qtdPorCaixas: Int,
-    val ativo: Boolean,
-    val temLactose: Boolean,
-    val temGluten: Boolean
-)
-
-data class CardapioPost (
-    val id: Int,
-    val nome: String,
-    val nomeSubtipo: String,
-    val nomeMarca: String,
-    val preco: Double,
-    val qtdPorCaixas: Int,
-    val temLactose: Boolean,
-    val temGluten: Boolean
-)
 
 class CardapioModel(val cardapioService: CardapioApiService) : ViewModel() {
 

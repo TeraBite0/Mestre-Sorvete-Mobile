@@ -4,15 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.DestaqueApiService
 import com.example.terabitemobile.data.api.DestaqueApiService.DestaqueUpdateRequest
+import com.example.terabitemobile.data.classes.DestaqueItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class DestaqueItem(
-    val id: Int,
-    val produto: CardapioItem,
-    val texto: String
-)
 
 class DestaqueModel(private val destaqueService: DestaqueApiService) : ViewModel() {
 

@@ -1,12 +1,16 @@
 package com.example.terabitemobile.ui.screens
 
+import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,15 +45,13 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
         if (text.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
 
-        val passwordChar = '\u2022' // Bullet character
+        val passwordChar = '\u2022'
         val lastChar = text.text.last()
 
         val transformedText = buildString {
-            // Replace all characters except the last one with bullets
             repeat(text.length - 1) {
                 append(passwordChar)
             }
-            // Show the last character as is
             append(lastChar)
         }
 
@@ -69,6 +70,7 @@ class PasswordVisualTransformationWithLastCharVisible : VisualTransformation {
 fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = koinInject()) {
     var usuario by remember { mutableStateOf("") }
     var senha by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
 
@@ -171,26 +173,30 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = k
                     ),
                     shape = RoundedCornerShape(30.dp),
                     modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (senha.isEmpty()) PasswordVisualTransformation() else PasswordVisualTransformationWithLastCharVisible(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                    visualTransformation = if (passwordVisible) VisualTransformation.None
+                     else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = {
+                        val image = if (passwordVisible) {
+                            Icons.Filled.Visibility
+                        } else {
+                            Icons.Filled.VisibilityOff
+                        }
+
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = image,
+                                contentDescription = if (passwordVisible) {
+                                    stringResource(R.string.hide_password)
+                                } else {
+                                    stringResource(R.string.show_password)
+                                },
+                                tint = Color(0xFF482C21)
+                            )
+                        }
+                    }
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = stringResource(R.string.login_resetPassw_label),
-                color = Color.White,
-                fontSize = 14.sp,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 12.dp)
-                    .clickable {
-                        //context.startActivity
-                        navController.navigate("esqueceu senha")
-                    }
-            )
 
             Spacer(modifier = Modifier.height(48.dp))
 
@@ -212,11 +218,8 @@ fun TelaLogin(navController: NavHostController, usuarioaAtual: LoginResponse = k
                 }
             }
             if (loginState is LoginModel.LoginState.Error) {
-                Text(
-                    text = (loginState as LoginModel.LoginState.Error).message,
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                makeText(navController.context, (loginState as LoginModel.LoginState.Error).message, Toast.LENGTH_SHORT).show()
+                loginModel.limparErro()
             }
 
             Spacer(modifier = Modifier.height(40.dp))

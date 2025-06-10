@@ -9,16 +9,9 @@
     <string name="login_email_placeholder">exemplo@email.com</string>
     <string name="login_passw_txt">Senha</string>
     <string name="login_passw_placeholder">Digite a sua senha…</string>
-    <string name="login_resetPassw_label">Esqueceu a senha?</string>
     <string name="login_loginBtn_label">Entrar</string>
-
-    <!-- Esqueceu Senha -->
-    <string name="reset_passwd_title_txt">Redefinir Senha</string>
-    <string name="reset_passwd_field_txt">Nova Senha</string>
-    <string name="reset_passwd_placeholder_txt">digite sua nova senha…</string>
-    <string name="reset_passwd_field2_txt">Repetir nova senha</string>
-    <string name="reset_passwd_placeholder2_txt">repita a senha</string>
-    <string name="reset_passwd_btn_label">Atualizar</string>
+    <string name="show_password">Mostrar senha</string>
+    <string name="hide_password">Ocultar senha</string>
 
     <!-- Início -->
     <string name="home_manage_txt">Gerenciar</string>
@@ -32,7 +25,7 @@
 
     <!-- Bottom sheet de edição/adição -->
     <!-- Títulos -->
-    <string name="edit_product_title">Editar %1$s</string>
+    <string name="edit_product_title">Editando %1$s</string>
     <string name="add_new_product_title">Adicionar Novo Produto</string>
 
     <!-- Subtítulos das seções -->
@@ -105,7 +98,7 @@
 
     <!-- Tela de Recomendações -->
     <string name="recommendations_title">Recomendados</string>
-    <string name="edit_recommendation_title">Editar Recomendação</string>
+    <string name="edit_recommendation_title">Editando Recomendação</string>
     <string name="search_product_label">Buscar produto</string>
     <string name="success_update_recommendation">Recomendação atualizada com sucesso!</string>
     <string name="error_update_recommendation">Erro ao atualizar: %s</string>
@@ -123,10 +116,13 @@
     <string name="destaque_search_label">Buscar produto</string>
     <string name="destaque_text_label">Texto do Destaque</string>
     <string name="destaque_success_message">Destaque atualizado com sucesso!</string>
+    <string name="destaque_no_changes_message">Nenhuma alteração feita</string>
 
     <!-- Tela de Estoque -->
     <string name="empty_stock_message">Nenhum item no estoque</string>
     <string name="no_search_results">Nenhum resultado encontrado</string>
+    <string name="error_product_required">Selecione um produto</string>
+    <string name="error_text_required">Digite uma descrição</string>
 
     <!-- Tela de Baixas -->
     <string name="add_outflow_dialog_title">Adicionar Baixa</string>
@@ -136,4 +132,28 @@
     <string name="boxes_quantity_label">Quantidade de Caixas</string>
     <string name="boxes_label">caixas</string>
     <string name="box_icon_desc">Ícone de caixa</string>
+    <string name="baixas_title">Baixas</string>
+    <string name="data_inicio_label">Data início</string>
+    <string name="data_fim_label">Data fim</string>
+    <string name="date_placeholder">DD/MM/AAAA</string>
+    <string name="mostrando_baixas_format">Mostrando baixas de %1$s a %2$s</string>
+    <string name="product_notfound_txt">Nenhum produto encontrado</string>
+    <string name="limpar_filtro_label">Limpar filtro</string>
+    <string name="nenhuma_baixa_msg">Nenhuma baixa cadastrada.</string>
+    <string name="instrucao_baixa_msg">Clique no botão \"Adicionar\" para cadastrar sua primeira baixa!</string>
+    <string name="adicionar_baixa_title">Adicionar Baixa</string>
+    <string name="data_saida_label">Data de Saída</string>
+    <string name="buscar_produto_label">Buscar Produto</string>
+    <string name="selecione_produto_placeholder">Selecione um produto</string>
+    <string name="quantidade_caixas_label">Quantidade de Caixas</string>
+    <string name="salvar_label">Salvar</string>
+    <string name="cancelar_label">Cancelar</string>
+    <string name="editar_saida_title">Editar Saída</string>
+    <string name="data_label">Data</string>
+    <string name="confirmar_label">Confirmar</string>
+    <string name="confirmar_exclusao_title">Confirmar Exclusão</string>
+    <string name="confirmar_exclusao_msg">Tem certeza que deseja excluir esta saída?</string>
+    <string name="sim_label">Sim</string>
+    <string name="nao_label">Não</string>
+
 </resources>

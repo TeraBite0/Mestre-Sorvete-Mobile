@@ -36,9 +36,9 @@ import com.example.terabitemobile.R
 import com.example.terabitemobile.data.classes.FornecedorRequest
 import com.example.terabitemobile.data.classes.LotePost
 import com.example.terabitemobile.data.classes.LoteProdutoResponse
-import com.example.terabitemobile.data.models.CardapioItem
+import com.example.terabitemobile.data.classes.CardapioItem
 import com.example.terabitemobile.data.models.CardapioModel
-import com.example.terabitemobile.data.models.EstoqueItem
+import com.example.terabitemobile.data.classes.EstoqueItem
 import com.example.terabitemobile.data.models.EstoqueModel
 import com.example.terabitemobile.data.models.FornecedorModel
 import com.example.terabitemobile.ui.theme.background
@@ -118,7 +118,10 @@ fun TelaEstoque(paddingBottom: PaddingValues, viewModel: EstoqueModel = koinView
                         )
                     }
                 } else {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
+                        contentPadding = PaddingValues(vertical = 5.dp)
+                    ) {
                         items(listaFiltrada.size) { index ->
                             ItemEstoque(item = listaFiltrada[index])
                         }
@@ -206,7 +209,9 @@ fun AddBottomSheetContent(estoqueModel: EstoqueModel, onDismiss: () -> Unit) {
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                modifier = Modifier
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .height(270.dp)
             ) {
                 produtos?.forEach { produto ->
                     DropdownMenuItem(
@@ -244,7 +249,9 @@ fun AddBottomSheetContent(estoqueModel: EstoqueModel, onDismiss: () -> Unit) {
             ExposedDropdownMenu(
                 expanded = expandedFornecedor,
                 onDismissRequest = { expandedFornecedor = false },
-                modifier = Modifier.background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                modifier = Modifier
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .height(270.dp)
             ) {
                 fornecedores?.forEach { fornecedor ->
                     DropdownMenuItem(
@@ -376,12 +383,18 @@ fun DatePickerDialog(onDateSelected: (LocalDate?) -> Unit, onDismiss: () -> Unit
         Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()
     }
 
-    androidx.compose.material3.DatePickerDialog(
+    DatePickerDialog(
+        modifier = Modifier
+            .padding(horizontal = 50.dp),
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = { onDateSelected(selectedDate); onDismiss() }) { Text("OK") }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } },
+        colors = DatePickerDefaults.colors(
+            containerColor = Color.White,
+            selectedDayContainerColor = tomVinho,
+        )
     ) {
         DatePicker(state = datePickerState)
     }

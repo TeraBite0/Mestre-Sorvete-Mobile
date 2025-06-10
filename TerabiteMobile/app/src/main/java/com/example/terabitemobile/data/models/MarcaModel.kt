@@ -3,14 +3,12 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.MarcaApiService
+import com.example.terabitemobile.data.classes.MarcaDelete
+import com.example.terabitemobile.data.classes.MarcaItem
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class MarcaItem(
-    val id: Int,
-    val nome: String
-)
+import android.util.Log
 
 class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
 
@@ -69,6 +67,33 @@ class MarcaModel(val marcaService: MarcaApiService) : ViewModel() {
             override fun onFailure(call: Call<MarcaItem>, t: Throwable) {
                 _isLoading.value = false
                 _error.value = "Falha ao adicionar: ${t.message}"
+            }
+        })
+    }
+
+    fun deleteMarca(id: Int) {
+        _isLoading.value = true
+        marcaService.deleteMarcas(id).enqueue(object : Callback<MarcaDelete> {
+            override fun onResponse(call: Call<MarcaDelete>, response: Response<MarcaDelete>) {
+                _isLoading.value = false
+                if (response.isSuccessful) {
+                    val currentList = _marcas.value?.toMutableList() ?: mutableListOf()
+                    currentList.removeAll { it.id == id }
+                    _marcas.value = currentList
+                } else {
+                    if (response.code() == 409) {
+                        _error.value = "Erro ao deletar: Não é possível deletar uma marca que possui produtos!"
+                        return
+                    }
+
+                    _error.value = "Erro ao deletar: ${response.message()}"
+                    Log.i("api", "Erro ao deletar: ${response.code()}")
+                }
+            }
+
+            override fun onFailure(call: Call<MarcaDelete>, t: Throwable) {
+                _isLoading.value = false
+                _error.value = "Falha ao deletar: ${t.message}"
             }
         })
     }

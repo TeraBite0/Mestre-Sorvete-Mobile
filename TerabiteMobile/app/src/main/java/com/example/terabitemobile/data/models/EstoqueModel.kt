@@ -3,19 +3,12 @@ package com.example.terabitemobile.data.models
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.terabitemobile.data.api.EstoqueApiService
+import com.example.terabitemobile.data.classes.EstoqueItem
 import com.example.terabitemobile.data.classes.LotePost
 import com.example.terabitemobile.data.classes.LoteProdutosPostResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-data class EstoqueItem(
-    val id: Int,
-    val nome: String,
-    val marca: String,
-    val qtdCaixasEstoque: Int,
-    val qtdPorCaixas: Int
-)
 
 class EstoqueModel(val estoqueService: EstoqueApiService) : ViewModel() {
     private val _estoque = MutableLiveData<List<EstoqueItem>?>()
