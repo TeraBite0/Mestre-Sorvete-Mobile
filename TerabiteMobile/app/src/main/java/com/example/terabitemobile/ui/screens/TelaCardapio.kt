@@ -337,13 +337,13 @@ fun ListaProdutosCardapio(
                                 .background(Color.White, shape = RoundedCornerShape(8.dp)),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (produto.urlImagem != null) {
+                            if (produto.imagemUrl != null) {
                                 AsyncImage(
-                                    model = "https://www.pudim.com.br/pudim.jpg",
+                                    model = produto.imagemUrl,
                                     contentDescription = "foto do produto",
                                     contentScale = ContentScale.FillBounds,
                                     modifier = Modifier
-                                        .size(70.dp)
+                                        .fillMaxSize()
                                         .clip(RoundedCornerShape(8.dp))
                                 )
                             } else {

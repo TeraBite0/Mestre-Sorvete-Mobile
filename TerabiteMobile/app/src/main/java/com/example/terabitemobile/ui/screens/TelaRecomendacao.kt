@@ -143,7 +143,8 @@ fun TelaRecomendacao(
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                containerColor = Color.White
             ) {
                 BottomSheetContent(
                     recomendacao = selectedRecomendacao,
@@ -249,13 +250,13 @@ private fun RecomendacaoListItem(
                     .clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                if (recomendacao.produto.urlImagem != null) {
+                if (recomendacao.produto.imagemUrl != null) {
                     AsyncImage(
-                        model = "https://www.pudim.com.br/pudim.jpg",
+                        model = recomendacao.produto.imagemUrl,
                         contentDescription = "foto do produto",
                         contentScale = ContentScale.FillBounds,
                         modifier = Modifier
-                            .size(70.dp)
+                            .fillMaxSize()
                             .clip(RoundedCornerShape(8.dp))
                     )
                 } else {
@@ -366,13 +367,13 @@ fun BottomSheetContent(
                         .clip(RoundedCornerShape(8.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (selectedProduct!!.urlImagem != null) {
+                    if (selectedProduct!!.imagemUrl != null) {
                         AsyncImage(
-                            model = "https://www.pudim.com.br/pudim.jpg",
+                            model = selectedProduct!!.imagemUrl,
                             contentDescription = "foto do produto",
                             contentScale = ContentScale.FillBounds,
                             modifier = Modifier
-                                .size(70.dp)
+                                .fillMaxSize()
                                 .clip(RoundedCornerShape(8.dp))
                         )
                     } else {

@@ -2,6 +2,7 @@ package com.example.terabitemobile.ui.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -25,9 +26,12 @@ import com.example.terabitemobile.ui.theme.tomVinho
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.terabitemobile.R
 import com.example.terabitemobile.data.models.CardapioModel
 import com.example.terabitemobile.data.classes.CardapioItem
@@ -118,7 +122,8 @@ fun TelaDestaque(paddingValores: PaddingValues, destaqueViewModel: DestaqueModel
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
+                containerColor = Color.White
             ) {
                 BottomSheetContent(
                     destaque = selectedDestaque,
@@ -186,12 +191,28 @@ private fun DestaqueListItem(
                 Box(
                     modifier = Modifier
                         .size(90.dp)
-                        .background(Color.LightGray, RoundedCornerShape(12.dp))
+                        .background(Color.White, RoundedCornerShape(12.dp))
                         .border(1.5.dp, tomVinho, RoundedCornerShape(8.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-//                Text("470×470", fontSize = 10.sp, color = Color.DarkGray)
+                    if (destaque.produto.imagemUrl != null) {
+                        AsyncImage(
+                            model = destaque.produto.imagemUrl,
+                            contentDescription = "foto do produto",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(R.drawable.ice_cream),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -204,13 +225,13 @@ private fun DestaqueListItem(
                         .fillMaxWidth()
                         .background(fundoCinza, RoundedCornerShape(8.dp))
                         .padding(4.dp))
-                    { Text(text = stringResource(R.string.destaque_brand_label) + destaque.produto.nomeMarca, fontSize = 12.sp) }
+                    { Text(text = stringResource(R.string.destaque_brand_label) + " " + destaque.produto.nomeMarca, fontSize = 12.sp) }
                     Spacer(modifier = Modifier.height(6.dp))
                     Row (modifier = Modifier
                         .fillMaxWidth()
                         .background(fundoCinza, RoundedCornerShape(8.dp))
                         .padding(5.dp))
-                    { Text(text = stringResource(R.string.destaque_type_label) + destaque.produto.tipo, fontSize = 12.sp) }
+                    { Text(text = stringResource(R.string.destaque_type_label) + " " + destaque.produto.tipo, fontSize = 12.sp) }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }

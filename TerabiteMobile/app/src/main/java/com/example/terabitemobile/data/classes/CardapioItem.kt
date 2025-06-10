@@ -19,5 +19,5 @@ data class CardapioItem(
     val ativo: Boolean,
     val temLactose: Boolean,
     val temGluten: Boolean,
-    val urlImagem: String?
+    val imagemUrl: String?
 )
